@@ -6,9 +6,9 @@ const portfolioContent = {
     tagline:
       "I build analytics systems, predictive models, and AI workflows that turn operational complexity into measurable business outcomes.",
     bio:
-      "I am a data science and analytics professional with experience across consulting, operations, startup analytics, and social-impact machine learning. Currently completing an MS in Business Analytics at Wake Forest after graduating from Plaksha University in Data Science, Economics, and Business, I enjoy translating ambiguous business questions into practical data products and decision systems.",
+      "I am a data science and analytics professional working across consulting, operations, startup analytics, and social-impact machine learning. I am completing an MS in Business Analytics at Wake Forest after graduating from Plaksha University in Data Science, Economics, and Business, and I enjoy turning ambiguous business questions into practical data products and decision systems.",
     heroSummary:
-      "My work spans recommerce optimization, fraud detection, NLP and generative AI evaluation, business intelligence, and computer vision for development research. I care about end-to-end execution: clean data pipelines, rigorous modeling, and storytelling that helps stakeholders act with confidence.",
+      "My work spans recommerce optimization, fraud detection, NLP and generative AI evaluation, BI systems, and computer vision research. I care about end-to-end execution: clean pipelines, rigorous modeling, and communication that helps teams act with confidence.",
     location: "Winston-Salem, NC",
     phone: "+1 743-240-7497",
     email: "ajagao25@wfu.edu",
@@ -20,6 +20,7 @@ const portfolioContent = {
       "Experimentation",
       "Generative AI"
     ],
+    quickFacts: ["MSBA Candidate at Wake Forest", "Beta Gamma Sigma", "Full-Ride Scholar"],
     resumeUrl: "AlliAjagbeResume.pdf",
     logoIconUrl: "alliajagbe%20logo/alliajagbe%20logo2.png",
     logoWordmarkUrl: "alliajagbe%20logo/alliajagbe%20logo.png",
@@ -62,7 +63,7 @@ const portfolioContent = {
       summary: [
         "Architected a data-driven recommerce decision tree that integrated cost, vendor performance, and operational constraints to replace manual vendor selection.",
         "Reduced cost per returned product by $500 through optimized routing logic and more consistent operational decisioning.",
-        "Developed end-to-end modeling frameworks across two core operational stages, reducing customer friction points by 20%."
+        "Built end-to-end modeling frameworks across two operational stages, reducing customer friction points by 20%."
       ]
     },
     {
@@ -72,7 +73,7 @@ const portfolioContent = {
       summary: [
         "Led an analytics engineering cycle to deploy an automated dataset-curation pipeline with stronger testing and documentation practices.",
         "Saved 25 hours weekly and generated $20K per month through improved data operations and more reliable downstream workflows.",
-        "Enhanced feature engineering and ML pipeline logic, increasing model F1-score by 12% while reducing end-of-day processing by 18%."
+        "Enhanced feature engineering and pipeline logic, increasing model F1-score by 12% while reducing end-of-day processing by 18%."
       ]
     },
     {
@@ -197,12 +198,12 @@ const portfolioContent = {
   services: [
     {
       title: "Analytics Strategy & KPI Design",
-      description: "Translate business goals into measurable frameworks, operating metrics, and analysis plans that teams can use consistently.",
+      description: "Translate business goals into measurable frameworks, operating metrics, and analysis plans teams can use consistently.",
       deliverables: ["KPI definitions", "Measurement plans", "Decision-focused reporting"]
     },
     {
       title: "Predictive Modeling",
-      description: "Build and evaluate forecasting, classification, and prioritization models grounded in real operational constraints.",
+      description: "Build and evaluate forecasting, classification, and prioritization models grounded in real operating constraints.",
       deliverables: ["Model development", "Validation design", "Business interpretation"]
     },
     {
@@ -268,8 +269,8 @@ function renderHero(profile) {
   brandTag.textContent = profile.brandTag;
   footerName.textContent = profile.name;
   footerYearName.textContent = profile.name;
-  footerMeta.textContent = "Analytics engineering, machine learning, and decision-focused data products.";
-  footerNote.textContent = profile.bio;
+    footerMeta.textContent = "Analytics engineering, machine learning, and decision-focused data products.";
+    footerNote.textContent = profile.bio;
   footerResumeLink.href = profile.resumeUrl;
   footerResumeLink.textContent = "View / download resume";
   brandLogo.src = profile.logoIconUrl;
@@ -281,6 +282,9 @@ function renderHero(profile) {
     <p class="hero-role">${profile.title}</p>
     <p class="hero-tagline">${profile.tagline}</p>
     <p class="hero-summary">${profile.heroSummary}</p>
+    <div class="hero-signals">
+      ${profile.quickFacts.map((item) => `<span class="signal-pill">${item}</span>`).join("")}
+    </div>
     <div class="hero-actions">
       <a class="button button--primary" href="#projects">View projects</a>
       <a class="button button--secondary" href="${profile.resumeUrl}" target="_blank" rel="noreferrer">View resume</a>
@@ -300,7 +304,7 @@ function renderHero(profile) {
       </div>
       <div>
         <p class="section-label">Impact Snapshot</p>
-        <h3>Recent outcomes across analytics and ML work</h3>
+        <h3>Selected outcomes across analytics and ML work</h3>
       </div>
     </div>
     ${profile.highlights
@@ -482,9 +486,9 @@ function renderRecommendations(recommendations) {
     recommendationsGrid.innerHTML = `
       <article class="recommendation-card recommendation-card--empty" data-animate>
         <p class="section-label">Ready for future updates</p>
-        <h3>Recommendations can be added when you have formal testimonials to share.</h3>
+        <h3>Formal recommendations can be added here when you are ready to share them.</h3>
         <p class="recommendation-quote">
-          This version of the portfolio is populated from your resume and logo assets, so no collaborator quotes have been invented.
+          This version is intentionally grounded in your actual resume and branding files, so no testimonials have been invented.
         </p>
       </article>
     `;

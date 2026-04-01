@@ -381,6 +381,25 @@ h3 {
   font-size: 1.02rem;
 }
 
+.hero-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.signal-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.82rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-strong));
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
+  color: var(--heading);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -472,6 +491,7 @@ h3 {
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
   border: 1px solid var(--border);
+  border-top: 3px solid color-mix(in srgb, var(--accent) 65%, transparent);
   transition:
     transform var(--transition),
     border-color var(--transition),
@@ -639,6 +659,7 @@ h3 {
 .recommendation-card {
   background: var(--surface);
   border: 1px solid var(--border);
+  border-top: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow);
 }
@@ -727,6 +748,8 @@ h3 {
   grid-template-columns: minmax(0, 1.1fr) minmax(250px, 0.9fr);
   gap: 1.5rem;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .contact-copy {
@@ -741,6 +764,17 @@ h3 {
 
 .link-pill {
   justify-content: space-between;
+}
+
+.contact-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -6rem -6rem auto;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(12, 88, 103, 0.16), transparent 70%);
+  pointer-events: none;
 }
 
 .site-footer {
@@ -897,7 +931,8 @@ h3 {
   }
 
   .hero-actions,
-  .hero-meta {
+  .hero-meta,
+  .hero-signals {
     flex-direction: column;
     align-items: flex-start;
   }
