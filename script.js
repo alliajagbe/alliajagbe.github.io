@@ -1,213 +1,233 @@
 const portfolioContent = {
   profile: {
-    name: "Your Name",
-    title: "Data Science & Analytics Professional",
-    tagline: "Turning complex datasets into clear decisions, scalable models, and measurable business outcomes.",
-    bio: "Use this space for a concise personal introduction covering your domain focus, preferred problem types, and the perspective you bring to analytics, machine learning, and business storytelling.",
+    name: "Alli Ajagbe",
+    brandTag: "Data science, analytics, and AI",
+    title: "Data Scientist, Analytics Engineer & AI Builder",
+    tagline:
+      "I build analytics systems, predictive models, and AI workflows that turn operational complexity into measurable business outcomes.",
+    bio:
+      "I am a data science and analytics professional with experience across consulting, operations, startup analytics, and social-impact machine learning. Currently completing an MS in Business Analytics at Wake Forest after graduating from Plaksha University in Data Science, Economics, and Business, I enjoy translating ambiguous business questions into practical data products and decision systems.",
     heroSummary:
-      "Replace this placeholder with a sharper value proposition that explains who you help, what kinds of data problems you solve, and the outcomes you typically drive.",
-    location: "City, Country",
-    email: "your.email@example.com",
-    availability: "Available for analytics, modeling, dashboarding, and advisory work.",
-    resumeUrl: "resume-placeholder.txt",
+      "My work spans recommerce optimization, fraud detection, NLP and generative AI evaluation, business intelligence, and computer vision for development research. I care about end-to-end execution: clean data pipelines, rigorous modeling, and storytelling that helps stakeholders act with confidence.",
+    location: "Winston-Salem, NC",
+    phone: "+1 743-240-7497",
+    email: "ajagao25@wfu.edu",
+    availability: "Open to data science, analytics, and AI/ML opportunities.",
+    focusAreas: [
+      "Analytics engineering",
+      "Machine learning",
+      "BI dashboards",
+      "Experimentation",
+      "Generative AI"
+    ],
+    resumeUrl: "AlliAjagbeResume.pdf",
+    logoIconUrl: "alliajagbe%20logo/alliajagbe%20logo2.png",
+    logoWordmarkUrl: "alliajagbe%20logo/alliajagbe%20logo.png",
     highlights: [
-      { value: "12+", label: "Placeholder analytics initiatives delivered" },
-      { value: "35%", label: "Sample efficiency or revenue improvement metric" },
-      { value: "5x", label: "Example reporting speed or workflow acceleration" }
+      { value: "0.97", label: "Macro-F1 on factuality classification in the Data4Good competition" },
+      { value: "$3.6M", label: "Projected annual fraud savings from challenge modeling work" },
+      { value: "$500", label: "Cost reduction per returned product through recommerce routing" }
     ]
   },
   skills: [
     {
-      category: "Analytics",
-      items: ["SQL", "Python", "A/B Testing", "Forecasting", "Experiment Design"]
-    },
-    {
-      category: "Visualization",
-      items: ["Power BI", "Tableau", "Looker Studio", "Executive Reporting"]
+      category: "Languages & Development",
+      items: ["Python", "SQL", "R", "Excel", "Stata", "Git", "Pandas", "NumPy"]
     },
     {
       category: "Machine Learning",
-      items: ["Classification", "Regression", "Feature Engineering", "Model Evaluation"]
+      items: [
+        "XGBoost",
+        "Transformers",
+        "Time Series",
+        "Decision Trees",
+        "Statistical Modeling",
+        "Scikit-learn"
+      ]
     },
     {
-      category: "Data Engineering",
-      items: ["ETL Pipelines", "Data Cleaning", "Automation", "Quality Monitoring"]
+      category: "Data Platforms & Cloud",
+      items: ["BigQuery", "Vertex AI", "Azure Synapse", "Microsoft Fabric", "AWS S3", "SageMaker"]
+    },
+    {
+      category: "Analytics & Visualization",
+      items: ["Tableau", "Power BI", "A/B Testing", "ETL Pipelines", "Data Storytelling", "Predictive Analytics"]
     }
   ],
   experience: [
     {
-      role: "Senior Data Analyst / Data Scientist",
-      company: "Company Name",
-      dates: "2023 - Present",
+      role: "Graduate Consultant",
+      company: "Castlery | Winston-Salem, NC",
+      dates: "Oct 2025 - Present",
       summary: [
-        "Replace with a strong summary of ownership areas, business stakeholders, and the scale of analytics or ML work delivered.",
-        "Add a concrete example of how you translated ambiguous business needs into dashboards, predictive models, or data-driven recommendations."
+        "Architected a data-driven recommerce decision tree that integrated cost, vendor performance, and operational constraints to replace manual vendor selection.",
+        "Reduced cost per returned product by $500 through optimized routing logic and more consistent operational decisioning.",
+        "Developed end-to-end modeling frameworks across two core operational stages, reducing customer friction points by 20%."
+      ]
+    },
+    {
+      role: "Data Science Tech Analyst",
+      company: "Benori Knowledge | Gurgaon, India",
+      dates: "Jan 2025 - May 2025",
+      summary: [
+        "Led an analytics engineering cycle to deploy an automated dataset-curation pipeline with stronger testing and documentation practices.",
+        "Saved 25 hours weekly and generated $20K per month through improved data operations and more reliable downstream workflows.",
+        "Enhanced feature engineering and ML pipeline logic, increasing model F1-score by 12% while reducing end-of-day processing by 18%."
       ]
     },
     {
       role: "Data Analyst",
-      company: "Previous Organization",
-      dates: "2021 - 2023",
+      company: "Founder Forward | New York, USA",
+      dates: "Jun 2024 - Aug 2024",
       summary: [
-        "Describe a representative mix of reporting, KPI design, experimentation, and process improvement work.",
-        "Mention one high-visibility initiative where your analysis influenced product, operations, finance, or growth decisions."
+        "Built a Python-based ETL workflow to clean, transform, and load 5K+ records, improving data reliability by 45%.",
+        "Developed four interactive dashboards in Tableau and Python, reducing time-to-insight by 40% for decision-makers.",
+        "Automated six database processes with JavaScript, improving system efficiency by 93%."
       ]
     },
     {
-      role: "Analytics Intern / Early Career Role",
-      company: "Earlier Experience",
-      dates: "2019 - 2021",
+      role: "Data Scientist",
+      company: "SBSF Agritech | Berlin, Germany (Remote)",
+      dates: "Jul 2023 - Aug 2023",
       summary: [
-        "Use this placeholder to show foundational experience in querying, cleaning data, and delivering stakeholder-friendly insights.",
-        "Include an example of learning fast, automating manual tasks, or building first-generation reporting."
+        "Ingested and preprocessed 22K+ rows to build a scalable data-enrichment pipeline for growth curve modeling.",
+        "Parameterized growth curves for 180 tree species across 40 agro-ecological zones, achieving a mean R-squared of 0.86.",
+        "Optimized ML models through agile sprint cycles, improving performance by 23% and increasing species-suitability reliability."
       ]
     }
   ],
   projects: [
     {
-      title: "Customer Retention Prediction",
+      title: "Data4Good Factuality Classification Pipeline",
       problem:
-        "Summarize the business challenge here, such as reducing churn, identifying at-risk users, or prioritizing retention outreach.",
+        "Competition teams needed a robust way to classify answer factuality at scale across ambiguous language and complex semantic patterns.",
       approach:
-        "Describe the workflow: data preparation, feature engineering, model selection, validation, and communication of findings.",
-      tools: ["Python", "scikit-learn", "SQL", "Tableau"],
+        "Led an end-to-end pipeline that evaluated 12 NLP and generative AI models using sentence embeddings, XGBoost, and LLM ensembles, while building supporting analytics infrastructure in Microsoft Fabric and Azure Synapse.",
+      tools: ["Python", "Sentence Embeddings", "XGBoost", "LLMs", "Azure Synapse", "Microsoft Fabric"],
       metrics: [
-        { value: "+18%", label: "Precision lift" },
-        { value: "-11%", label: "Churn reduction" }
+        { value: "0.97", label: "Macro-F1" },
+        { value: "120", label: "Teams competed against" }
       ]
     },
     {
-      title: "Executive KPI Dashboard",
+      title: "Fraud Detection Modeling Challenge",
       problem:
-        "Use this placeholder to explain a fragmented reporting environment, slow manual updates, or missing cross-functional visibility.",
+        "Detect fraud reliably in large-scale transactional data while maximizing meaningful captures and minimizing business exposure.",
       approach:
-        "Describe how you defined KPIs, standardized business logic, automated refreshes, and made the dashboard useful for decision-makers.",
-      tools: ["Power BI", "SQL", "Excel", "Data Modeling"],
+        "Engineered and compared 10 high-performance fraud-detection models, tuned for capture rate and financial impact rather than only headline accuracy.",
+      tools: ["Python", "Classification", "Feature Engineering", "Model Tuning"],
       metrics: [
-        { value: "8 hrs", label: "Saved weekly" },
-        { value: "1 source", label: "Unified reporting layer" }
+        { value: "84%", label: "Capture rate" },
+        { value: "$3.6M", label: "Projected annual savings" }
       ]
     },
     {
-      title: "Demand Forecasting Pipeline",
+      title: "PovertyPred HGCN Research Project",
       problem:
-        "Frame a forecasting challenge involving inventory, staffing, sales planning, or operational capacity.",
+        "Predict household poverty levels in Kenyan villages using large-scale imagery where socioeconomic labels are difficult to collect directly.",
       approach:
-        "Show how you evaluated historical patterns, seasonality, external drivers, and forecast monitoring.",
-      tools: ["Python", "Pandas", "Statsmodels", "Automation"],
+        "Built a hierarchical graph convolutional network using 90K street images to model contextual relationships and improve poverty-level prediction accuracy.",
+      tools: ["Deep Learning", "Graph Neural Networks", "Computer Vision", "Python"],
       metrics: [
-        { value: "-22%", label: "Forecast error" },
-        { value: "24 hrs", label: "Planning time saved" }
+        { value: "91%", label: "Accuracy" },
+        { value: "Top 7", label: "Publication-nominated submission" }
       ]
     },
     {
-      title: "Experimentation & Conversion Analysis",
+      title: "Recommerce Decision Tree Optimization",
       problem:
-        "Placeholder for a funnel optimization project focused on conversion, activation, or product engagement.",
+        "Returned-product routing relied on manual two-vendor selection, creating inconsistent decisions, unnecessary cost, and poor customer experience.",
       approach:
-        "Outline hypothesis framing, test design, segment analysis, and recommendation delivery.",
-      tools: ["SQL", "Python", "A/B Testing", "Visualization"],
+        "Designed a recommerce decision framework that combined cost logic, vendor performance, and operational constraints into a scalable decision model.",
+      tools: ["Decision Modeling", "Operations Analytics", "Python", "Business Rules"],
       metrics: [
-        { value: "+9.4%", label: "Conversion increase" },
-        { value: "3 teams", label: "Stakeholder groups aligned" }
+        { value: "$500", label: "Saved per returned product" },
+        { value: "-20%", label: "Customer friction points" }
       ]
     }
   ],
   education: [
     {
-      credential: "M.S. / Advanced Degree Placeholder",
-      institution: "University Name",
-      dates: "20XX - 20XX",
-      description: "Replace with your degree focus, thesis topic, capstone, or specialized coursework."
+      credential: "MS - Business Analytics",
+      institution: "Wake Forest School of Business | NC, USA",
+      dates: "May 2026",
+      description:
+        "GPA: 3.96/4.0. Honors and leadership include Beta Gamma Sigma, Wiseman Scholar, Graduate Student Ambassador, and Center for Analytics Scholar."
     },
     {
-      credential: "B.S. / Undergraduate Degree Placeholder",
-      institution: "University Name",
-      dates: "20XX - 20XX",
-      description: "Use this line for academic strengths, relevant coursework, honors, or interdisciplinary work."
-    },
-    {
-      credential: "Professional Certification",
-      institution: "Issuing Organization",
-      dates: "20XX",
-      description: "Add certification name, specialization, or practical focus area."
-    },
-    {
-      credential: "Additional Credential",
-      institution: "Platform or Institution",
-      dates: "20XX",
-      description: "Use for a course, bootcamp, or domain-specific certification."
+      credential: "BTech - Data Science, Economics & Business",
+      institution: "Plaksha University | Punjab, India",
+      dates: "May 2025",
+      description:
+        "GPA: 3.69/4.0. Full Ride Scholar, Student Ambassador, and Pioneer Student Election Committee Member."
     }
   ],
   achievements: [
     {
-      year: "20XX",
-      title: "Award or Recognition Placeholder",
-      description: "Add a notable recognition, competition result, speaker invitation, or internal performance milestone."
+      year: "2026",
+      title: "First Runner-Up, DataCamp Data4Good Analytics Competition",
+      description: "East Coast regional placement while competing against 120 teams in the 4th annual analytics competition."
     },
     {
-      year: "20XX",
-      title: "Leadership or Community Milestone",
-      description: "Use this for mentoring, leading a data initiative, publishing content, or contributing to a community."
+      year: "2025",
+      title: "Wiseman Full-Ride Scholarship Recipient",
+      description: "Awarded the $85,000 scholarship for the Wake Forest University MSBA program."
     },
     {
-      year: "20XX",
-      title: "Business Impact Milestone",
-      description: "Highlight a standout metric, a major rollout, or a program-level contribution."
+      year: "2024",
+      title: "Libra Internship Program Select",
+      description: "Selected from a global applicant pool with a 2.8% acceptance rate for a New York summer internship."
+    },
+    {
+      year: "2024",
+      title: "Top 1% in NPTEL Database Management Systems",
+      description: "Placed in the top 1% of 7,134 students in the course cohort."
+    },
+    {
+      year: "2022",
+      title: "Diana Award Recipient",
+      description: "Recognized in England for social impact through technology."
+    },
+    {
+      year: "2020",
+      title: "25Under25 Leadership Gamechangers in Africa",
+      description: "Selected at a 3% rate and recognized as the youngest recipient."
     }
   ],
   services: [
     {
-      title: "Data Analysis",
-      description: "Exploratory analysis, KPI design, segmentation, and insight generation that support faster decisions.",
-      deliverables: ["Stakeholder-ready reports", "Decision-focused analysis", "Metric frameworks"]
+      title: "Analytics Strategy & KPI Design",
+      description: "Translate business goals into measurable frameworks, operating metrics, and analysis plans that teams can use consistently.",
+      deliverables: ["KPI definitions", "Measurement plans", "Decision-focused reporting"]
     },
     {
       title: "Predictive Modeling",
-      description: "Build and evaluate predictive models for forecasting, classification, churn, and prioritization use cases.",
-      deliverables: ["Feature engineering", "Model evaluation", "Business interpretation"]
+      description: "Build and evaluate forecasting, classification, and prioritization models grounded in real operational constraints.",
+      deliverables: ["Model development", "Validation design", "Business interpretation"]
     },
     {
-      title: "Dashboards",
-      description: "Create elegant dashboards that clarify operational performance and reduce reporting friction.",
-      deliverables: ["Executive dashboards", "Self-serve reporting", "KPI monitoring"]
+      title: "Dashboards & BI Systems",
+      description: "Create stakeholder-ready dashboards that reduce reporting friction and make the right numbers easy to trust.",
+      deliverables: ["Power BI and Tableau dashboards", "Executive summaries", "Monitoring views"]
     },
     {
-      title: "Consulting",
-      description: "Partner with teams to shape data strategy, define success metrics, and improve decision workflows.",
-      deliverables: ["Analytics audits", "Roadmaps", "Measurement plans"]
+      title: "Analytics Engineering & ETL",
+      description: "Design reliable data workflows for ingestion, cleaning, transformation, and quality control across analytics pipelines.",
+      deliverables: ["ETL workflows", "Documentation", "Data quality checkpoints"]
     },
     {
-      title: "AI / ML",
-      description: "Support practical machine learning use cases with careful framing, experimentation, and deployment guidance.",
-      deliverables: ["Use-case scoping", "Model prototypes", "Evaluation strategy"]
+      title: "AI / ML Prototyping",
+      description: "Prototype practical generative AI and ML applications with clear evaluation criteria and business-use framing.",
+      deliverables: ["LLM workflows", "Model prototypes", "Evaluation frameworks"]
     }
   ],
-  recommendations: [
-    {
-      quote:
-        "Add a short recommendation here from a colleague, mentor, or supervisor that speaks to rigor, communication, and business impact.",
-      person: "Colleague Name",
-      role: "Role, Company"
-    },
-    {
-      quote:
-        "Use this placeholder for a testimonial about problem-solving, ownership, stakeholder collaboration, or analytical depth.",
-      person: "Mentor or Manager",
-      role: "Role, Organization"
-    },
-    {
-      quote:
-        "Replace this text with a recommendation that highlights calm execution, clarity under ambiguity, or end-to-end delivery.",
-      person: "Supervisor Name",
-      role: "Role, Company"
-    }
-  ],
+  recommendations: [],
   socials: [
-    { platform: "Email", label: "your.email@example.com", url: "mailto:your.email@example.com" },
-    { platform: "LinkedIn", label: "linkedin.com/in/your-profile", url: "https://www.linkedin.com/" },
-    { platform: "GitHub", label: "github.com/your-handle", url: "https://github.com/" },
-    { platform: "Portfolio", label: "Schedule a conversation", url: "#" }
+    { platform: "Email", label: "ajagao25@wfu.edu", url: "mailto:ajagao25@wfu.edu" },
+    { platform: "Phone", label: "+1 743-240-7497", url: "tel:+17432407497" },
+    { platform: "LinkedIn", label: "linkedin.com/in/alliajagbe", url: "https://linkedin.com/in/alliajagbe" },
+    { platform: "GitHub", label: "github.com/alliajagbe", url: "https://github.com/alliajagbe" },
+    { platform: "Resume", label: "Open PDF resume", url: "AlliAjagbeResume.pdf" }
   ]
 };
 
@@ -234,40 +254,54 @@ function renderHero(profile) {
   const heroContent = document.querySelector("#hero-content");
   const heroHighlights = document.querySelector("#hero-highlights");
   const brandName = document.querySelector("#brand-name");
+  const brandTag = document.querySelector("#brand-tag");
   const footerName = document.querySelector("#footer-name");
   const footerYearName = document.querySelector("#footer-year-name");
   const footerMeta = document.querySelector("#footer-meta");
   const footerNote = document.querySelector("#footer-note");
   const footerResumeLink = document.querySelector("#footer-resume-link");
+  const brandLogo = document.querySelector("#brand-logo");
+  const footerWordmark = document.querySelector("#footer-wordmark");
 
+  document.title = `${profile.name} | ${profile.title}`;
   brandName.textContent = profile.name;
+  brandTag.textContent = profile.brandTag;
   footerName.textContent = profile.name;
   footerYearName.textContent = profile.name;
-  footerMeta.textContent = `${profile.title} based in ${profile.location}.`;
+  footerMeta.textContent = "Analytics engineering, machine learning, and decision-focused data products.";
   footerNote.textContent = profile.bio;
   footerResumeLink.href = profile.resumeUrl;
+  footerResumeLink.textContent = "View / download resume";
+  brandLogo.src = profile.logoIconUrl;
+  footerWordmark.src = profile.logoWordmarkUrl;
 
   heroContent.innerHTML = `
-    <p class="section-label">Data Portfolio</p>
+    <p class="section-label">Portfolio</p>
     <h1>${profile.name}</h1>
     <p class="hero-role">${profile.title}</p>
     <p class="hero-tagline">${profile.tagline}</p>
     <p class="hero-summary">${profile.heroSummary}</p>
     <div class="hero-actions">
       <a class="button button--primary" href="#projects">View projects</a>
-      <a class="button button--secondary" href="${profile.resumeUrl}" download>View resume</a>
+      <a class="button button--secondary" href="${profile.resumeUrl}" target="_blank" rel="noreferrer">View resume</a>
     </div>
     <div class="hero-meta">
       <span>${profile.location}</span>
       <span>${profile.email}</span>
+      <span>${profile.phone}</span>
       <span>${profile.availability}</span>
     </div>
   `;
 
   heroHighlights.innerHTML = `
-    <div class="panel-heading">
-      <p class="section-label">Impact Snapshot</p>
-      <h3>Room for your strongest numbers</h3>
+    <div class="panel-brand">
+      <div class="panel-logo-shell">
+        <img class="panel-logo" src="${profile.logoIconUrl}" alt="${profile.name} logo" />
+      </div>
+      <div>
+        <p class="section-label">Impact Snapshot</p>
+        <h3>Recent outcomes across analytics and ML work</h3>
+      </div>
     </div>
     ${profile.highlights
       .map(
@@ -280,7 +314,7 @@ function renderHero(profile) {
       )
       .join("")}
     <p class="panel-note">
-      Replace these placeholders with 2-3 metrics that immediately communicate your analytical impact.
+      Selected results from consulting, competition, and product-focused analytics work.
     </p>
   `;
 }
@@ -296,10 +330,13 @@ function renderAbout(profile, skills, experience) {
       <h3>Professional summary</h3>
     </div>
     <p class="about-text">${profile.bio}</p>
+    <div class="skill-tags">
+      ${profile.focusAreas.map((item) => `<span class="tag">${item}</span>`).join("")}
+    </div>
     <div class="hero-meta">
-      <span><strong>Focus:</strong> Analytics, machine learning, and business intelligence</span>
       <span><strong>Location:</strong> ${profile.location}</span>
       <span><strong>Email:</strong> <a href="mailto:${profile.email}">${profile.email}</a></span>
+      <span><strong>Phone:</strong> <a href="tel:+17432407497">${profile.phone}</a></span>
     </div>
   `;
 
@@ -441,6 +478,19 @@ function renderServices(services) {
 function renderRecommendations(recommendations) {
   const recommendationsGrid = document.querySelector("#recommendations-grid");
 
+  if (!recommendations.length) {
+    recommendationsGrid.innerHTML = `
+      <article class="recommendation-card recommendation-card--empty" data-animate>
+        <p class="section-label">Ready for future updates</p>
+        <h3>Recommendations can be added when you have formal testimonials to share.</h3>
+        <p class="recommendation-quote">
+          This version of the portfolio is populated from your resume and logo assets, so no collaborator quotes have been invented.
+        </p>
+      </article>
+    `;
+    return;
+  }
+
   recommendationsGrid.innerHTML = recommendations
     .map(
       (item, index) => `
@@ -466,13 +516,13 @@ function renderContact(profile, socials) {
 
   contactContent.innerHTML = `
     <p class="contact-label">Contact</p>
-    <h2>Let's turn data into decisions.</h2>
+    <h2>Let's build something decision-ready.</h2>
     <p class="contact-description">
-      Use this section to invite hiring managers, collaborators, or clients to reach out. In this v1
-      version, contact stays intentionally simple with direct links and social profiles.
+      I am interested in opportunities across data science, analytics, business intelligence, and applied AI. The fastest way to reach me is by email or LinkedIn, and my resume is linked below.
     </p>
     <div class="hero-meta">
       <span>${profile.location}</span>
+      <span>${profile.phone}</span>
       <span>${profile.availability}</span>
     </div>
   `;
@@ -489,10 +539,10 @@ function renderContact(profile, socials) {
     .join("");
 
   secondaryLinks.innerHTML = `
-    <a href="#education-panel">Education</a>
+    <a href="#education">Education</a>
     <a href="#achievements-panel">Achievements</a>
     <a href="#recommendations">Recommendations</a>
-    <a href="${profile.resumeUrl}" download>Resume</a>
+    <a href="${profile.resumeUrl}" target="_blank" rel="noreferrer">Resume</a>
   `;
 
   footerSocials.innerHTML = socials
