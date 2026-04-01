@@ -1,0 +1,18 @@
+Placeholder Resume
+==================
+
+Replace this file with your actual resume asset.
+
+Suggested updates:
+- Rename this file to match your preferred resume filename.
+- Export a PDF version of your resume into this project folder.
+- Update `profile.resumeUrl` in `script.js` if the file path changes.
+
+Recommended resume sections:
+- Contact Information
+- Professional Summary
+- Skills & Tools
+- Experience
+- Selected Projects
+- Education
+- Certifications / Achievements
