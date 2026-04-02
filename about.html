@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Alli Ajagbe's portfolio - data science, analytics engineering, machine learning, and AI-driven decision systems."
+      content="About Alli Ajagbe - experience, skills, education, and achievements in data science, analytics, and AI."
     />
     <meta name="theme-color" content="#F4EFC9" />
-    <title>Alli Ajagbe | Data Scientist, Analytics Engineer & AI Builder</title>
+    <title>About | Alli Ajagbe</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -29,7 +29,7 @@
     </script>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-page="home">
+  <body data-page="about">
     <div class="site-shell">
       <header class="site-header">
         <div class="container header-inner">
@@ -58,48 +58,57 @@
       </header>
 
       <main>
-        <section class="hero section">
-          <div class="container hero-layout">
-            <div class="hero-copy" id="home-hero" data-animate></div>
-            <aside class="hero-panel" id="home-impact" data-animate></aside>
+        <section class="page-hero section">
+          <div class="container page-hero__content" data-animate>
+            <p class="section-label">About</p>
+            <h1>Background, skills, and the experience behind the work.</h1>
+            <p class="section-description">
+              A calmer, more focused view of experience, technical range, education, and milestones.
+            </p>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="container two-up-grid" id="about-overview"></div>
+        </section>
+
+        <section class="section section-tight">
+          <div class="container">
+            <div class="section-heading" data-animate>
+              <p class="section-label">Toolkit</p>
+              <h2>Core skills</h2>
+            </div>
+            <div class="card-grid card-grid--four" id="about-skills-grid"></div>
           </div>
         </section>
 
         <section class="section section-tight">
           <div class="container">
             <div class="section-heading" data-animate>
-              <p class="section-label">Focus</p>
-              <h2>Built to be easier to scan.</h2>
-              <p class="section-description">
-                A lighter homepage with the details moved into dedicated pages.
-              </p>
+              <p class="section-label">Experience</p>
+              <h2>Professional timeline</h2>
             </div>
-            <div class="card-grid card-grid--three" id="home-focus"></div>
+            <div class="timeline-wrap" id="about-timeline"></div>
           </div>
         </section>
 
         <section class="section section-tight">
-          <div class="container">
-            <div class="section-heading" data-animate>
-              <p class="section-label">Featured work</p>
-              <h2>Selected projects</h2>
+          <div class="container split-layout">
+            <div>
+              <div class="section-heading" data-animate>
+                <p class="section-label">Education</p>
+                <h2>Academic foundation</h2>
+              </div>
+              <div class="card-grid" id="about-education-grid"></div>
             </div>
-            <div class="card-grid card-grid--three" id="home-project-preview"></div>
-          </div>
-        </section>
-
-        <section class="section section-tight">
-          <div class="container">
-            <div class="section-heading" data-animate>
-              <p class="section-label">Snapshot</p>
-              <h2>Current work and academic context</h2>
+            <div>
+              <div class="section-heading" data-animate>
+                <p class="section-label">Achievements</p>
+                <h2>Recognition</h2>
+              </div>
+              <div class="achievement-stack" id="about-achievements-list"></div>
             </div>
-            <div class="card-grid card-grid--two" id="home-snapshot"></div>
           </div>
-        </section>
-
-        <section class="section section-tight">
-          <div class="container cta-band" id="home-cta" data-animate></div>
         </section>
       </main>
 
