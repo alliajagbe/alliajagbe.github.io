@@ -306,6 +306,15 @@ h3 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+#services-fit {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#services-fit .detail-card {
+  width: min(100%, 58rem);
+  margin: 0 auto;
+}
+
 .split-layout {
   align-items: start;
 }
