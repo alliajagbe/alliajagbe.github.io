@@ -20,7 +20,8 @@ window.portfolioContent = {
       "Experimentation",
       "Generative AI"
     ],
-    quickFacts: ["MSBA Candidate at Wake Forest", "Beta Gamma Sigma", "Full-Ride Scholar"],
+    quickFacts: ["MSBA Candidate", "AI systems", "Social-impact tech", "Data storytelling"],
+    interests: ["AI systems", "Social-impact technology", "Data storytelling", "Decision-focused analytics"],
     resumeUrl: "AlliAjagbeResume.pdf",
     logoIconUrl: "alliajagbe%20logo/alliajagbe%20logo2.png",
     logoWordmarkUrl: "alliajagbe%20logo/alliajagbe%20logo.png",
@@ -45,6 +46,32 @@ window.portfolioContent = {
       icon: "compass",
       title: "AI Workflows",
       copy: "LLM-assisted and ML-powered systems framed around clarity, evaluation, and usefulness."
+    }
+  ],
+  exploreModes: [
+    {
+      id: "build",
+      label: "Build",
+      icon: "workflow",
+      title: "Build reliable analytical systems",
+      copy: "I enjoy creating the structure around analytics: pipelines, definitions, reporting logic, and workflows that teams can trust.",
+      accents: ["ETL", "KPI design", "Quality checks"]
+    },
+    {
+      id: "model",
+      label: "Model",
+      icon: "brain",
+      title: "Model for practical outcomes",
+      copy: "From fraud detection to forecasting and NLP evaluation, I like work where technical rigor clearly changes a business decision.",
+      accents: ["ML", "Forecasting", "NLP"]
+    },
+    {
+      id: "story",
+      label: "Communicate",
+      icon: "compass",
+      title: "Translate analysis into action",
+      copy: "The part I care about most is making insights understandable, usable, and persuasive for the people making the call.",
+      accents: ["Storytelling", "Dashboards", "Decision support"]
     }
   ],
   skills: [
@@ -79,7 +106,8 @@ window.portfolioContent = {
   experience: [
     {
       role: "Graduate Consultant",
-      company: "Castlery | Winston-Salem, NC",
+      company: "Castlery",
+      location: "Winston-Salem, NC",
       dates: "Oct 2025 - Present",
       summary: [
         "Architected a data-driven recommerce decision tree integrating cost, vendor performance, and operating constraints.",
@@ -89,7 +117,8 @@ window.portfolioContent = {
     },
     {
       role: "Data Science Tech Analyst",
-      company: "Benori Knowledge | Gurgaon, India",
+      company: "Benori Knowledge",
+      location: "Gurgaon, India",
       dates: "Jan 2025 - May 2025",
       summary: [
         "Led an automated dataset-curation pipeline with stronger testing and documentation practices.",
@@ -99,7 +128,8 @@ window.portfolioContent = {
     },
     {
       role: "Data Analyst",
-      company: "Founder Forward | New York, USA",
+      company: "Founder Forward",
+      location: "New York, USA",
       dates: "Jun 2024 - Aug 2024",
       summary: [
         "Built a Python ETL workflow for 5K+ records, improving data reliability by 45%.",
@@ -109,7 +139,8 @@ window.portfolioContent = {
     },
     {
       role: "Data Scientist",
-      company: "SBSF Agritech | Berlin, Germany",
+      company: "SBSF Agritech",
+      location: "Berlin, Germany",
       dates: "Jul 2023 - Aug 2023",
       summary: [
         "Built a scalable enrichment pipeline for 22K+ rows supporting growth curve modeling.",
@@ -176,52 +207,74 @@ window.portfolioContent = {
       ]
     }
   ],
-  education: [
+  projectMethods: [
     {
-      credential: "MS - Business Analytics",
-      institution: "Wake Forest School of Business | NC, USA",
-      dates: "May 2026",
-      description:
-        "GPA: 3.96/4.0. Beta Gamma Sigma, Wiseman Scholar, Graduate Student Ambassador, and Center for Analytics Scholar."
+      icon: "code",
+      title: "Python & SQL",
+      copy: "Core tools for modeling, ETL, analysis, and workflow automation."
     },
     {
-      credential: "BTech - Data Science, Economics & Business",
-      institution: "Plaksha University | Punjab, India",
-      dates: "May 2025",
-      description:
-        "GPA: 3.69/4.0. Full Ride Scholar, Student Ambassador, and Pioneer Student Election Committee Member."
+      icon: "chart",
+      title: "BI & Visualization",
+      copy: "Power BI, Tableau, and reporting design built for decision-makers."
+    },
+    {
+      icon: "server",
+      title: "Cloud Platforms",
+      copy: "BigQuery, Vertex AI, Azure Synapse, Microsoft Fabric, and AWS tools."
+    },
+    {
+      icon: "brain",
+      title: "ML & NLP",
+      copy: "Transformers, XGBoost, statistical modeling, and evaluation pipelines."
+    },
+    {
+      icon: "target",
+      title: "Experimentation",
+      copy: "Hypothesis testing, validation design, and practical analytics framing."
+    },
+    {
+      icon: "compass",
+      title: "Data Storytelling",
+      copy: "Communicating technical work clearly for stakeholder action and alignment."
+    }
+  ],
+  education: [
+    {
+      credential: "MS in Business Analytics",
+      institution: "Wake Forest School of Business",
+      location: "North Carolina, USA"
+    },
+    {
+      credential: "BTech in Data Science, Economics & Business",
+      institution: "Plaksha University",
+      location: "Punjab, India"
     }
   ],
   achievements: [
     {
       year: "2026",
-      title: "First Runner-Up, DataCamp Data4Good Analytics Competition",
-      description: "East Coast regional placement while competing against 120 teams."
+      title: "DataCamp Data4Good Competition, First Runner-Up"
     },
     {
       year: "2025",
-      title: "Wiseman Full-Ride Scholarship Recipient",
-      description: "Awarded the $85,000 scholarship for the Wake Forest University MSBA program."
+      title: "Wiseman Full-Ride Scholarship Recipient"
     },
     {
       year: "2024",
-      title: "Libra Internship Program Select",
-      description: "Selected from a global applicant pool with a 2.8% acceptance rate."
+      title: "Libra Internship Program Select"
     },
     {
       year: "2024",
-      title: "Top 1% in NPTEL Database Management Systems",
-      description: "Placed in the top 1% of 7,134 students in the course cohort."
+      title: "Top 1% in NPTEL Database Management Systems"
     },
     {
       year: "2022",
-      title: "Diana Award Recipient",
-      description: "Recognized in England for social impact through technology."
+      title: "Diana Award Recipient"
     },
     {
       year: "2020",
-      title: "25Under25 Leadership Gamechangers in Africa",
-      description: "Selected at a 3% rate and recognized as the youngest recipient."
+      title: "25Under25 Leadership Gamechangers in Africa"
     }
   ],
   services: [

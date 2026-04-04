@@ -129,7 +129,7 @@ function setSharedBranding() {
     footerSecondaryLinks.innerHTML = `
       <a href="about.html">About</a>
       <a href="projects.html">Projects</a>
-      <a href="services.html">Services</a>
+      <a href="services.html">Areas of Expertise</a>
       <a href="contact.html">Contact</a>
     `;
   }
@@ -192,9 +192,10 @@ function renderHome() {
     return;
   }
 
-  const { profile, focusCards, projects, experience, education } = portfolioContent;
+  const { profile, focusCards, projects, experience, education, exploreModes } = portfolioContent;
   const impact = document.querySelector("#home-impact");
   const focus = document.querySelector("#home-focus");
+  const lens = document.querySelector("#home-lens");
   const projectPreview = document.querySelector("#home-project-preview");
   const snapshot = document.querySelector("#home-snapshot");
   const cta = document.querySelector("#home-cta");
@@ -202,9 +203,10 @@ function renderHome() {
   document.title = `${profile.name} | ${profile.title}`;
 
   hero.innerHTML = `
-    <p class="section-label">Portfolio</p>
-    <h1>${profile.name}</h1>
-    <p class="hero-role">${profile.title}</p>
+    <div class="hero-wordmark-shell">
+      <img class="hero-wordmark" src="${profile.logoWordmarkUrl}" alt="${profile.name} wordmark" />
+    </div>
+    <h1>${profile.title}</h1>
     <p class="hero-tagline">${profile.tagline}</p>
     <p class="hero-summary">${profile.heroSummary}</p>
     <div class="hero-signals">
@@ -255,6 +257,47 @@ function renderHome() {
     )
     .join("");
 
+  if (lens) {
+    const defaultLens = exploreModes[0];
+    lens.innerHTML = `
+      <article class="lens-card" data-animate>
+        <div class="card-topline">
+          <span class="inline-icon">${icon("spark")}</span>
+          <p class="section-label">Explore by lens</p>
+        </div>
+        <div class="lens-buttons" role="tablist" aria-label="Explore portfolio by lens">
+          ${exploreModes
+            .map(
+              (mode, index) => `
+                <button
+                  class="lens-button${index === 0 ? " is-active" : ""}"
+                  type="button"
+                  data-lens="${mode.id}"
+                  role="tab"
+                  aria-selected="${index === 0 ? "true" : "false"}"
+                >
+                  ${mode.label}
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+        <div class="lens-panel" id="lens-panel">
+          <div class="feature-icon">${icon(defaultLens.icon)}</div>
+          <div class="lens-panel__content">
+            <h3>${defaultLens.title}</h3>
+            <p>${defaultLens.copy}</p>
+            <div class="chip-list">
+              ${defaultLens.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+
+    setupLensSwitcher(exploreModes);
+  }
+
   projectPreview.innerHTML = `
     ${projects
       .slice(0, 2)
@@ -298,8 +341,8 @@ function renderHome() {
         <p class="section-label">Current work</p>
       </div>
       <h3>${experience[0].role}</h3>
-      <p class="snapshot-meta">${experience[0].company}</p>
-      <p class="snapshot-copy">${experience[0].summary[0]}</p>
+      <p class="snapshot-meta">${experience[0].company} / ${experience[0].location}</p>
+      <p class="snapshot-copy">${experience[0].dates}</p>
       <a class="text-link" href="about.html">View experience</a>
     </article>
     <article class="snapshot-card" data-animate style="--delay: 0.08s">
@@ -309,7 +352,7 @@ function renderHome() {
       </div>
       <h3>${education[0].credential}</h3>
       <p class="snapshot-meta">${education[0].institution}</p>
-      <p class="snapshot-copy">${education[0].description}</p>
+      <p class="snapshot-copy">${education[0].location}</p>
       <a class="text-link" href="about.html">See background</a>
     </article>
   `;
@@ -317,16 +360,51 @@ function renderHome() {
   cta.innerHTML = `
     <div>
       <p class="section-label">Connect</p>
-      <h2>Minimal, direct, and easy to navigate.</h2>
-      <p class="section-description">
-        The site is now split into focused pages so you can move quickly between background, work, services, and contact.
-      </p>
+      <h2>Open to roles, collaborations, and project conversations.</h2>
     </div>
     <div class="cta-actions">
       <a class="button button--primary" href="contact.html">Get in touch</a>
-      <a class="button button--secondary" href="services.html">View services</a>
+      <a class="button button--secondary" href="services.html">View expertise</a>
     </div>
   `;
+}
+
+function setupLensSwitcher(modes) {
+  const buttons = document.querySelectorAll(".lens-button");
+  const panel = document.querySelector("#lens-panel");
+  if (!buttons.length || !panel) {
+    return;
+  }
+
+  const renderMode = (mode) => {
+    panel.innerHTML = `
+      <div class="feature-icon">${icon(mode.icon)}</div>
+      <div class="lens-panel__content">
+        <h3>${mode.title}</h3>
+        <p>${mode.copy}</p>
+        <div class="chip-list">
+          ${mode.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
+        </div>
+      </div>
+    `;
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextMode = modes.find((mode) => mode.id === button.dataset.lens);
+      if (!nextMode) {
+        return;
+      }
+
+      buttons.forEach((currentButton) => {
+        const isActive = currentButton === button;
+        currentButton.classList.toggle("is-active", isActive);
+        currentButton.setAttribute("aria-selected", String(isActive));
+      });
+
+      renderMode(nextMode);
+    });
+  });
 }
 
 function renderAbout() {
@@ -360,9 +438,9 @@ function renderAbout() {
       </div>
       <div class="facts-list">
         <div class="fact-item">${renderIconBadge("graduation", "MSBA Candidate at Wake Forest")}</div>
-        <div class="fact-item">${renderIconBadge("award", "Beta Gamma Sigma and Wiseman Scholar")}</div>
-        <div class="fact-item">${renderIconBadge("briefcase", profile.availability)}</div>
-        <div class="fact-item">${renderIconBadge("mail", profile.email)}</div>
+        <div class="fact-item">${renderIconBadge("briefcase", "Based in Winston-Salem, NC")}</div>
+        <div class="fact-item">${renderIconBadge("spark", `Interests: ${profile.interests.slice(0, 2).join(" / ")}`)}</div>
+        <div class="fact-item">${renderIconBadge("compass", `Interests: ${profile.interests.slice(2).join(" / ")}`)}</div>
       </div>
     </article>
   `;
@@ -389,12 +467,10 @@ function renderAbout() {
             <div>
               <h3>${item.role}</h3>
               <p class="timeline-company">${item.company}</p>
+              <p class="timeline-location">${item.location}</p>
             </div>
             <p class="timeline-dates">${item.dates}</p>
           </div>
-          <ul class="timeline-points">
-            ${item.summary.map((point) => `<li>${point}</li>`).join("")}
-          </ul>
         </article>
       `
     )
@@ -406,11 +482,10 @@ function renderAbout() {
         <article class="snapshot-card" data-animate style="--delay: ${index * 0.06}s">
           <div class="card-topline">
             <span class="inline-icon">${icon("graduation")}</span>
-            <p class="section-label">${item.dates}</p>
           </div>
           <h3>${item.credential}</h3>
           <p class="snapshot-meta">${item.institution}</p>
-          <p class="snapshot-copy">${item.description}</p>
+          <p class="snapshot-copy">${item.location}</p>
         </article>
       `
     )
@@ -419,12 +494,9 @@ function renderAbout() {
   achievementsList.innerHTML = achievements
     .map(
       (item, index) => `
-        <article class="achievement-item" data-animate style="--delay: ${index * 0.04}s">
-          <div>
-            <h3>${item.title}</h3>
-            <p class="achievement-copy">${item.description}</p>
-          </div>
+        <article class="achievement-card" data-animate style="--delay: ${index * 0.04}s">
           <span class="achievement-year">${item.year}</span>
+          <h3>${item.title}</h3>
         </article>
       `
     )
@@ -437,7 +509,7 @@ function renderProjects() {
     return;
   }
 
-  const { profile, projects, skills } = portfolioContent;
+  const { profile, projects, projectMethods } = portfolioContent;
   const projectsGrid = document.querySelector("#projects-grid");
   const toolkitGrid = document.querySelector("#projects-toolkit");
 
@@ -483,14 +555,13 @@ function renderProjects() {
     )
     .join("");
 
-  toolkitGrid.innerHTML = skills
-    .slice(0, 3)
+  toolkitGrid.innerHTML = projectMethods
     .map(
       (group, index) => `
         <article class="feature-card feature-card--skill" data-animate style="--delay: ${index * 0.06}s">
           <div class="feature-icon">${icon(group.icon)}</div>
-          <h3>${group.category}</h3>
-          <p>${group.items.slice(0, 4).join(" / ")}</p>
+          <h3>${group.title}</h3>
+          <p>${group.copy}</p>
         </article>
       `
     )
@@ -525,7 +596,8 @@ function renderServices() {
   processGrid.innerHTML = process
     .map(
       (step, index) => `
-        <article class="feature-card feature-card--process" data-animate style="--delay: ${index * 0.06}s">
+        <article class="flow-step" data-animate style="--delay: ${index * 0.06}s">
+          <div class="flow-step__count">0${index + 1}</div>
           <div class="feature-icon">${icon(step.icon)}</div>
           <h3>${step.title}</h3>
           <p>${step.copy}</p>
@@ -581,7 +653,7 @@ function renderContact() {
         <span class="inline-icon">${icon("mail")}</span>
         <p class="section-label">Let's connect</p>
       </div>
-      <h2>Minimal and direct by design.</h2>
+      <h2>Reach out.</h2>
       <p class="detail-copy">
         I am interested in opportunities across data science, analytics, business intelligence, and applied AI. The fastest way to reach me is by email or LinkedIn.
       </p>

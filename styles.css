@@ -147,11 +147,11 @@ h3 {
 }
 
 .brand-mark {
-  width: 3rem;
-  height: 3rem;
+  width: 3.45rem;
+  height: 3.45rem;
   display: inline-grid;
   place-items: center;
-  padding: 0.5rem;
+  padding: 0.42rem;
   border-radius: 1rem;
   background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
   border: 1px solid rgba(0, 59, 75, 0.1);
@@ -320,7 +320,9 @@ h3 {
 .cta-band,
 .contact-method,
 .timeline-item,
-.achievement-item {
+.achievement-card,
+.flow-step,
+.lens-card {
   position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -342,6 +344,23 @@ h3 {
   gap: 1rem;
   min-height: 31rem;
   align-content: center;
+}
+
+.hero-wordmark-shell {
+  width: fit-content;
+  max-width: min(100%, 20rem);
+  padding: 0.85rem 1rem;
+  border-radius: 1.35rem;
+  background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
+  border: 1px solid rgba(0, 59, 75, 0.1);
+  box-shadow: var(--shadow);
+}
+
+.hero-wordmark {
+  width: auto;
+  max-width: 100%;
+  height: 2.6rem;
+  object-fit: contain;
 }
 
 .hero-panel {
@@ -457,9 +476,9 @@ h3 {
 }
 
 .panel-logo-shell {
-  width: 4.5rem;
-  height: 4.5rem;
-  padding: 0.82rem;
+  width: 5.2rem;
+  height: 5.2rem;
+  padding: 0.68rem;
   border-radius: 1.45rem;
   background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
   border: 1px solid rgba(0, 59, 75, 0.1);
@@ -478,7 +497,10 @@ h3 {
 .project-card,
 .snapshot-card,
 .timeline-item,
-.contact-method {
+.contact-method,
+.achievement-card,
+.flow-step,
+.lens-card {
   padding: 1.3rem;
 }
 
@@ -514,6 +536,53 @@ h3 {
 
 .card-grid--four {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lens-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.lens-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.lens-button {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
+  color: var(--text-soft);
+  border-radius: 999px;
+  padding: 0.58rem 0.9rem;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.lens-button:hover,
+.lens-button:focus-visible,
+.lens-button.is-active {
+  color: var(--heading);
+  background: var(--surface-strong);
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+  outline: none;
+}
+
+.lens-panel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+.lens-panel__content {
+  display: grid;
+  gap: 0.7rem;
 }
 
 .metric-grid {
@@ -609,6 +678,11 @@ h3 {
   font-weight: 700;
 }
 
+.timeline-location {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
 .timeline-wrap,
 .achievement-stack {
   display: grid;
@@ -618,6 +692,7 @@ h3 {
 .timeline-item {
   padding-left: 1.2rem;
   border-left: 1px solid var(--border);
+  min-height: 6.8rem;
 }
 
 .timeline-item::before {
@@ -635,21 +710,18 @@ h3 {
   align-items: start;
 }
 
-.timeline-points {
-  margin: 0;
-  padding-left: 1.1rem;
-  color: var(--text-soft);
-}
-
-.achievement-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: start;
-}
-
 .achievement-year {
   white-space: nowrap;
+}
+
+.achievement-stack {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.achievement-card {
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
 }
 
 .facts-list {
@@ -673,6 +745,36 @@ h3 {
   background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 84%, transparent), color-mix(in srgb, var(--accent) 8%, var(--surface)));
 }
 
+.flow-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.flow-step {
+  position: relative;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.flow-step__count {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.flow-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 2.2rem;
+  right: -0.7rem;
+  width: 1.4rem;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
 .contact-method {
   display: flex;
   align-items: center;
@@ -687,7 +789,7 @@ h3 {
 .footer-wordmark-shell {
   width: fit-content;
   max-width: 100%;
-  padding: 0.95rem 1.05rem;
+  padding: 1.08rem 1.18rem;
   border-radius: 1.2rem;
   background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
   border: 1px solid rgba(0, 59, 75, 0.1);
@@ -697,7 +799,7 @@ h3 {
 .footer-wordmark {
   width: auto;
   max-width: min(100%, 14rem);
-  height: 2.6rem;
+  height: 3rem;
   object-fit: contain;
 }
 
@@ -761,7 +863,9 @@ h3 {
 .metric-card:hover,
 .contact-method:hover,
 .timeline-item:hover,
-.achievement-item:hover {
+.achievement-card:hover,
+.flow-step:hover,
+.lens-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-hover);
   border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
@@ -772,7 +876,8 @@ h3 {
   .two-up-grid,
   .split-layout,
   .footer-grid,
-  .card-grid--three {
+  .card-grid--three,
+  .flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -819,7 +924,9 @@ h3 {
   .card-grid--three,
   .card-grid--four,
   .metric-grid,
-  .footer-grid {
+  .footer-grid,
+  .flow-grid,
+  .achievement-stack {
     grid-template-columns: 1fr;
   }
 
@@ -847,9 +954,13 @@ h3 {
     align-items: flex-start;
   }
 
-  .achievement-item,
+  .achievement-card,
   .timeline-head {
     flex-direction: column;
+  }
+
+  .lens-panel {
+    grid-template-columns: 1fr;
   }
 
   .nav-link,
