@@ -22,8 +22,8 @@ window.portfolioContent = {
     quickFacts: ["Open to relocation", "Social-impact technology", "Data storytelling", "Decision-focused analytics"],
     interests: ["Social-impact technology", "Data storytelling", "Decision-focused analytics", "Applied AI"],
     resumeUrl: "/AlliAjagbeResume.pdf",
-    logoIconUrl: "/alliajagbe%20logo/alliajagbe%20logo2.png",
-    logoWordmarkUrl: "/alliajagbe%20logo/alliajagbe%20logo.png",
+    logoIconUrl: "/alliajagbe%20logo/1.png?v=20260404",
+    logoWordmarkUrl: "/alliajagbe%20logo/3.png?v=20260404",
     highlights: [
       { value: "$500", label: "Saved per returned product in recommerce routing" },
       { value: "93%", label: "Efficiency lift across Founder Forward database workflows" },
