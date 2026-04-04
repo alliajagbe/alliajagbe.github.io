@@ -2,7 +2,7 @@ window.portfolioContent = {
   profile: {
     name: "Alli Ajagbe",
     brandTag: "Data science, analytics, and AI",
-    title: "Data Scientist, Analytics Engineer & AI Builder",
+    title: "Data Scientist, Analytics & AI Developer",
     tagline:
       "I build analytics systems, predictive models, and AI workflows that turn operational complexity into measurable business outcomes.",
     bio:
@@ -22,8 +22,8 @@ window.portfolioContent = {
     quickFacts: ["Open to relocation", "Social-impact technology", "Data storytelling", "Decision-focused analytics"],
     interests: ["Social-impact technology", "Data storytelling", "Decision-focused analytics", "Applied AI"],
     resumeUrl: "/AlliAjagbeResume.pdf",
-    logoIconUrl: "/alliajagbe%20logo/1.png?v=20260404",
-    logoWordmarkUrl: "/alliajagbe%20logo/3.png?v=20260404",
+    logoIconUrl: "/assets/logo-icon.png?v=20260404b",
+    logoWordmarkUrl: "/assets/logo-wordmark.png?v=20260404b",
     highlights: [
       { value: "$500", label: "Saved per returned product in recommerce routing" },
       { value: "93%", label: "Efficiency lift across Founder Forward database workflows" },

@@ -355,6 +355,10 @@ h3 {
   align-content: center;
 }
 
+.hero-copy h1 {
+  font-size: clamp(2.3rem, 1.95rem + 1.8vw, 3.75rem);
+}
+
 .hero-wordmark-shell {
   width: fit-content;
   max-width: min(100%, 22rem);
