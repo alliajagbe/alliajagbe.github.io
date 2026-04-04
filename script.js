@@ -127,10 +127,10 @@ function setSharedBranding() {
 
   if (footerSecondaryLinks) {
     footerSecondaryLinks.innerHTML = `
-      <a href="about.html">About</a>
-      <a href="projects.html">Projects</a>
-      <a href="services.html">Areas of Expertise</a>
-      <a href="contact.html">Contact</a>
+      <a href="/about/">About</a>
+      <a href="/projects/">Projects</a>
+      <a href="/expertise/">Areas of Expertise</a>
+      <a href="/contact/">Contact</a>
     `;
   }
 
@@ -208,12 +208,8 @@ function renderHome() {
     </div>
     <h1>${profile.title}</h1>
     <p class="hero-tagline">${profile.tagline}</p>
-    <p class="hero-summary">${profile.heroSummary}</p>
-    <div class="hero-signals">
-      ${profile.quickFacts.map((item) => `<span class="signal-pill">${item}</span>`).join("")}
-    </div>
     <div class="hero-actions">
-      <a class="button button--primary" href="projects.html">Explore projects</a>
+      <a class="button button--primary" href="/projects/">Explore projects</a>
       <a class="button button--secondary" href="${profile.resumeUrl}" target="_blank" rel="noreferrer">View resume</a>
     </div>
     <div class="hero-meta">
@@ -329,8 +325,8 @@ function renderHome() {
     <article class="feature-card feature-card--link" data-animate style="--delay: 0.16s">
       <div class="feature-icon">${icon("chart")}</div>
       <h3>See the full project set</h3>
-      <p>Dive into analytics competitions, ML research, and operating-system design work.</p>
-      <a class="text-link" href="projects.html">Open projects</a>
+      <p>Explore consulting, startup, research, and applied AI work in one place.</p>
+      <a class="text-link" href="/projects/">Open projects</a>
     </article>
   `;
 
@@ -343,7 +339,7 @@ function renderHome() {
       <h3>${experience[0].role}</h3>
       <p class="snapshot-meta">${experience[0].company} / ${experience[0].location}</p>
       <p class="snapshot-copy">${experience[0].dates}</p>
-      <a class="text-link" href="about.html">View experience</a>
+      <a class="text-link" href="/about/">View experience</a>
     </article>
     <article class="snapshot-card" data-animate style="--delay: 0.08s">
       <div class="card-topline">
@@ -353,7 +349,7 @@ function renderHome() {
       <h3>${education[0].credential}</h3>
       <p class="snapshot-meta">${education[0].institution}</p>
       <p class="snapshot-copy">${education[0].location}</p>
-      <a class="text-link" href="about.html">See background</a>
+      <a class="text-link" href="/about/">See background</a>
     </article>
   `;
 
@@ -363,8 +359,8 @@ function renderHome() {
       <h2>Open to roles, collaborations, and project conversations.</h2>
     </div>
     <div class="cta-actions">
-      <a class="button button--primary" href="contact.html">Get in touch</a>
-      <a class="button button--secondary" href="services.html">View expertise</a>
+      <a class="button button--primary" href="/contact/">Get in touch</a>
+      <a class="button button--secondary" href="/expertise/">View expertise</a>
     </div>
   `;
 }
@@ -692,8 +688,8 @@ function renderServices() {
         If you already know the problem, I can help shape the analysis, workflow, or model path from there.
       </p>
       <div class="cta-actions">
-        <a class="button button--primary" href="contact.html">Contact me</a>
-        <a class="button button--secondary" href="AlliAjagbeResume.pdf" target="_blank" rel="noreferrer">View resume</a>
+        <a class="button button--primary" href="/contact/">Contact me</a>
+        <a class="button button--secondary" href="/AlliAjagbeResume.pdf" target="_blank" rel="noreferrer">View resume</a>
       </div>
     </article>
   `;

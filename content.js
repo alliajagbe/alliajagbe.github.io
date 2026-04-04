@@ -7,8 +7,6 @@ window.portfolioContent = {
       "I build analytics systems, predictive models, and AI workflows that turn operational complexity into measurable business outcomes.",
     bio:
       "I am a data science and analytics professional working across consulting, operations, startup analytics, and social-impact machine learning. I am completing an MS in Business Analytics at Wake Forest after graduating from Plaksha University in Data Science, Economics, and Business.",
-    heroSummary:
-      "My work spans recommerce optimization, fraud detection, NLP and generative AI evaluation, BI systems, and computer vision research. I care about clean pipelines, rigorous modeling, and communication that helps teams act with confidence.",
     location: "Winston-Salem, NC",
     phone: "+1 743-240-7497",
     email: "ajagao25@wfu.edu",
@@ -21,15 +19,16 @@ window.portfolioContent = {
       "Experimentation",
       "Generative AI"
     ],
-    quickFacts: ["MSBA Candidate", "AI systems", "Social-impact tech", "Data storytelling"],
-    interests: ["AI systems", "Social-impact technology", "Data storytelling", "Decision-focused analytics"],
-    resumeUrl: "AlliAjagbeResume.pdf",
-    logoIconUrl: "alliajagbe%20logo/alliajagbe%20logo2.png",
-    logoWordmarkUrl: "alliajagbe%20logo/alliajagbe%20logo.png",
+    quickFacts: ["Open to relocation", "Social-impact technology", "Data storytelling", "Decision-focused analytics"],
+    interests: ["Social-impact technology", "Data storytelling", "Decision-focused analytics", "Applied AI"],
+    resumeUrl: "/AlliAjagbeResume.pdf",
+    logoIconUrl: "/alliajagbe%20logo/alliajagbe%20logo2.png",
+    logoWordmarkUrl: "/alliajagbe%20logo/alliajagbe%20logo.png",
     highlights: [
-      { value: "0.97", label: "Macro-F1 in Data4Good factuality classification" },
-      { value: "$3.6M", label: "Projected annual fraud savings from challenge modeling" },
-      { value: "$500", label: "Saved per returned product through routing optimization" }
+      { value: "$500", label: "Saved per returned product in recommerce routing" },
+      { value: "93%", label: "Efficiency lift across Founder Forward database workflows" },
+      { value: "23%", label: "Model performance improvement in agritech suitability modeling" },
+      { value: "0.97", label: "Macro-F1 in factuality classification" }
     ]
   },
   focusCards: [
@@ -152,6 +151,53 @@ window.portfolioContent = {
   ],
   projects: [
     {
+      icon: "route",
+      title: "Recommerce Decision Tree Optimization",
+      shortTitle: "Recommerce Routing Model",
+      categories: ["Optimization", "Analytics"],
+      problem:
+        "Replace manual vendor selection for returned-product routing and reduce inconsistent operational decisions.",
+      approach:
+        "Designed a recommerce decision model that combined cost logic, vendor performance, and operational constraints into one scalable framework.",
+      tools: ["Decision Modeling", "Operations Analytics", "Python", "Business Rules"],
+      metrics: [
+        { value: "$500", label: "Saved per returned product" },
+        { value: "-20%", label: "Customer friction points" }
+      ]
+    },
+    {
+      icon: "grid",
+      title: "Founder Forward Analytics and Dashboard System",
+      shortTitle: "Founder Forward BI System",
+      categories: ["Analytics", "BI"],
+      problem:
+        "Bring fragmented founder and program data into one reliable system that teams could analyze and act on quickly.",
+      approach:
+        "Built a Python ETL workflow for 5K+ records, automated six database processes, and delivered four dashboards that made operational reporting faster and more dependable.",
+      tools: ["Python", "ETL", "Dashboard Design", "Database Automation", "Business Intelligence"],
+      metrics: [
+        { value: "45%", label: "Improvement in data reliability" },
+        { value: "40%", label: "Faster time to insight" },
+        { value: "93%", label: "System efficiency improvement" }
+      ]
+    },
+    {
+      icon: "globe",
+      title: "SBSF Agritech Growth Curve Modeling",
+      shortTitle: "SBSF Agritech Modeling",
+      categories: ["Modeling", "Research"],
+      problem:
+        "Model species suitability and growth behavior across diverse agro-ecological contexts with sparse and uneven biological data.",
+      approach:
+        "Built a scalable enrichment pipeline for 22K+ rows and parameterized growth curves for 180 tree species across 40 agro-ecological zones to improve suitability modeling.",
+      tools: ["Python", "Data Enrichment", "Statistical Modeling", "Agritech Analytics"],
+      metrics: [
+        { value: "22K+", label: "Rows enriched" },
+        { value: "180", label: "Tree species modeled" },
+        { value: "23%", label: "Model performance improvement" }
+      ]
+    },
+    {
       icon: "spark",
       title: "Data4Good Factuality Classification Pipeline",
       shortTitle: "Data4Good NLP Pipeline",
@@ -195,24 +241,9 @@ window.portfolioContent = {
         { value: "91%", label: "Accuracy" },
         { value: "Top 7", label: "Publication-nominated submission" }
       ]
-    },
-    {
-      icon: "route",
-      title: "Recommerce Decision Tree Optimization",
-      shortTitle: "Recommerce Routing Model",
-      categories: ["Optimization", "Operations"],
-      problem:
-        "Replace manual vendor selection for returned-product routing and reduce inconsistent operational decisions.",
-      approach:
-        "Designed a recommerce decision model that combined cost logic, vendor performance, and operational constraints into one scalable framework.",
-      tools: ["Decision Modeling", "Operations Analytics", "Python", "Business Rules"],
-      metrics: [
-        { value: "$500", label: "Saved per returned product" },
-        { value: "-20%", label: "Customer friction points" }
-      ]
     }
   ],
-  projectFilters: ["All", "AI", "Analytics", "Modeling", "Research", "Optimization"],
+  projectFilters: ["All", "AI", "Analytics", "BI", "Modeling", "Research", "Optimization"],
   projectMethods: [
     {
       icon: "code",
@@ -337,6 +368,6 @@ window.portfolioContent = {
     { platform: "Phone", icon: "phone", label: "+1 743-240-7497", url: "tel:+17432407497" },
     { platform: "LinkedIn", icon: "linkedin", label: "linkedin.com/in/alliajagbe", url: "https://linkedin.com/in/alliajagbe" },
     { platform: "GitHub", icon: "github", label: "github.com/alliajagbe", url: "https://github.com/alliajagbe" },
-    { platform: "Resume", icon: "document", label: "Open PDF resume", url: "AlliAjagbeResume.pdf" }
+    { platform: "Resume", icon: "document", label: "Open PDF resume", url: "/AlliAjagbeResume.pdf" }
   ]
 };
