@@ -151,11 +151,11 @@ h3 {
   height: 3.45rem;
   display: inline-grid;
   place-items: center;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  padding: 0.38rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
+  border: 1px solid rgba(0, 59, 75, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .brand-logo {
@@ -491,11 +491,11 @@ h3 {
 .panel-logo-shell {
   width: 5.2rem;
   height: 5.2rem;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  padding: 0.56rem;
+  border-radius: 1.45rem;
+  background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
+  border: 1px solid rgba(0, 59, 75, 0.08);
+  box-shadow: var(--shadow);
   flex-shrink: 0;
 }
 
