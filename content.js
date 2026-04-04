@@ -13,6 +13,7 @@ window.portfolioContent = {
     phone: "+1 743-240-7497",
     email: "ajagao25@wfu.edu",
     availability: "Open to data science, analytics, and AI/ML opportunities.",
+    relocation: "Open to relocation",
     focusAreas: [
       "Analytics engineering",
       "Machine learning",
@@ -154,6 +155,7 @@ window.portfolioContent = {
       icon: "spark",
       title: "Data4Good Factuality Classification Pipeline",
       shortTitle: "Data4Good NLP Pipeline",
+      categories: ["AI", "NLP"],
       problem:
         "Classify answer factuality at scale across ambiguous language and complex semantic patterns.",
       approach:
@@ -168,6 +170,7 @@ window.portfolioContent = {
       icon: "shield",
       title: "Fraud Detection Modeling Challenge",
       shortTitle: "Fraud Detection Models",
+      categories: ["Analytics", "Modeling"],
       problem:
         "Detect fraud reliably in large-scale transactional data while maximizing meaningful captures and limiting business exposure.",
       approach:
@@ -182,6 +185,7 @@ window.portfolioContent = {
       icon: "globe",
       title: "PovertyPred HGCN Research Project",
       shortTitle: "PovertyPred HGCN",
+      categories: ["Research", "ML"],
       problem:
         "Predict household poverty levels in Kenyan villages using imagery where socioeconomic labels are difficult to collect directly.",
       approach:
@@ -196,6 +200,7 @@ window.portfolioContent = {
       icon: "route",
       title: "Recommerce Decision Tree Optimization",
       shortTitle: "Recommerce Routing Model",
+      categories: ["Optimization", "Operations"],
       problem:
         "Replace manual vendor selection for returned-product routing and reduce inconsistent operational decisions.",
       approach:
@@ -207,6 +212,7 @@ window.portfolioContent = {
       ]
     }
   ],
+  projectFilters: ["All", "AI", "Analytics", "Modeling", "Research", "Optimization"],
   projectMethods: [
     {
       icon: "code",

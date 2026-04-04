@@ -348,8 +348,8 @@ h3 {
 
 .hero-wordmark-shell {
   width: fit-content;
-  max-width: min(100%, 20rem);
-  padding: 0.85rem 1rem;
+  max-width: min(100%, 22rem);
+  padding: 0.72rem 0.9rem;
   border-radius: 1.35rem;
   background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
   border: 1px solid rgba(0, 59, 75, 0.1);
@@ -359,7 +359,7 @@ h3 {
 .hero-wordmark {
   width: auto;
   max-width: 100%;
-  height: 2.6rem;
+  height: 3.15rem;
   object-fit: contain;
 }
 
@@ -658,6 +658,10 @@ h3 {
   gap: 0.9rem;
 }
 
+.project-card--interactive {
+  align-content: start;
+}
+
 .project-card--compact .project-summary {
   max-width: 24rem;
 }
@@ -670,6 +674,70 @@ h3 {
   flex-direction: column;
   align-items: flex-start;
   min-width: 9rem;
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.filter-chip {
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
+  color: var(--text-soft);
+  border-radius: 999px;
+  padding: 0.62rem 0.96rem;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.filter-chip:hover,
+.filter-chip:focus-visible,
+.filter-chip.is-active {
+  color: var(--heading);
+  background: var(--surface-strong);
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+  outline: none;
+}
+
+.project-toggle {
+  width: fit-content;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--heading);
+  border-radius: 999px;
+  padding: 0.6rem 0.92rem;
+  cursor: pointer;
+  font-weight: 800;
+  transition: background-color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.project-toggle:hover,
+.project-toggle:focus-visible {
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+  outline: none;
+}
+
+.project-detail {
+  display: grid;
+  gap: 0.8rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 280ms ease, opacity 220ms ease, padding-top 220ms ease;
+}
+
+.project-card.is-expanded .project-detail {
+  max-height: 18rem;
+  opacity: 1;
+  padding-top: 0.4rem;
+}
+
+.project-card.is-hidden {
+  display: none;
 }
 
 .snapshot-meta,
@@ -789,7 +857,7 @@ h3 {
 .footer-wordmark-shell {
   width: fit-content;
   max-width: 100%;
-  padding: 1.08rem 1.18rem;
+  padding: 0.88rem 1rem;
   border-radius: 1.2rem;
   background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
   border: 1px solid rgba(0, 59, 75, 0.1);
@@ -799,7 +867,7 @@ h3 {
 .footer-wordmark {
   width: auto;
   max-width: min(100%, 14rem);
-  height: 3rem;
+  height: 3.7rem;
   object-fit: contain;
 }
 

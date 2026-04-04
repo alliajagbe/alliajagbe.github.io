@@ -509,9 +509,10 @@ function renderProjects() {
     return;
   }
 
-  const { profile, projects, projectMethods } = portfolioContent;
+  const { profile, projects, projectMethods, projectFilters } = portfolioContent;
   const projectsGrid = document.querySelector("#projects-grid");
   const toolkitGrid = document.querySelector("#projects-toolkit");
+  const filters = document.querySelector("#projects-filters");
 
   metricsGrid.innerHTML = profile.highlights
     .map(
@@ -524,19 +525,39 @@ function renderProjects() {
     )
     .join("");
 
+  if (filters) {
+    filters.innerHTML = `
+      <div class="filter-bar" data-animate>
+        ${projectFilters
+          .map(
+            (filter, index) => `
+              <button
+                class="filter-chip${index === 0 ? " is-active" : ""}"
+                type="button"
+                data-filter="${filter}"
+                aria-pressed="${index === 0 ? "true" : "false"}"
+              >
+                ${filter}
+              </button>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
   projectsGrid.innerHTML = projects
     .map(
       (project, index) => `
-        <article class="project-card" data-animate style="--delay: ${index * 0.06}s">
+        <article class="project-card project-card--interactive" data-project-card data-categories="${project.categories.join(",")}" data-animate style="--delay: ${index * 0.06}s">
           <div class="card-topline">
             <span class="inline-icon">${icon(project.icon)}</span>
             <p class="section-label">Project ${String(index + 1).padStart(2, "0")}</p>
           </div>
           <h3>${project.title}</h3>
           <p class="project-summary"><strong>Problem:</strong> ${project.problem}</p>
-          <p class="project-summary"><strong>Approach:</strong> ${project.approach}</p>
           <div class="chip-list">
-            ${project.tools.map((tool) => `<span class="tag">${tool}</span>`).join("")}
+            ${project.categories.map((category) => `<span class="tag">${category}</span>`).join("")}
           </div>
           <div class="project-metrics">
             ${project.metrics
@@ -549,6 +570,15 @@ function renderProjects() {
                 `
               )
               .join("")}
+          </div>
+          <button class="project-toggle" type="button" aria-expanded="false">
+            Open case
+          </button>
+          <div class="project-detail">
+            <p class="project-summary"><strong>Approach:</strong> ${project.approach}</p>
+            <div class="chip-list">
+              ${project.tools.map((tool) => `<span class="tag">${tool}</span>`).join("")}
+            </div>
           </div>
         </article>
       `
@@ -566,6 +596,51 @@ function renderProjects() {
       `
     )
     .join("");
+
+  setupProjectFilters();
+  setupProjectToggles();
+}
+
+function setupProjectFilters() {
+  const filterButtons = document.querySelectorAll(".filter-chip");
+  const projectCards = document.querySelectorAll("[data-project-card]");
+  if (!filterButtons.length || !projectCards.length) {
+    return;
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
+
+      filterButtons.forEach((currentButton) => {
+        const isActive = currentButton === button;
+        currentButton.classList.toggle("is-active", isActive);
+        currentButton.setAttribute("aria-pressed", String(isActive));
+      });
+
+      projectCards.forEach((card) => {
+        const categories = (card.dataset.categories || "").split(",");
+        const shouldShow = filter === "All" || categories.includes(filter);
+        card.classList.toggle("is-hidden", !shouldShow);
+      });
+    });
+  });
+}
+
+function setupProjectToggles() {
+  const cards = document.querySelectorAll("[data-project-card]");
+  cards.forEach((card) => {
+    const button = card.querySelector(".project-toggle");
+    if (!button) {
+      return;
+    }
+
+    button.addEventListener("click", () => {
+      const isExpanded = card.classList.toggle("is-expanded");
+      button.setAttribute("aria-expanded", String(isExpanded));
+      button.textContent = isExpanded ? "Close case" : "Open case";
+    });
+  });
 }
 
 function renderServices() {
@@ -684,7 +759,7 @@ function renderContact() {
         <p class="section-label">Availability</p>
       </div>
       <h3>${profile.availability}</h3>
-      <p class="snapshot-copy">Based in ${profile.location}. Open to full-time roles, project collaborations, and conversations around analytics and applied AI.</p>
+      <p class="snapshot-copy">Based in ${profile.location}. ${profile.relocation}. Open to full-time roles, project collaborations, and conversations around analytics and applied AI.</p>
     </article>
   `;
 }
