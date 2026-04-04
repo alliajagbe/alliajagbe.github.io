@@ -687,7 +687,6 @@ function renderServices() {
         <span class="inline-icon">${icon("target")}</span>
         <p class="section-label">Best fit</p>
       </div>
-      <h2>Useful when a team needs clarity, structure, or a stronger analytical lens.</h2>
       <div class="chip-list">
         <span class="tag">Decision-ready dashboards</span>
         <span class="tag">Model prototypes</span>
