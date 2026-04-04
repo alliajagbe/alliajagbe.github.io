@@ -684,18 +684,6 @@ function renderServices() {
   fitGrid.innerHTML = `
     <article class="detail-card" data-animate>
       <div class="card-topline">
-        <span class="inline-icon">${icon("target")}</span>
-        <p class="section-label">Best fit</p>
-      </div>
-      <div class="chip-list">
-        <span class="tag">Decision-ready dashboards</span>
-        <span class="tag">Model prototypes</span>
-        <span class="tag">Experimentation support</span>
-        <span class="tag">Analytics cleanup</span>
-      </div>
-    </article>
-    <article class="detail-card" data-animate style="--delay: 0.08s">
-      <div class="card-topline">
         <span class="inline-icon">${icon("mail")}</span>
         <p class="section-label">Next step</p>
       </div>
