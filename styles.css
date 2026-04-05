@@ -362,11 +362,11 @@ h3 {
 .hero-wordmark-shell {
   width: fit-content;
   max-width: min(100%, 22rem);
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  padding: 0.72rem 0.9rem;
+  border-radius: 1.35rem;
+  background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
+  border: 1px solid rgba(0, 59, 75, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .hero-wordmark {
@@ -870,11 +870,11 @@ h3 {
 .footer-wordmark-shell {
   width: fit-content;
   max-width: 100%;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  padding: 0.88rem 1rem;
+  border-radius: 1.2rem;
+  background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
+  border: 1px solid rgba(0, 59, 75, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .footer-wordmark {
