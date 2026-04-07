@@ -250,65 +250,85 @@ function renderHome() {
   `;
 
   focus.innerHTML = `
-    <div class="section-heading" data-animate>
-      <p class="section-label">Focus</p>
-      <h2>What I tend to build and improve.</h2>
-    </div>
-    <div class="editorial-list">
-      ${focusCards
-        .map(
-          (item, index) => `
-            <article class="editorial-entry" data-animate style="--delay: ${index * 0.06}s">
-              <div class="feature-icon">${icon(item.icon)}</div>
-              <div class="editorial-entry__body">
-                <h3>${item.title}</h3>
-                <p>${item.copy}</p>
-              </div>
-            </article>
-          `
-        )
-        .join("")}
-    </div>
+    <article class="home-accordion is-open" data-home-accordion data-animate>
+      <button class="home-accordion__button" type="button" aria-expanded="true">
+        <div class="home-accordion__heading">
+          <p class="section-label">Focus</p>
+          <h2>What I tend to build and improve.</h2>
+        </div>
+        <div class="home-accordion__meta">
+          <span>${focusCards.length} areas</span>
+          <span class="home-accordion__caret">${icon("share")}</span>
+        </div>
+      </button>
+      <div class="home-accordion__panel">
+        <div class="editorial-list">
+          ${focusCards
+            .map(
+              (item, index) => `
+                <article class="editorial-entry" data-animate style="--delay: ${index * 0.06}s">
+                  <div class="feature-icon">${icon(item.icon)}</div>
+                  <div class="editorial-entry__body">
+                    <h3>${item.title}</h3>
+                    <p>${item.copy}</p>
+                  </div>
+                </article>
+              `
+            )
+            .join("")}
+        </div>
+      </div>
+    </article>
   `;
 
   if (lens) {
     const defaultLens = exploreModes[0];
     lens.innerHTML = `
-      <div class="section-heading" data-animate>
-        <p class="section-label">Lens</p>
-        <h2>A few ways to read the work.</h2>
-      </div>
-      <article class="lens-card lens-card--editorial" data-animate>
-        <div class="card-topline">
-          <span class="inline-icon">${icon("spark")}</span>
-          <p class="section-label">Explore by lens</p>
-        </div>
-        <div class="lens-buttons" role="tablist" aria-label="Explore portfolio by lens">
-          ${exploreModes
-            .map(
-              (mode, index) => `
-                <button
-                  class="lens-button${index === 0 ? " is-active" : ""}"
-                  type="button"
-                  data-lens="${mode.id}"
-                  role="tab"
-                  aria-selected="${index === 0 ? "true" : "false"}"
-                >
-                  ${mode.label}
-                </button>
-              `
-            )
-            .join("")}
-        </div>
-        <div class="lens-panel" id="lens-panel">
-          <div class="feature-icon">${icon(defaultLens.icon)}</div>
-          <div class="lens-panel__content">
-            <h3>${defaultLens.title}</h3>
-            <p>${defaultLens.copy}</p>
-            <div class="chip-list">
-              ${defaultLens.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
-            </div>
+      <article class="home-accordion" data-home-accordion data-animate>
+        <button class="home-accordion__button" type="button" aria-expanded="false">
+          <div class="home-accordion__heading">
+            <p class="section-label">Lens</p>
+            <h2>A few ways to read the work.</h2>
           </div>
+          <div class="home-accordion__meta">
+            <span>${exploreModes.length} views</span>
+            <span class="home-accordion__caret">${icon("share")}</span>
+          </div>
+        </button>
+        <div class="home-accordion__panel">
+          <article class="lens-card lens-card--editorial">
+            <div class="card-topline">
+              <span class="inline-icon">${icon("spark")}</span>
+              <p class="section-label">Explore by lens</p>
+            </div>
+            <div class="lens-buttons" role="tablist" aria-label="Explore portfolio by lens">
+              ${exploreModes
+                .map(
+                  (mode, index) => `
+                    <button
+                      class="lens-button${index === 0 ? " is-active" : ""}"
+                      type="button"
+                      data-lens="${mode.id}"
+                      role="tab"
+                      aria-selected="${index === 0 ? "true" : "false"}"
+                    >
+                      ${mode.label}
+                    </button>
+                  `
+                )
+                .join("")}
+            </div>
+            <div class="lens-panel" id="lens-panel">
+              <div class="feature-icon">${icon(defaultLens.icon)}</div>
+              <div class="lens-panel__content">
+                <h3>${defaultLens.title}</h3>
+                <p>${defaultLens.copy}</p>
+                <div class="chip-list">
+                  ${defaultLens.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
       </article>
     `;
@@ -317,74 +337,94 @@ function renderHome() {
   }
 
   projectPreview.innerHTML = `
-    <div class="section-heading" data-animate>
-      <p class="section-label">Selected work</p>
-      <h2>A few projects that show how I think.</h2>
-    </div>
-    <div class="editorial-projects">
-      ${projects
-      .slice(0, 3)
-      .map(
-        (project, index) => `
-          <article class="project-card project-card--editorial" data-animate style="--delay: ${index * 0.08}s">
-            <div class="card-topline">
-              <span class="inline-icon">${icon(project.icon)}</span>
-              <p class="section-label">Project ${String(index + 1).padStart(2, "0")}</p>
-            </div>
-            <h3>${project.shortTitle}</h3>
-            <p class="project-summary">${project.problem}</p>
-            <div class="project-metrics project-metrics--compact">
-              ${project.metrics
-                .map(
-                  (metric) => `
-                    <div class="metric-pill">
-                      <span class="metric-value">${metric.value}</span>
-                      <span class="metric-label">${metric.label}</span>
-                    </div>
-                  `
-                )
-                .join("")}
-            </div>
+    <article class="home-accordion" data-home-accordion data-animate>
+      <button class="home-accordion__button" type="button" aria-expanded="false">
+        <div class="home-accordion__heading">
+          <p class="section-label">Selected work</p>
+          <h2>A few projects that show how I think.</h2>
+        </div>
+        <div class="home-accordion__meta">
+          <span>${Math.min(projects.length, 3)} projects</span>
+          <span class="home-accordion__caret">${icon("share")}</span>
+        </div>
+      </button>
+      <div class="home-accordion__panel">
+        <div class="editorial-projects">
+          ${projects
+            .slice(0, 3)
+            .map(
+              (project, index) => `
+                <article class="project-card project-card--editorial" data-animate style="--delay: ${index * 0.08}s">
+                  <div class="card-topline">
+                    <span class="inline-icon">${icon(project.icon)}</span>
+                    <p class="section-label">Project ${String(index + 1).padStart(2, "0")}</p>
+                  </div>
+                  <h3>${project.shortTitle}</h3>
+                  <p class="project-summary">${project.problem}</p>
+                  <div class="project-metrics project-metrics--compact">
+                    ${project.metrics
+                      .map(
+                        (metric) => `
+                          <div class="metric-pill">
+                            <span class="metric-value">${metric.value}</span>
+                            <span class="metric-label">${metric.label}</span>
+                          </div>
+                        `
+                      )
+                      .join("")}
+                  </div>
+                </article>
+              `
+            )
+            .join("")}
+          <article class="editorial-note" data-animate style="--delay: 0.24s">
+            <p class="section-label">More</p>
+            <h3>The full project set lives on its own page.</h3>
+            <p>It includes consulting work, startup systems, research projects, and applied AI experiments.</p>
+            <a class="text-link" href="/projects/">Open projects</a>
           </article>
-        `
-      )
-      .join("")}
-      <article class="editorial-note" data-animate style="--delay: 0.24s">
-        <p class="section-label">More</p>
-        <h3>The full project set lives on its own page.</h3>
-        <p>It includes consulting work, startup systems, research projects, and applied AI experiments.</p>
-        <a class="text-link" href="/projects/">Open projects</a>
-      </article>
-    </div>
+        </div>
+      </div>
+    </article>
   `;
 
   snapshot.innerHTML = `
-    <div class="section-heading" data-animate>
-      <p class="section-label">Current chapter</p>
-      <h2>Where the work sits right now.</h2>
-    </div>
-    <div class="editorial-records">
-      <article class="editorial-record" data-animate>
-        <div class="card-topline">
-          <span class="inline-icon">${icon("briefcase")}</span>
-          <p class="section-label">Current work</p>
+    <article class="home-accordion" data-home-accordion data-animate>
+      <button class="home-accordion__button" type="button" aria-expanded="false">
+        <div class="home-accordion__heading">
+          <p class="section-label">Current chapter</p>
+          <h2>Where the work sits right now.</h2>
         </div>
-        <h3>${experience[0].role}</h3>
-        <p class="snapshot-meta">${experience[0].company} / ${experience[0].location}</p>
-        <p class="snapshot-copy">${experience[0].dates}</p>
-        <a class="text-link" href="/about/">View experience</a>
-      </article>
-      <article class="editorial-record" data-animate style="--delay: 0.08s">
-        <div class="card-topline">
-          <span class="inline-icon">${icon("graduation")}</span>
-          <p class="section-label">Education</p>
+        <div class="home-accordion__meta">
+          <span>2 records</span>
+          <span class="home-accordion__caret">${icon("share")}</span>
         </div>
-        <h3>${education[0].credential}</h3>
-        <p class="snapshot-meta">${education[0].institution}</p>
-        <p class="snapshot-copy">${education[0].location}</p>
-        <a class="text-link" href="/about/">See background</a>
-      </article>
-    </div>
+      </button>
+      <div class="home-accordion__panel">
+        <div class="editorial-records">
+          <article class="editorial-record" data-animate>
+            <div class="card-topline">
+              <span class="inline-icon">${icon("briefcase")}</span>
+              <p class="section-label">Current work</p>
+            </div>
+            <h3>${experience[0].role}</h3>
+            <p class="snapshot-meta">${experience[0].company} / ${experience[0].location}</p>
+            <p class="snapshot-copy">${experience[0].dates}</p>
+            <a class="text-link" href="/about/">View experience</a>
+          </article>
+          <article class="editorial-record" data-animate style="--delay: 0.08s">
+            <div class="card-topline">
+              <span class="inline-icon">${icon("graduation")}</span>
+              <p class="section-label">Education</p>
+            </div>
+            <h3>${education[0].credential}</h3>
+            <p class="snapshot-meta">${education[0].institution}</p>
+            <p class="snapshot-copy">${education[0].location}</p>
+            <a class="text-link" href="/about/">See background</a>
+          </article>
+        </div>
+      </div>
+    </article>
   `;
 
   cta.innerHTML = `
@@ -398,6 +438,8 @@ function renderHome() {
       <a class="button button--secondary" href="/expertise/">View expertise</a>
     </div>
   `;
+
+  setupHomeAccordions();
 }
 
 function setupLensSwitcher(modes) {
@@ -434,6 +476,27 @@ function setupLensSwitcher(modes) {
       });
 
       renderMode(nextMode);
+    });
+  });
+}
+
+function setupHomeAccordions() {
+  const accordions = document.querySelectorAll("[data-home-accordion]");
+  accordions.forEach((accordion) => {
+    const button = accordion.querySelector(".home-accordion__button");
+    if (!button) {
+      return;
+    }
+
+    const setOpen = (isOpen) => {
+      accordion.classList.toggle("is-open", isOpen);
+      button.setAttribute("aria-expanded", String(isOpen));
+    };
+
+    setOpen(accordion.classList.contains("is-open"));
+
+    button.addEventListener("click", () => {
+      setOpen(!accordion.classList.contains("is-open"));
     });
   });
 }

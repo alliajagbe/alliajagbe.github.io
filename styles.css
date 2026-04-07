@@ -318,6 +318,70 @@ h3 {
   border-top: 0;
 }
 
+.home-accordion {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.home-accordion__button {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.home-accordion__heading {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.home-accordion__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.home-accordion__caret {
+  width: 1rem;
+  height: 1rem;
+  transition: transform var(--transition);
+}
+
+.home-accordion__panel {
+  display: grid;
+  gap: 0.9rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 280ms ease, opacity 220ms ease, padding-top 220ms ease;
+}
+
+.home-accordion.is-open .home-accordion__panel {
+  max-height: 120rem;
+  opacity: 1;
+  padding-top: 0.2rem;
+}
+
+.home-accordion.is-open .home-accordion__caret {
+  transform: rotate(90deg);
+}
+
+.home-accordion__button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 6px;
+  border-radius: 0.5rem;
+}
+
 .editorial-heading,
 .editorial-entry__body,
 .editorial-record,
@@ -1143,6 +1207,14 @@ h3 {
 
   .editorial-entry {
     grid-template-columns: 1fr;
+  }
+
+  .home-accordion__button {
+    flex-direction: column;
+  }
+
+  .home-accordion__meta {
+    white-space: normal;
   }
 
   .cta-band {
