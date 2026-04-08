@@ -770,10 +770,19 @@ function renderServices() {
     .map(
       (step, index) => `
         <article class="flow-step" data-animate style="--delay: ${index * 0.06}s">
-          <div class="flow-step__count">0${index + 1}</div>
-          <div class="feature-icon">${icon(step.icon)}</div>
-          <h3>${step.title}</h3>
-          <p>${step.copy}</p>
+          <div class="flow-step__badge">
+            <div class="flow-step__count">0${index + 1}</div>
+          </div>
+          <div class="flow-step__content">
+            <div class="flow-step__header">
+              <div class="feature-icon feature-icon--flow">${icon(step.icon)}</div>
+              <div class="flow-step__heading">
+                <p class="flow-step__label">Step ${index + 1}</p>
+                <h3>${step.title}</h3>
+              </div>
+            </div>
+            <p>${step.copy}</p>
+          </div>
         </article>
       `
     )
