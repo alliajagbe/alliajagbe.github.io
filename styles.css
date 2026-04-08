@@ -1040,25 +1040,15 @@ h1,
   position: relative;
   display: grid;
   gap: 1rem;
-  max-width: 46rem;
-  padding-left: 0.25rem;
-}
-
-.flow-grid::before {
-  content: "";
-  position: absolute;
-  left: 1.3rem;
-  top: 0.8rem;
-  bottom: 0.8rem;
-  width: 1px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 28%, transparent), color-mix(in srgb, var(--text-soft) 22%, transparent));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
 }
 
 .flow-step {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
   align-items: start;
   padding: 0;
   background: transparent;
@@ -1073,7 +1063,7 @@ h1,
   height: 2.6rem;
   display: grid;
   place-items: center;
-  margin-top: 1rem;
+  margin-top: 0;
   border-radius: 999px;
   background: var(--paper-beige);
   border: 1px solid var(--paper-border);
@@ -1121,6 +1111,16 @@ h1,
   height: 2.7rem;
   border-radius: 0.9rem;
   background: var(--surface-soft);
+}
+
+.flow-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 1.3rem;
+  left: calc(2.6rem + 0.4rem);
+  width: calc(100% - 2rem);
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 28%, transparent), color-mix(in srgb, var(--text-soft) 22%, transparent));
 }
 
 .flow-step:hover,
@@ -1265,7 +1265,8 @@ h1,
   .two-up-grid,
   .split-layout,
   .footer-grid,
-  .card-grid--three {
+  .card-grid--three,
+  .flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1373,16 +1374,12 @@ h1,
     gap: 0.75rem;
   }
 
-  .flow-grid {
-    padding-left: 0;
-  }
-
-  .flow-grid::before {
-    display: none;
-  }
-
   .flow-step__badge {
     margin-top: 0;
+  }
+
+  .flow-step::after {
+    display: none;
   }
 
   .lens-panel {
