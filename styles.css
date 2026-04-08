@@ -12,6 +12,8 @@
   --accent-strong: #003b4b;
   --accent-soft: rgba(12, 88, 103, 0.1);
   --border: rgba(0, 59, 75, 0.12);
+  --paper-beige: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
+  --paper-border: color-mix(in srgb, var(--border) 65%, rgba(0, 59, 75, 0.08));
   --shadow: 0 1px 2px rgba(0, 34, 45, 0.06);
   --shadow-hover: 0 8px 24px rgba(0, 34, 45, 0.1);
   --radius-xl: 26px;
@@ -21,6 +23,7 @@
   --container: min(1040px, calc(100vw - 2.5rem));
   --header-height: 78px;
   --transition: 180ms ease;
+  --button-primary-text: #f8f7f3;
 }
 
 [data-theme="dark"] {
@@ -39,6 +42,7 @@
   --border: rgba(184, 216, 218, 0.16);
   --shadow: 0 1px 2px rgba(1, 8, 11, 0.32);
   --shadow-hover: 0 10px 28px rgba(1, 8, 11, 0.4);
+  --button-primary-text: #07151b;
 }
 
 *,
@@ -55,9 +59,7 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(12, 88, 103, 0.12), transparent 28%),
-    radial-gradient(circle at top right, rgba(244, 239, 201, 0.34), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg) 88%, white) 0%, var(--bg) 20rem),
     var(--bg);
   color: var(--text);
   font-family: "Instrument Sans", sans-serif;
@@ -126,8 +128,7 @@ h3 {
   position: sticky;
   top: 0;
   z-index: 20;
-  backdrop-filter: blur(12px);
-  background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+  background: color-mix(in srgb, var(--bg-elevated) 97%, var(--bg));
   border-bottom: 1px solid var(--border);
 }
 
@@ -153,8 +154,8 @@ h3 {
   place-items: center;
   padding: 0.32rem;
   border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--surface-soft) 88%, white);
-  border: 1px solid var(--border);
+  background: var(--paper-beige);
+  border: 1px solid var(--paper-border);
   box-shadow: var(--shadow);
 }
 
@@ -399,6 +400,25 @@ h3 {
   font-size: 1.03rem;
 }
 
+.editorial-kicker-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.editorial-kicker-sep {
+  width: 1.65rem;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.editorial-kicker-name {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--heading);
+}
+
 .editorial-meta {
   display: flex;
   flex-wrap: wrap;
@@ -453,6 +473,10 @@ h3 {
   background: var(--surface-soft);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+}
+
+.editorial-callout--outcomes {
+  gap: 1.1rem;
 }
 
 .hero-layout,
@@ -520,6 +544,7 @@ h3 {
   padding-bottom: 3.25rem;
 }
 
+h1,
 .hero-copy h1 {
   font-size: clamp(2.2rem, 1.85rem + 1.45vw, 3.3rem);
 }
@@ -529,8 +554,8 @@ h3 {
   max-width: min(100%, 22rem);
   padding: 0.72rem 0.9rem;
   border-radius: 1rem;
-  background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
-  border: 1px solid color-mix(in srgb, var(--border) 65%, rgba(0, 59, 75, 0.08));
+  background: var(--paper-beige);
+  border: 1px solid var(--paper-border);
   box-shadow: none;
 }
 
@@ -629,7 +654,7 @@ h3 {
 
 .button--primary {
   background: var(--heading);
-  color: #f8f7f3;
+  color: var(--button-primary-text);
   box-shadow: none;
 }
 
@@ -659,8 +684,8 @@ h3 {
   height: 5.2rem;
   padding: 0.56rem;
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--surface-soft) 88%, white);
-  border: 1px solid var(--border);
+  background: var(--paper-beige);
+  border: 1px solid var(--paper-border);
   box-shadow: none;
   flex-shrink: 0;
 }
@@ -1057,9 +1082,37 @@ h3 {
   max-width: 100%;
   padding: 0.88rem 1rem;
   border-radius: 1rem;
-  background: linear-gradient(180deg, rgba(255, 248, 220, 0.98), rgba(239, 230, 185, 0.94));
-  border: 1px solid color-mix(in srgb, var(--border) 65%, rgba(0, 59, 75, 0.08));
+  background: var(--paper-beige);
+  border: 1px solid var(--paper-border);
   box-shadow: none;
+}
+
+.outcome-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+
+.outcome-row {
+  display: grid;
+  grid-template-columns: minmax(4.75rem, auto) 1fr;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.outcome-value {
+  font-size: clamp(1.45rem, 1.2rem + 0.8vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--heading);
+}
+
+.outcome-label {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.98rem;
 }
 
 .footer-wordmark {
@@ -1207,6 +1260,11 @@ h3 {
 
   .editorial-entry {
     grid-template-columns: 1fr;
+  }
+
+  .outcome-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 
   .home-accordion__button {

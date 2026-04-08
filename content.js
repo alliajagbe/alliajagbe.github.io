@@ -4,9 +4,9 @@ window.portfolioContent = {
     brandTag: "Data science, analytics, and AI",
     title: "Data Scientist, Analytics & AI Developer",
     tagline:
-      "I build analytics systems, predictive models, and AI workflows that turn operational complexity into measurable business outcomes.",
+      "I build analytics systems, predictive models, and AI tools that help teams make clearer decisions.",
     bio:
-      "I am a data science and analytics professional working across consulting, operations, startup analytics, and social-impact machine learning. I am completing an MS in Business Analytics at Wake Forest after graduating from Plaksha University in Data Science, Economics, and Business.",
+      "I work across consulting, operations, startup analytics, and social-impact machine learning. I am currently completing an MS in Business Analytics at Wake Forest after studying Data Science, Economics, and Business at Plaksha University.",
     location: "Winston-Salem, NC",
     phone: "+1 743-240-7497",
     email: "ajagao25@wfu.edu",

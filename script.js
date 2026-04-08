@@ -207,7 +207,11 @@ function renderHome() {
       <img class="hero-wordmark" src="${profile.logoWordmarkUrl}" alt="${profile.name} wordmark" />
     </div>
     <div class="editorial-heading">
-      <p class="section-label">Profile</p>
+      <div class="editorial-kicker-row">
+        <p class="section-label">Profile</p>
+        <span class="editorial-kicker-sep" aria-hidden="true"></span>
+        <p class="editorial-kicker-name">${profile.name}</p>
+      </div>
       <h1>${profile.title}</h1>
     </div>
     <p class="hero-tagline">${profile.tagline}</p>
@@ -224,7 +228,7 @@ function renderHome() {
   `;
 
   impact.innerHTML = `
-    <div class="editorial-callout">
+    <div class="editorial-callout editorial-callout--outcomes">
       <div class="panel-brand">
         <div class="panel-logo-shell">
           <img class="panel-logo" src="${profile.logoIconUrl}" alt="${profile.name} logo" />
@@ -234,13 +238,13 @@ function renderHome() {
           <h3>Selected outcomes</h3>
         </div>
       </div>
-      <div class="editorial-metrics">
+      <div class="outcome-list">
         ${profile.highlights
           .map(
             (item, index) => `
-              <article class="metric-card editorial-metric" data-animate style="--delay: ${index * 0.08}s">
-                <div class="metric-value">${item.value}</div>
-                <p class="metric-copy">${item.label}</p>
+              <article class="outcome-row" data-animate style="--delay: ${index * 0.08}s">
+                <div class="outcome-value">${item.value}</div>
+                <p class="outcome-label">${item.label}</p>
               </article>
             `
           )
