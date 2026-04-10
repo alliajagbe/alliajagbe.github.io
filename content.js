@@ -286,6 +286,11 @@ window.portfolioContent = {
       credential: "BTech in Data Science, Economics & Business",
       institution: "Plaksha University",
       location: "Punjab, India"
+    },
+    {
+      credential: "High School Diploma",
+      institution: "African Leadership Academy",
+      location: "South Africa"
     }
   ],
   achievements: [
