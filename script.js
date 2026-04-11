@@ -193,6 +193,7 @@ function renderHome() {
   }
 
   const { profile, homeModes, projects, experience, education } = portfolioContent;
+  const homeDocument = document.querySelector(".home-document");
   const impact = document.querySelector("#home-impact");
   const focus = document.querySelector("#home-focus");
   const lens = document.querySelector("#home-lens");
@@ -205,10 +206,6 @@ function renderHome() {
   hero.innerHTML = `
     <div class="hero-wordmark-shell">
       <img class="hero-wordmark" src="${profile.logoWordmarkUrl}" alt="${profile.name} wordmark" />
-    </div>
-    <div class="editorial-heading" data-animate>
-      <p class="section-label">Choose a view</p>
-      <h1>Pick how you want to explore.</h1>
     </div>
     <div class="home-choice-grid" id="home-choice-grid" role="tablist" aria-label="Choose a profile view">
       ${renderHomeModeCards(homeModes)}
@@ -227,6 +224,10 @@ function renderHome() {
       section.innerHTML = "";
     }
   });
+
+  if (homeDocument) {
+    homeDocument.classList.add("home-document--chooser");
+  }
 }
 
 function renderHomeModeCards(modes) {
@@ -252,12 +253,13 @@ function renderHomeModeCards(modes) {
 
 function renderHomeSelectedSummary(mode, profile) {
   return `
-    <div class="editorial-heading" data-animate>
+    <div class="home-selected-summary__topline" data-animate>
       <div class="editorial-kicker-row">
-        <p class="section-label">Profile</p>
-        <span class="editorial-kicker-sep" aria-hidden="true"></span>
-        <p class="editorial-kicker-name">${profile.name}</p>
+        <p class="section-label">${profile.name}</p>
       </div>
+      <button class="text-link text-link--button" type="button" data-home-reset>Change view</button>
+    </div>
+    <div class="editorial-heading" data-animate>
       <h1 id="home-mode-title">${mode.heroTitle}</h1>
     </div>
     <p class="hero-tagline home-selected-summary__tagline" data-animate>${mode.tagline}</p>
@@ -517,15 +519,49 @@ function setupLensSwitcher(modes) {
 function setupHomeModes(modes, projects) {
   const buttons = document.querySelectorAll("[data-home-mode]");
   const summary = document.querySelector("#home-selected-summary");
+  const choiceGrid = document.querySelector("#home-choice-grid");
+  const homeDocument = document.querySelector(".home-document");
   if (!buttons.length || !summary) {
     return;
   }
 
   const renderMode = (mode) => {
+    if (choiceGrid) {
+      choiceGrid.hidden = true;
+    }
     summary.hidden = false;
     summary.innerHTML = renderHomeSelectedSummary(mode, portfolioContent.profile);
     populateHomeSections(mode, projects, portfolioContent.experience, portfolioContent.education, portfolioContent.profile);
     revealRenderedContent([summary]);
+    if (homeDocument) {
+      homeDocument.classList.remove("home-document--chooser");
+    }
+
+    const resetButton = summary.querySelector("[data-home-reset]");
+    if (resetButton) {
+      resetButton.addEventListener("click", () => {
+        summary.hidden = true;
+        summary.innerHTML = "";
+        if (choiceGrid) {
+          choiceGrid.hidden = false;
+        }
+        const sections = [document.querySelector("#home-impact"), document.querySelector("#home-focus"), document.querySelector("#home-project-preview"), document.querySelector("#home-snapshot"), document.querySelector("#home-cta")];
+        sections.forEach((section) => {
+          if (section) {
+            section.hidden = true;
+            section.innerHTML = "";
+          }
+        });
+        buttons.forEach((currentButton) => {
+          currentButton.classList.remove("is-active");
+          currentButton.setAttribute("aria-selected", "false");
+        });
+        if (homeDocument) {
+          homeDocument.classList.add("home-document--chooser");
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
   };
 
   buttons.forEach((button) => {
