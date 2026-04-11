@@ -192,7 +192,7 @@ function renderHome() {
     return;
   }
 
-  const { profile, homeModes, focusCards, projects, experience, education, exploreModes } = portfolioContent;
+  const { profile, homeModes, projects, experience, education } = portfolioContent;
   const impact = document.querySelector("#home-impact");
   const focus = document.querySelector("#home-focus");
   const lens = document.querySelector("#home-lens");
@@ -213,11 +213,11 @@ function renderHome() {
         <span class="editorial-kicker-sep" aria-hidden="true"></span>
         <p class="editorial-kicker-name">${profile.name}</p>
       </div>
-      <h1>${profile.title}</h1>
+      <h1 id="home-mode-title">${defaultHomeMode.heroTitle}</h1>
     </div>
     <div class="home-mode-switcher" data-animate>
       <div class="card-topline">
-        <p class="section-label">Data mode</p>
+        <p class="section-label">Choose a view</p>
       </div>
       <div class="home-mode-buttons" role="tablist" aria-label="Explore Alli Ajagbe by work mode">
         ${homeModes
@@ -240,7 +240,6 @@ function renderHome() {
         ${renderHomeModePanel(defaultHomeMode)}
       </div>
     </div>
-    <p class="editorial-paragraph">${profile.bio}</p>
     <div class="editorial-meta">
       <span>${profile.location}</span>
       <span>${profile.relocation}</span>
@@ -273,87 +272,22 @@ function renderHome() {
     <article class="home-accordion is-open" data-home-accordion data-animate>
       <button class="home-accordion__button" type="button" aria-expanded="true">
         <div class="home-accordion__heading">
-          <p class="section-label">Focus</p>
-          <h2>What I tend to build and improve.</h2>
+          <p class="section-label" id="home-expertise-label">Expertise</p>
+          <h2>What this view emphasizes.</h2>
         </div>
         <div class="home-accordion__meta">
-          <span>${focusCards.length} areas</span>
+          <span id="home-expertise-count">${defaultHomeMode.expertise.length} areas</span>
           <span class="home-accordion__caret">${icon("share")}</span>
         </div>
       </button>
-      <div class="home-accordion__panel">
-        <div class="editorial-list">
-          ${focusCards
-            .map(
-              (item, index) => `
-                <article class="editorial-entry" data-animate style="--delay: ${index * 0.06}s">
-                  <div class="feature-icon">${icon(item.icon)}</div>
-                  <div class="editorial-entry__body">
-                    <h3>${item.title}</h3>
-                    <p>${item.copy}</p>
-                  </div>
-                </article>
-              `
-            )
-            .join("")}
-        </div>
+      <div class="home-accordion__panel" id="home-expertise-list">
+        ${renderHomeExpertise(defaultHomeMode.expertise)}
       </div>
     </article>
   `;
 
   if (lens) {
-    const defaultLens = exploreModes[0];
-    lens.innerHTML = `
-      <article class="home-accordion" data-home-accordion data-animate>
-        <button class="home-accordion__button" type="button" aria-expanded="false">
-          <div class="home-accordion__heading">
-            <p class="section-label">Lens</p>
-            <h2>A few ways to read the work.</h2>
-          </div>
-          <div class="home-accordion__meta">
-            <span>${exploreModes.length} views</span>
-            <span class="home-accordion__caret">${icon("share")}</span>
-          </div>
-        </button>
-        <div class="home-accordion__panel">
-          <article class="lens-card lens-card--editorial">
-            <div class="card-topline">
-              <span class="inline-icon">${icon("spark")}</span>
-              <p class="section-label">Explore by lens</p>
-            </div>
-            <div class="lens-buttons" role="tablist" aria-label="Explore portfolio by lens">
-              ${exploreModes
-                .map(
-                  (mode, index) => `
-                    <button
-                      class="lens-button${index === 0 ? " is-active" : ""}"
-                      type="button"
-                      data-lens="${mode.id}"
-                      role="tab"
-                      aria-selected="${index === 0 ? "true" : "false"}"
-                    >
-                      ${mode.label}
-                    </button>
-                  `
-                )
-                .join("")}
-            </div>
-            <div class="lens-panel" id="lens-panel">
-              <div class="feature-icon">${icon(defaultLens.icon)}</div>
-              <div class="lens-panel__content">
-                <h3>${defaultLens.title}</h3>
-                <p>${defaultLens.copy}</p>
-                <div class="chip-list">
-                  ${defaultLens.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </article>
-    `;
-
-    setupLensSwitcher(exploreModes);
+    lens.hidden = true;
   }
 
   projectPreview.innerHTML = `
@@ -361,49 +295,15 @@ function renderHome() {
       <button class="home-accordion__button" type="button" aria-expanded="false">
         <div class="home-accordion__heading">
           <p class="section-label">Selected work</p>
-          <h2>A few projects that show how I think.</h2>
+          <h2>Projects in this view.</h2>
         </div>
         <div class="home-accordion__meta">
-          <span>${Math.min(projects.length, 3)} projects</span>
+          <span id="home-project-count">${defaultHomeMode.projectIds.length} projects</span>
           <span class="home-accordion__caret">${icon("share")}</span>
         </div>
       </button>
-      <div class="home-accordion__panel">
-        <div class="editorial-projects">
-          ${projects
-            .slice(0, 3)
-            .map(
-              (project, index) => `
-                <article class="project-card project-card--editorial" data-animate style="--delay: ${index * 0.08}s">
-                  <div class="card-topline">
-                    <span class="inline-icon">${icon(project.icon)}</span>
-                    <p class="section-label">Project ${String(index + 1).padStart(2, "0")}</p>
-                  </div>
-                  <h3>${project.shortTitle}</h3>
-                  <p class="project-summary">${project.problem}</p>
-                  <div class="project-metrics project-metrics--compact">
-                    ${project.metrics
-                      .map(
-                        (metric) => `
-                          <div class="metric-pill">
-                            <span class="metric-value">${metric.value}</span>
-                            <span class="metric-label">${metric.label}</span>
-                          </div>
-                        `
-                      )
-                      .join("")}
-                  </div>
-                </article>
-              `
-            )
-            .join("")}
-          <article class="editorial-note" data-animate style="--delay: 0.24s">
-            <p class="section-label">More</p>
-            <h3>The full project set lives on its own page.</h3>
-            <p>It includes consulting work, startup systems, research projects, and applied AI experiments.</p>
-            <a class="text-link" href="/projects/">Open projects</a>
-          </article>
-        </div>
+      <div class="home-accordion__panel" id="home-project-list">
+        ${renderHomeProjects(defaultHomeMode, projects)}
       </div>
     </article>
   `;
@@ -460,7 +360,7 @@ function renderHome() {
   `;
 
   setupHomeAccordions();
-  setupHomeModes(homeModes);
+  setupHomeModes(homeModes, projects);
 }
 
 function renderHomeModePanel(mode) {
@@ -468,11 +368,10 @@ function renderHomeModePanel(mode) {
     <div class="home-mode-panel__header">
       <div class="feature-icon feature-icon--mode">${icon(mode.icon)}</div>
       <div class="home-mode-panel__heading">
-        <p class="home-mode-panel__eyebrow">${mode.title}</p>
+        <p class="home-mode-panel__eyebrow">${mode.label}</p>
         <p class="hero-tagline home-mode-panel__tagline">${mode.tagline}</p>
       </div>
     </div>
-    <p class="home-mode-panel__copy">${mode.copy}</p>
     <div class="chip-list">
       ${mode.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
     </div>
@@ -490,6 +389,70 @@ function renderOutcomeRows(items) {
       `
     )
     .join("");
+}
+
+function renderHomeExpertise(items) {
+  return `
+    <div class="editorial-list">
+      ${items
+        .map(
+          (item, index) => `
+            <article class="editorial-entry" data-animate style="--delay: ${index * 0.06}s">
+              <div class="feature-icon">${icon(item.icon)}</div>
+              <div class="editorial-entry__body">
+                <h3>${item.title}</h3>
+                <p>${item.copy}</p>
+              </div>
+            </article>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderHomeProjects(mode, projects) {
+  const selectedProjects = mode.projectIds
+    .map((projectId) => projects.find((project) => project.id === projectId))
+    .filter(Boolean)
+    .slice(0, 3);
+
+  return `
+    <div class="editorial-projects">
+      ${selectedProjects
+        .map(
+          (project, index) => `
+            <article class="project-card project-card--editorial" data-animate style="--delay: ${index * 0.08}s">
+              <div class="card-topline">
+                <span class="inline-icon">${icon(project.icon)}</span>
+                <p class="section-label">${mode.label}</p>
+              </div>
+              <h3>${project.shortTitle}</h3>
+              <p class="project-summary">${project.problem}</p>
+              <div class="project-metrics project-metrics--compact">
+                ${project.metrics
+                  .slice(0, 2)
+                  .map(
+                    (metric) => `
+                      <div class="metric-pill">
+                        <span class="metric-value">${metric.value}</span>
+                        <span class="metric-label">${metric.label}</span>
+                      </div>
+                    `
+                  )
+                  .join("")}
+              </div>
+            </article>
+          `
+        )
+        .join("")}
+      <article class="editorial-note" data-animate style="--delay: 0.24s">
+        <p class="section-label">More</p>
+        <h3>Open the full projects page.</h3>
+        <a class="text-link" href="/projects/">View all projects</a>
+      </article>
+    </div>
+  `;
 }
 
 function setupLensSwitcher(modes) {
@@ -530,19 +493,29 @@ function setupLensSwitcher(modes) {
   });
 }
 
-function setupHomeModes(modes) {
+function setupHomeModes(modes, projects) {
   const buttons = document.querySelectorAll("[data-home-mode]");
+  const title = document.querySelector("#home-mode-title");
   const panel = document.querySelector("#home-mode-panel");
   const outcomes = document.querySelector("#home-outcome-list");
   const impactMode = document.querySelector("#home-impact-mode");
-  if (!buttons.length || !panel || !outcomes || !impactMode) {
+  const expertiseList = document.querySelector("#home-expertise-list");
+  const expertiseCount = document.querySelector("#home-expertise-count");
+  const projectList = document.querySelector("#home-project-list");
+  const projectCount = document.querySelector("#home-project-count");
+  if (!buttons.length || !panel || !outcomes || !impactMode || !expertiseList || !expertiseCount || !projectList || !projectCount || !title) {
     return;
   }
 
   const renderMode = (mode) => {
+    title.textContent = mode.heroTitle;
     panel.innerHTML = renderHomeModePanel(mode);
     outcomes.innerHTML = renderOutcomeRows(mode.highlights);
+    expertiseList.innerHTML = renderHomeExpertise(mode.expertise);
+    projectList.innerHTML = renderHomeProjects(mode, projects);
     impactMode.textContent = `${mode.label} view`;
+    expertiseCount.textContent = `${mode.expertise.length} areas`;
+    projectCount.textContent = `${Math.min(mode.projectIds.length, 3)} projects`;
   };
 
   buttons.forEach((button) => {

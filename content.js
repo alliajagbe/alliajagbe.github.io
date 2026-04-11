@@ -34,26 +34,60 @@ window.portfolioContent = {
   homeModes: [
     {
       id: "analyst",
-      label: "Analyst",
+      label: "Data Analyst",
       icon: "chart",
-      title: "Clarify the signal",
-      tagline: "I like turning messy operations into cleaner metrics, reporting systems, and faster decisions.",
-      copy: "This lens is closest to KPI design, dashboard thinking, ETL cleanup, and the work of making a team trust its numbers again.",
+      heroTitle: "Data Analyst",
+      tagline: "Clean metrics, better reporting, clearer decisions.",
       accents: ["Dashboards", "KPI logic", "Data cleanup"],
+      expertise: [
+        {
+          icon: "chart",
+          title: "Dashboard Systems",
+          copy: "Build reporting that helps teams see what matters fast."
+        },
+        {
+          icon: "server",
+          title: "ETL & Data Quality",
+          copy: "Structure messy data into something reliable and usable."
+        },
+        {
+          icon: "target",
+          title: "Decision Metrics",
+          copy: "Define KPIs that actually support the next move."
+        }
+      ],
+      projectIds: ["founder-forward", "recommerce-routing"],
       highlights: [
-        { value: "93%", label: "Efficiency lift across Founder Forward database workflows" },
+        { value: "93%", label: "Efficiency lift across Founder Forward workflows" },
         { value: "45%", label: "Improvement in data reliability across 5K+ records" },
         { value: "40%", label: "Faster time to insight from dashboard delivery" }
       ]
     },
     {
       id: "scientist",
-      label: "Scientist",
+      label: "Data Scientist",
       icon: "brain",
-      title: "Model for practical outcomes",
-      tagline: "I enjoy model work most when the result actually changes a business or research decision.",
-      copy: "This view centers forecasting, classification, evaluation, and the discipline of testing whether a model is useful beyond the notebook.",
+      heroTitle: "Data Scientist",
+      tagline: "Models with practical stakes and measurable outcomes.",
       accents: ["Forecasting", "Evaluation", "Applied ML"],
+      expertise: [
+        {
+          icon: "brain",
+          title: "Predictive Modeling",
+          copy: "Build models tied to ranking, forecasting, and classification problems."
+        },
+        {
+          icon: "search",
+          title: "Evaluation",
+          copy: "Test whether a model is actually useful beyond headline accuracy."
+        },
+        {
+          icon: "compass",
+          title: "Research Framing",
+          copy: "Work through ambiguity with structured experiments and iteration."
+        }
+      ],
+      projectIds: ["sbsf-agritech", "fraud-detection", "povertypred"],
       highlights: [
         { value: "23%", label: "Model performance improvement in agritech suitability modeling" },
         { value: "0.97", label: "Macro-F1 in factuality classification" },
@@ -61,35 +95,66 @@ window.portfolioContent = {
       ]
     },
     {
-      id: "builder",
-      label: "Builder",
+      id: "ai-developer",
+      label: "AI Developer",
       icon: "workflow",
-      title: "Design systems people can use",
-      tagline: "I care about workflows that feel structured, useful, and ready for real teams rather than demos.",
-      copy: "This lens is about end-to-end systems: decision trees, AI-assisted workflows, and operational tools that reduce friction in how work gets done.",
-      accents: ["AI workflows", "Decision systems", "Operational design"],
+      heroTitle: "AI Developer",
+      tagline: "AI tools, evaluation loops, and workflows people can use.",
+      accents: ["LLM workflows", "AI evaluation", "Applied systems"],
+      expertise: [
+        {
+          icon: "spark",
+          title: "LLM & NLP Workflows",
+          copy: "Prototype tools that combine language models with real tasks."
+        },
+        {
+          icon: "workflow",
+          title: "System Design",
+          copy: "Shape AI flows that feel useful, structured, and grounded."
+        },
+        {
+          icon: "shield",
+          title: "Evaluation",
+          copy: "Set up checks so AI outputs are measurable and trustworthy."
+        }
+      ],
+      projectIds: ["data4good-nlp", "recommerce-routing", "fraud-detection"],
+      highlights: [
+        { value: "0.97", label: "Macro-F1 in factuality classification" },
+        { value: "12", label: "NLP and generative AI models evaluated" },
+        { value: "$500", label: "Saved per returned product in recommerce routing" }
+      ]
+    },
+    {
+      id: "full-spectrum",
+      label: "Full Spectrum",
+      icon: "layers",
+      heroTitle: "Data Scientist, Analytics & AI Developer",
+      tagline: "The full picture across analytics, modeling, and AI systems.",
+      accents: ["Analytics", "Modeling", "AI workflows"],
+      expertise: [
+        {
+          icon: "layers",
+          title: "Analytics Systems",
+          copy: "Reliable reporting layers, metrics, and workflows."
+        },
+        {
+          icon: "brain",
+          title: "Predictive Models",
+          copy: "Modeling work tied to operational and research outcomes."
+        },
+        {
+          icon: "workflow",
+          title: "AI Workflows",
+          copy: "Practical systems shaped around usefulness and evaluation."
+        }
+      ],
+      projectIds: ["recommerce-routing", "founder-forward", "data4good-nlp"],
       highlights: [
         { value: "$500", label: "Saved per returned product in recommerce routing" },
-        { value: "-20%", label: "Customer friction points reduced in recommerce operations" },
-        { value: "6", label: "Database processes automated at Founder Forward" }
+        { value: "93%", label: "Efficiency lift across Founder Forward workflows" },
+        { value: "0.97", label: "Macro-F1 in factuality classification" }
       ]
-    }
-  ],
-  focusCards: [
-    {
-      icon: "layers",
-      title: "Analytics Systems",
-      copy: "Reliable pipelines, KPI design, and reporting layers that make business decisions faster."
-    },
-    {
-      icon: "spark",
-      title: "Predictive Models",
-      copy: "Classification, forecasting, and optimization work tied to measurable operational outcomes."
-    },
-    {
-      icon: "compass",
-      title: "AI Workflows",
-      copy: "LLM-assisted and ML-powered systems framed around clarity, evaluation, and usefulness."
     }
   ],
   exploreModes: [
@@ -202,6 +267,7 @@ window.portfolioContent = {
   ],
   projects: [
     {
+      id: "recommerce-routing",
       icon: "route",
       title: "Recommerce Decision Tree Optimization",
       shortTitle: "Recommerce Routing Model",
@@ -217,6 +283,7 @@ window.portfolioContent = {
       ]
     },
     {
+      id: "founder-forward",
       icon: "grid",
       title: "Founder Forward Analytics and Dashboard System",
       shortTitle: "Founder Forward BI System",
@@ -233,6 +300,7 @@ window.portfolioContent = {
       ]
     },
     {
+      id: "sbsf-agritech",
       icon: "globe",
       title: "SBSF Agritech Growth Curve Modeling",
       shortTitle: "SBSF Agritech Modeling",
@@ -249,6 +317,7 @@ window.portfolioContent = {
       ]
     },
     {
+      id: "data4good-nlp",
       icon: "spark",
       title: "Data4Good Factuality Classification Pipeline",
       shortTitle: "Data4Good NLP Pipeline",
@@ -264,6 +333,7 @@ window.portfolioContent = {
       ]
     },
     {
+      id: "fraud-detection",
       icon: "shield",
       title: "Fraud Detection Modeling Challenge",
       shortTitle: "Fraud Detection Models",
@@ -279,6 +349,7 @@ window.portfolioContent = {
       ]
     },
     {
+      id: "povertypred",
       icon: "globe",
       title: "PovertyPred HGCN Research Project",
       shortTitle: "PovertyPred HGCN",
