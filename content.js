@@ -138,6 +138,13 @@ window.portfolioContent = {
       ]
     },
     {
+      role: "Database Analyst",
+      company: "Fito Network",
+      location: "Colorado, USA",
+      dates: "Jul 2023 - Nov 2023",
+      summary: []
+    },
+    {
       role: "Data Scientist",
       company: "SBSF Agritech",
       location: "Berlin, Germany",
