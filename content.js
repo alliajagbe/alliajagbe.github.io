@@ -31,6 +31,50 @@ window.portfolioContent = {
       { value: "0.97", label: "Macro-F1 in factuality classification" }
     ]
   },
+  homeModes: [
+    {
+      id: "analyst",
+      label: "Analyst",
+      icon: "chart",
+      title: "Clarify the signal",
+      tagline: "I like turning messy operations into cleaner metrics, reporting systems, and faster decisions.",
+      copy: "This lens is closest to KPI design, dashboard thinking, ETL cleanup, and the work of making a team trust its numbers again.",
+      accents: ["Dashboards", "KPI logic", "Data cleanup"],
+      highlights: [
+        { value: "93%", label: "Efficiency lift across Founder Forward database workflows" },
+        { value: "45%", label: "Improvement in data reliability across 5K+ records" },
+        { value: "40%", label: "Faster time to insight from dashboard delivery" }
+      ]
+    },
+    {
+      id: "scientist",
+      label: "Scientist",
+      icon: "brain",
+      title: "Model for practical outcomes",
+      tagline: "I enjoy model work most when the result actually changes a business or research decision.",
+      copy: "This view centers forecasting, classification, evaluation, and the discipline of testing whether a model is useful beyond the notebook.",
+      accents: ["Forecasting", "Evaluation", "Applied ML"],
+      highlights: [
+        { value: "23%", label: "Model performance improvement in agritech suitability modeling" },
+        { value: "0.97", label: "Macro-F1 in factuality classification" },
+        { value: "84%", label: "Capture rate in fraud detection modeling" }
+      ]
+    },
+    {
+      id: "builder",
+      label: "Builder",
+      icon: "workflow",
+      title: "Design systems people can use",
+      tagline: "I care about workflows that feel structured, useful, and ready for real teams rather than demos.",
+      copy: "This lens is about end-to-end systems: decision trees, AI-assisted workflows, and operational tools that reduce friction in how work gets done.",
+      accents: ["AI workflows", "Decision systems", "Operational design"],
+      highlights: [
+        { value: "$500", label: "Saved per returned product in recommerce routing" },
+        { value: "-20%", label: "Customer friction points reduced in recommerce operations" },
+        { value: "6", label: "Database processes automated at Founder Forward" }
+      ]
+    }
+  ],
   focusCards: [
     {
       icon: "layers",

@@ -192,7 +192,7 @@ function renderHome() {
     return;
   }
 
-  const { profile, focusCards, projects, experience, education, exploreModes } = portfolioContent;
+  const { profile, homeModes, focusCards, projects, experience, education, exploreModes } = portfolioContent;
   const impact = document.querySelector("#home-impact");
   const focus = document.querySelector("#home-focus");
   const lens = document.querySelector("#home-lens");
@@ -201,6 +201,7 @@ function renderHome() {
   const cta = document.querySelector("#home-cta");
 
   document.title = `${profile.name} | ${profile.title}`;
+  const defaultHomeMode = homeModes[0];
 
   hero.innerHTML = `
     <div class="hero-wordmark-shell">
@@ -214,7 +215,31 @@ function renderHome() {
       </div>
       <h1>${profile.title}</h1>
     </div>
-    <p class="hero-tagline">${profile.tagline}</p>
+    <div class="home-mode-switcher" data-animate>
+      <div class="card-topline">
+        <p class="section-label">Data mode</p>
+      </div>
+      <div class="home-mode-buttons" role="tablist" aria-label="Explore Alli Ajagbe by work mode">
+        ${homeModes
+          .map(
+            (mode, index) => `
+              <button
+                class="home-mode-button${index === 0 ? " is-active" : ""}"
+                type="button"
+                data-home-mode="${mode.id}"
+                role="tab"
+                aria-selected="${index === 0 ? "true" : "false"}"
+              >
+                ${mode.label}
+              </button>
+            `
+          )
+          .join("")}
+      </div>
+      <div class="home-mode-panel" id="home-mode-panel">
+        ${renderHomeModePanel(defaultHomeMode)}
+      </div>
+    </div>
     <p class="editorial-paragraph">${profile.bio}</p>
     <div class="editorial-meta">
       <span>${profile.location}</span>
@@ -234,21 +259,12 @@ function renderHome() {
           <img class="panel-logo" src="${profile.logoIconUrl}" alt="${profile.name} logo" />
         </div>
         <div>
-          <p class="section-label">At a glance</p>
+          <p class="section-label" id="home-impact-mode">${defaultHomeMode.label} view</p>
           <h3>Selected outcomes</h3>
         </div>
       </div>
-      <div class="outcome-list">
-        ${profile.highlights
-          .map(
-            (item, index) => `
-              <article class="outcome-row" data-animate style="--delay: ${index * 0.08}s">
-                <div class="outcome-value">${item.value}</div>
-                <p class="outcome-label">${item.label}</p>
-              </article>
-            `
-          )
-          .join("")}
+      <div class="outcome-list" id="home-outcome-list">
+        ${renderOutcomeRows(defaultHomeMode.highlights)}
       </div>
     </div>
   `;
@@ -444,6 +460,36 @@ function renderHome() {
   `;
 
   setupHomeAccordions();
+  setupHomeModes(homeModes);
+}
+
+function renderHomeModePanel(mode) {
+  return `
+    <div class="home-mode-panel__header">
+      <div class="feature-icon feature-icon--mode">${icon(mode.icon)}</div>
+      <div class="home-mode-panel__heading">
+        <p class="home-mode-panel__eyebrow">${mode.title}</p>
+        <p class="hero-tagline home-mode-panel__tagline">${mode.tagline}</p>
+      </div>
+    </div>
+    <p class="home-mode-panel__copy">${mode.copy}</p>
+    <div class="chip-list">
+      ${mode.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
+    </div>
+  `;
+}
+
+function renderOutcomeRows(items) {
+  return items
+    .map(
+      (item, index) => `
+        <article class="outcome-row" data-animate style="--delay: ${index * 0.08}s">
+          <div class="outcome-value">${item.value}</div>
+          <p class="outcome-label">${item.label}</p>
+        </article>
+      `
+    )
+    .join("");
 }
 
 function setupLensSwitcher(modes) {
@@ -469,6 +515,39 @@ function setupLensSwitcher(modes) {
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
       const nextMode = modes.find((mode) => mode.id === button.dataset.lens);
+      if (!nextMode) {
+        return;
+      }
+
+      buttons.forEach((currentButton) => {
+        const isActive = currentButton === button;
+        currentButton.classList.toggle("is-active", isActive);
+        currentButton.setAttribute("aria-selected", String(isActive));
+      });
+
+      renderMode(nextMode);
+    });
+  });
+}
+
+function setupHomeModes(modes) {
+  const buttons = document.querySelectorAll("[data-home-mode]");
+  const panel = document.querySelector("#home-mode-panel");
+  const outcomes = document.querySelector("#home-outcome-list");
+  const impactMode = document.querySelector("#home-impact-mode");
+  if (!buttons.length || !panel || !outcomes || !impactMode) {
+    return;
+  }
+
+  const renderMode = (mode) => {
+    panel.innerHTML = renderHomeModePanel(mode);
+    outcomes.innerHTML = renderOutcomeRows(mode.highlights);
+    impactMode.textContent = `${mode.label} view`;
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextMode = modes.find((mode) => mode.id === button.dataset.homeMode);
       if (!nextMode) {
         return;
       }
