@@ -419,75 +419,68 @@ h3 {
   color: var(--heading);
 }
 
-.home-mode-switcher {
+.home-choice-grid {
   display: grid;
-  gap: 0.85rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
 }
 
-.home-mode-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-}
-
-.home-mode-button {
+.home-choice-card {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  min-height: 11.25rem;
+  padding: 1.1rem;
   border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
-  color: var(--text-soft);
-  border-radius: 999px;
-  padding: 0.58rem 0.88rem;
+  border-radius: 1.1rem;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  color: var(--heading);
+  text-align: left;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 0.92rem;
-  line-height: 1.2;
-  transition: background-color var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+  transition: border-color var(--transition), background-color var(--transition), transform var(--transition);
 }
 
-.home-mode-button:hover,
-.home-mode-button:focus-visible,
-.home-mode-button.is-active {
-  color: var(--heading);
+.home-choice-card:hover,
+.home-choice-card:focus-visible,
+.home-choice-card.is-active {
   background: var(--surface-strong);
-  border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
   outline: none;
 }
 
-.home-mode-panel {
-  display: grid;
-  gap: 0.85rem;
-  padding: 1rem 1.05rem;
-  border: 1px solid var(--border);
+.home-choice-card__icon {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.72rem;
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  background: var(--paper-beige);
+  border: 1px solid var(--paper-border);
+  color: var(--accent-strong);
 }
 
-.home-mode-panel__header {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.85rem;
-  align-items: start;
+.home-choice-card__icon svg {
+  width: 100%;
+  height: 100%;
 }
 
-.home-mode-panel__heading {
-  display: grid;
-  gap: 0.2rem;
-}
-
-.home-mode-panel__eyebrow {
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.home-mode-panel__tagline {
-  max-width: 32rem;
+.home-choice-card__label {
   font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-.home-mode-panel__copy {
-  color: var(--text-soft);
+.home-selected-summary {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.home-selected-summary__tagline {
+  max-width: 36rem;
 }
 
 .editorial-meta {
@@ -1347,6 +1340,10 @@ h1,
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .home-choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .card-grid--four {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1444,6 +1441,14 @@ h1,
   .achievement-card,
   .timeline-head {
     flex-direction: column;
+  }
+
+  .home-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-choice-card {
+    min-height: auto;
   }
 
   .flow-step {

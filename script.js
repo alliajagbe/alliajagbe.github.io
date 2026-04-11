@@ -201,179 +201,77 @@ function renderHome() {
   const cta = document.querySelector("#home-cta");
 
   document.title = `${profile.name} | ${profile.title}`;
-  const defaultHomeMode = homeModes[0];
 
   hero.innerHTML = `
     <div class="hero-wordmark-shell">
       <img class="hero-wordmark" src="${profile.logoWordmarkUrl}" alt="${profile.name} wordmark" />
     </div>
-    <div class="editorial-heading">
-      <div class="editorial-kicker-row">
-        <p class="section-label">Profile</p>
-        <span class="editorial-kicker-sep" aria-hidden="true"></span>
-        <p class="editorial-kicker-name">${profile.name}</p>
-      </div>
-      <h1 id="home-mode-title">${defaultHomeMode.heroTitle}</h1>
+    <div class="editorial-heading" data-animate>
+      <p class="section-label">Choose a view</p>
+      <h1>Pick how you want to explore.</h1>
     </div>
-    <div class="home-mode-switcher" data-animate>
-      <div class="card-topline">
-        <p class="section-label">Choose a view</p>
-      </div>
-      <div class="home-mode-buttons" role="tablist" aria-label="Explore Alli Ajagbe by work mode">
-        ${homeModes
-          .map(
-            (mode, index) => `
-              <button
-                class="home-mode-button${index === 0 ? " is-active" : ""}"
-                type="button"
-                data-home-mode="${mode.id}"
-                role="tab"
-                aria-selected="${index === 0 ? "true" : "false"}"
-              >
-                ${mode.label}
-              </button>
-            `
-          )
-          .join("")}
-      </div>
-      <div class="home-mode-panel" id="home-mode-panel">
-        ${renderHomeModePanel(defaultHomeMode)}
-      </div>
+    <div class="home-choice-grid" id="home-choice-grid" role="tablist" aria-label="Choose a profile view">
+      ${renderHomeModeCards(homeModes)}
     </div>
-    <div class="editorial-meta">
-      <span>${profile.location}</span>
-      <span>${profile.relocation}</span>
-      <span>${profile.availability}</span>
-    </div>
-    <div class="hero-actions">
-      <a class="button button--primary" href="/projects/">Explore projects</a>
-      <a class="button button--secondary" href="${profile.resumeUrl}" target="_blank" rel="noreferrer">View resume</a>
-    </div>
-  `;
-
-  impact.innerHTML = `
-    <div class="editorial-callout editorial-callout--outcomes">
-      <div class="panel-brand">
-        <div class="panel-logo-shell">
-          <img class="panel-logo" src="${profile.logoIconUrl}" alt="${profile.name} logo" />
-        </div>
-        <div>
-          <p class="section-label" id="home-impact-mode">${defaultHomeMode.label} view</p>
-          <h3>Selected outcomes</h3>
-        </div>
-      </div>
-      <div class="outcome-list" id="home-outcome-list">
-        ${renderOutcomeRows(defaultHomeMode.highlights)}
-      </div>
-    </div>
-  `;
-
-  focus.innerHTML = `
-    <article class="home-accordion is-open" data-home-accordion data-animate>
-      <button class="home-accordion__button" type="button" aria-expanded="true">
-        <div class="home-accordion__heading">
-          <p class="section-label" id="home-expertise-label">Expertise</p>
-          <h2>What this view emphasizes.</h2>
-        </div>
-        <div class="home-accordion__meta">
-          <span id="home-expertise-count">${defaultHomeMode.expertise.length} areas</span>
-          <span class="home-accordion__caret">${icon("share")}</span>
-        </div>
-      </button>
-      <div class="home-accordion__panel" id="home-expertise-list">
-        ${renderHomeExpertise(defaultHomeMode.expertise)}
-      </div>
-    </article>
+    <div class="home-selected-summary" id="home-selected-summary" hidden></div>
   `;
 
   if (lens) {
     lens.hidden = true;
   }
 
-  projectPreview.innerHTML = `
-    <article class="home-accordion" data-home-accordion data-animate>
-      <button class="home-accordion__button" type="button" aria-expanded="false">
-        <div class="home-accordion__heading">
-          <p class="section-label">Selected work</p>
-          <h2>Projects in this view.</h2>
-        </div>
-        <div class="home-accordion__meta">
-          <span id="home-project-count">${defaultHomeMode.projectIds.length} projects</span>
-          <span class="home-accordion__caret">${icon("share")}</span>
-        </div>
-      </button>
-      <div class="home-accordion__panel" id="home-project-list">
-        ${renderHomeProjects(defaultHomeMode, projects)}
-      </div>
-    </article>
-  `;
-
-  snapshot.innerHTML = `
-    <article class="home-accordion" data-home-accordion data-animate>
-      <button class="home-accordion__button" type="button" aria-expanded="false">
-        <div class="home-accordion__heading">
-          <p class="section-label">Current chapter</p>
-          <h2>Where the work sits right now.</h2>
-        </div>
-        <div class="home-accordion__meta">
-          <span>2 records</span>
-          <span class="home-accordion__caret">${icon("share")}</span>
-        </div>
-      </button>
-      <div class="home-accordion__panel">
-        <div class="editorial-records">
-          <article class="editorial-record" data-animate>
-            <div class="card-topline">
-              <span class="inline-icon">${icon("briefcase")}</span>
-              <p class="section-label">Current work</p>
-            </div>
-            <h3>${experience[0].role}</h3>
-            <p class="snapshot-meta">${experience[0].company} / ${experience[0].location}</p>
-            <p class="snapshot-copy">${experience[0].dates}</p>
-            <a class="text-link" href="/about/">View experience</a>
-          </article>
-          <article class="editorial-record" data-animate style="--delay: 0.08s">
-            <div class="card-topline">
-              <span class="inline-icon">${icon("graduation")}</span>
-              <p class="section-label">Education</p>
-            </div>
-            <h3>${education[0].credential}</h3>
-            <p class="snapshot-meta">${education[0].institution}</p>
-            <p class="snapshot-copy">${education[0].location}</p>
-            <a class="text-link" href="/about/">See background</a>
-          </article>
-        </div>
-      </div>
-    </article>
-  `;
-
-  cta.innerHTML = `
-    <div>
-      <p class="section-label">Connect</p>
-      <h2>Open to roles, collaborations, and project conversations.</h2>
-      <p class="detail-copy">If there is a data problem, a reporting system, or an AI workflow that needs better structure, I would be glad to talk through it.</p>
-    </div>
-    <div class="cta-actions">
-      <a class="button button--primary" href="/contact/">Get in touch</a>
-      <a class="button button--secondary" href="/expertise/">View expertise</a>
-    </div>
-  `;
-
-  setupHomeAccordions();
   setupHomeModes(homeModes, projects);
+  [impact, focus, projectPreview, snapshot, cta].forEach((section) => {
+    if (section) {
+      section.hidden = true;
+      section.innerHTML = "";
+    }
+  });
 }
 
-function renderHomeModePanel(mode) {
+function renderHomeModeCards(modes) {
+  return modes
+    .map(
+      (mode, index) => `
+        <button
+          class="home-choice-card"
+          type="button"
+          data-home-mode="${mode.id}"
+          data-animate
+          style="--delay: ${index * 0.06}s"
+          role="tab"
+          aria-selected="false"
+        >
+          <span class="home-choice-card__icon">${icon(mode.icon)}</span>
+          <span class="home-choice-card__label">${mode.label}</span>
+        </button>
+      `
+    )
+    .join("");
+}
+
+function renderHomeSelectedSummary(mode, profile) {
   return `
-    <div class="home-mode-panel__header">
-      <div class="feature-icon feature-icon--mode">${icon(mode.icon)}</div>
-      <div class="home-mode-panel__heading">
-        <p class="home-mode-panel__eyebrow">${mode.label}</p>
-        <p class="hero-tagline home-mode-panel__tagline">${mode.tagline}</p>
+    <div class="editorial-heading" data-animate>
+      <div class="editorial-kicker-row">
+        <p class="section-label">Profile</p>
+        <span class="editorial-kicker-sep" aria-hidden="true"></span>
+        <p class="editorial-kicker-name">${profile.name}</p>
       </div>
+      <h1 id="home-mode-title">${mode.heroTitle}</h1>
     </div>
-    <div class="chip-list">
+    <p class="hero-tagline home-selected-summary__tagline" data-animate>${mode.tagline}</p>
+    <div class="chip-list" data-animate>
       ${mode.accents.map((item) => `<span class="tag">${item}</span>`).join("")}
+    </div>
+    <div class="editorial-meta" data-animate>
+      <span>${profile.location}</span>
+      <span>${profile.relocation}</span>
+      <span>${profile.availability}</span>
+    </div>
+    <div class="hero-actions" data-animate>
+      <a class="button button--primary" href="/projects/">Explore projects</a>
+      <a class="button button--secondary" href="${profile.resumeUrl}" target="_blank" rel="noreferrer">View resume</a>
     </div>
   `;
 }
@@ -455,6 +353,129 @@ function renderHomeProjects(mode, projects) {
   `;
 }
 
+function populateHomeSections(mode, projects, experience, education, profile) {
+  const impact = document.querySelector("#home-impact");
+  const focus = document.querySelector("#home-focus");
+  const projectPreview = document.querySelector("#home-project-preview");
+  const snapshot = document.querySelector("#home-snapshot");
+  const cta = document.querySelector("#home-cta");
+  if (!impact || !focus || !projectPreview || !snapshot || !cta) {
+    return;
+  }
+
+  impact.hidden = false;
+  focus.hidden = false;
+  projectPreview.hidden = false;
+  snapshot.hidden = false;
+  cta.hidden = false;
+
+  impact.innerHTML = `
+    <div class="editorial-callout editorial-callout--outcomes" data-animate>
+      <div class="panel-brand">
+        <div class="panel-logo-shell">
+          <img class="panel-logo" src="${profile.logoIconUrl}" alt="${profile.name} logo" />
+        </div>
+        <div>
+          <p class="section-label" id="home-impact-mode">${mode.label}</p>
+          <h3>Selected outcomes</h3>
+        </div>
+      </div>
+      <div class="outcome-list" id="home-outcome-list">
+        ${renderOutcomeRows(mode.highlights)}
+      </div>
+    </div>
+  `;
+
+  focus.innerHTML = `
+    <article class="home-accordion is-open" data-home-accordion data-animate>
+      <button class="home-accordion__button" type="button" aria-expanded="true">
+        <div class="home-accordion__heading">
+          <p class="section-label">Expertise</p>
+          <h2>What this view emphasizes.</h2>
+        </div>
+        <div class="home-accordion__meta">
+          <span id="home-expertise-count">${mode.expertise.length} areas</span>
+          <span class="home-accordion__caret">${icon("share")}</span>
+        </div>
+      </button>
+      <div class="home-accordion__panel" id="home-expertise-list">
+        ${renderHomeExpertise(mode.expertise)}
+      </div>
+    </article>
+  `;
+
+  projectPreview.innerHTML = `
+    <article class="home-accordion" data-home-accordion data-animate>
+      <button class="home-accordion__button" type="button" aria-expanded="false">
+        <div class="home-accordion__heading">
+          <p class="section-label">Selected work</p>
+          <h2>Projects in this view.</h2>
+        </div>
+        <div class="home-accordion__meta">
+          <span id="home-project-count">${Math.min(mode.projectIds.length, 3)} projects</span>
+          <span class="home-accordion__caret">${icon("share")}</span>
+        </div>
+      </button>
+      <div class="home-accordion__panel" id="home-project-list">
+        ${renderHomeProjects(mode, projects)}
+      </div>
+    </article>
+  `;
+
+  snapshot.innerHTML = `
+    <article class="home-accordion" data-home-accordion data-animate>
+      <button class="home-accordion__button" type="button" aria-expanded="false">
+        <div class="home-accordion__heading">
+          <p class="section-label">Current chapter</p>
+          <h2>Where the work sits right now.</h2>
+        </div>
+        <div class="home-accordion__meta">
+          <span>2 records</span>
+          <span class="home-accordion__caret">${icon("share")}</span>
+        </div>
+      </button>
+      <div class="home-accordion__panel">
+        <div class="editorial-records">
+          <article class="editorial-record" data-animate>
+            <div class="card-topline">
+              <span class="inline-icon">${icon("briefcase")}</span>
+              <p class="section-label">Current work</p>
+            </div>
+            <h3>${experience[0].role}</h3>
+            <p class="snapshot-meta">${experience[0].company} / ${experience[0].location}</p>
+            <p class="snapshot-copy">${experience[0].dates}</p>
+            <a class="text-link" href="/about/">View experience</a>
+          </article>
+          <article class="editorial-record" data-animate style="--delay: 0.08s">
+            <div class="card-topline">
+              <span class="inline-icon">${icon("graduation")}</span>
+              <p class="section-label">Education</p>
+            </div>
+            <h3>${education[0].credential}</h3>
+            <p class="snapshot-meta">${education[0].institution}</p>
+            <p class="snapshot-copy">${education[0].location}</p>
+            <a class="text-link" href="/about/">See background</a>
+          </article>
+        </div>
+      </div>
+    </article>
+  `;
+
+  cta.innerHTML = `
+    <div data-animate>
+      <p class="section-label">Connect</p>
+      <h2>Open to roles, collaborations, and project conversations.</h2>
+    </div>
+    <div class="cta-actions" data-animate>
+      <a class="button button--primary" href="/contact/">Get in touch</a>
+      <a class="button button--secondary" href="/expertise/">View expertise</a>
+    </div>
+  `;
+
+  setupHomeAccordions();
+  revealRenderedContent([impact, focus, projectPreview, snapshot, cta]);
+}
+
 function setupLensSwitcher(modes) {
   const buttons = document.querySelectorAll(".lens-button");
   const panel = document.querySelector("#lens-panel");
@@ -495,27 +516,16 @@ function setupLensSwitcher(modes) {
 
 function setupHomeModes(modes, projects) {
   const buttons = document.querySelectorAll("[data-home-mode]");
-  const title = document.querySelector("#home-mode-title");
-  const panel = document.querySelector("#home-mode-panel");
-  const outcomes = document.querySelector("#home-outcome-list");
-  const impactMode = document.querySelector("#home-impact-mode");
-  const expertiseList = document.querySelector("#home-expertise-list");
-  const expertiseCount = document.querySelector("#home-expertise-count");
-  const projectList = document.querySelector("#home-project-list");
-  const projectCount = document.querySelector("#home-project-count");
-  if (!buttons.length || !panel || !outcomes || !impactMode || !expertiseList || !expertiseCount || !projectList || !projectCount || !title) {
+  const summary = document.querySelector("#home-selected-summary");
+  if (!buttons.length || !summary) {
     return;
   }
 
   const renderMode = (mode) => {
-    title.textContent = mode.heroTitle;
-    panel.innerHTML = renderHomeModePanel(mode);
-    outcomes.innerHTML = renderOutcomeRows(mode.highlights);
-    expertiseList.innerHTML = renderHomeExpertise(mode.expertise);
-    projectList.innerHTML = renderHomeProjects(mode, projects);
-    impactMode.textContent = `${mode.label} view`;
-    expertiseCount.textContent = `${mode.expertise.length} areas`;
-    projectCount.textContent = `${Math.min(mode.projectIds.length, 3)} projects`;
+    summary.hidden = false;
+    summary.innerHTML = renderHomeSelectedSummary(mode, portfolioContent.profile);
+    populateHomeSections(mode, projects, portfolioContent.experience, portfolioContent.education, portfolioContent.profile);
+    revealRenderedContent([summary]);
   };
 
   buttons.forEach((button) => {
@@ -534,6 +544,16 @@ function setupHomeModes(modes, projects) {
       renderMode(nextMode);
     });
   });
+}
+
+function revealRenderedContent(nodes) {
+  nodes
+    .filter(Boolean)
+    .forEach((node) => {
+      node.querySelectorAll("[data-animate]").forEach((element) => {
+        element.classList.add("is-visible");
+      });
+    });
 }
 
 function setupHomeAccordions() {
