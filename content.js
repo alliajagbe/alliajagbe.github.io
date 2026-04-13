@@ -6,7 +6,7 @@ window.portfolioContent = {
     tagline:
       "I build analytics systems, predictive models, and AI tools that help teams make clearer decisions.",
     bio:
-      "I work across consulting, operations, startup analytics, and social-impact machine learning. I am currently completing an MS in Business Analytics at Wake Forest after studying Data Science, Economics, and Business at Plaksha University.",
+      "I work across consulting, operations, analytics, and machine learning. I am currently completing an MS in Business Analytics at Wake Forest after studying Data Science, Economics, and Business at Plaksha University.",
     location: "Winston-Salem, NC",
     phone: "+1 743-240-7497",
     email: "ajagao25@wfu.edu",
@@ -19,8 +19,8 @@ window.portfolioContent = {
       "Experimentation",
       "Generative AI"
     ],
-    quickFacts: ["Open to relocation", "Social-impact technology", "Data storytelling", "Decision-focused analytics"],
-    interests: ["Social-impact technology", "Data storytelling", "Decision-focused analytics", "Applied AI"],
+    quickFacts: ["Open to relocation", "Data Science", "Data storytelling", "Decision-focused analytics"],
+    interests: ["Data Science", "Data storytelling", "Decision-focused analytics", "Applied AI"],
     resumeUrl: "/AlliAjagbeResume.pdf",
     logoIconUrl: "/assets/logo-icon.png?v=20260404e",
     logoWordmarkUrl: "/assets/logo-wordmark.png?v=20260404e",
