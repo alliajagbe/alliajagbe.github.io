@@ -20,7 +20,7 @@ window.portfolioContent = {
       "Generative AI"
     ],
     quickFacts: ["Open to relocation", "Data Science", "Data storytelling", "Decision-focused analytics"],
-    interests: ["Data Science", "Data storytelling", "Decision-focused analytics", "Applied AI"],
+    interests: ["Data Science", "Data storytelling", "Decision-focused analytics", "Applied AI", "Social Impact"],
     resumeUrl: "/AlliAjagbeResume.pdf",
     logoIconUrl: "/assets/logo-icon.png?v=20260404e",
     logoWordmarkUrl: "/assets/logo-wordmark.png?v=20260404e",
