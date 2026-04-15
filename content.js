@@ -26,7 +26,7 @@ window.portfolioContent = {
     logoWordmarkUrl: "/assets/logo-wordmark.png?v=20260404e",
     highlights: [
       { value: "$500", label: "Saved per returned product in recommerce routing" },
-      { value: "93%", label: "Efficiency lift across Founder Forward database workflows" },
+      { value: "93%", label: "Efficiency lift across database workflows" },
       { value: "23%", label: "Model performance improvement in agritech suitability modeling" },
       { value: "0.97", label: "Macro-F1 in factuality classification" }
     ]
