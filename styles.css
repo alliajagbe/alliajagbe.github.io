@@ -428,21 +428,22 @@ h3 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.9rem;
   width: 100%;
-  max-width: 42rem;
+  max-width: 48rem;
   margin: 0 auto;
 }
 
 .home-choice-card {
   display: grid;
-  align-content: start;
+  align-content: center;
+  justify-items: center;
   gap: 0.9rem;
-  min-height: 11.25rem;
+  min-height: 12rem;
   padding: 1.1rem;
   border: 1px solid var(--border);
   border-radius: 1.1rem;
   background: color-mix(in srgb, var(--surface) 94%, transparent);
   color: var(--heading);
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   transition: border-color var(--transition), background-color var(--transition), transform var(--transition);
 }
@@ -481,9 +482,7 @@ h3 {
 
 .home-selected-summary {
   display: grid;
-  gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
+  gap: 1.15rem;
 }
 
 .home-selected-summary__topline {
@@ -495,6 +494,36 @@ h3 {
 
 .home-selected-summary__tagline {
   max-width: 36rem;
+}
+
+.home-selected-summary__modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.home-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.4rem;
+  padding: 0.55rem 0.82rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition), background-color var(--transition);
+}
+
+.home-mode-pill:hover,
+.home-mode-pill:focus-visible,
+.home-mode-pill.is-active {
+  color: var(--heading);
+  border-color: color-mix(in srgb, var(--accent) 20%, var(--border));
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  outline: none;
 }
 
 .text-link--button {
@@ -547,6 +576,80 @@ h3 {
 .project-card--editorial {
   padding: 1rem 0 0;
   border-top: 1px solid var(--border);
+}
+
+.home-document:not(.home-document--chooser) .home-document__column {
+  gap: 3rem;
+}
+
+.home-document:not(.home-document--chooser) .home-section {
+  gap: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.home-stack-section,
+.home-connect,
+.home-project-list,
+.home-record-list {
+  display: grid;
+}
+
+.home-stack-section {
+  gap: 1.2rem;
+}
+
+.home-stack-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.home-stack-heading h2,
+.home-connect h2 {
+  font-size: clamp(1.4rem, 1.18rem + 0.75vw, 2rem);
+}
+
+.home-stack-meta {
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.home-project-list,
+.home-record-list {
+  gap: 1rem;
+}
+
+.home-project-item,
+.editorial-note--inline,
+.editorial-record {
+  display: grid;
+  gap: 0.72rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.home-project-item h3,
+.editorial-note--inline h3,
+.editorial-record h3 {
+  font-size: 1.16rem;
+}
+
+.home-connect {
+  gap: 1rem;
+}
+
+.panel-brand--compact {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.panel-logo-shell--compact {
+  width: 4.2rem;
+  height: 4.2rem;
+  padding: 0.42rem;
 }
 
 .editorial-records {
@@ -1301,7 +1404,11 @@ h1,
 .home-document--chooser #home-hero {
   justify-items: center;
   text-align: center;
-  gap: 1.5rem;
+  gap: 1.6rem;
+}
+
+.home-document--chooser .home-choice-grid {
+  margin-top: 0.35rem;
 }
 
 .footer-grid {
@@ -1439,6 +1546,11 @@ h1,
     gap: 2rem;
   }
 
+  .home-stack-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .editorial-entry {
     grid-template-columns: 1fr;
   }
@@ -1492,6 +1604,15 @@ h1,
   .home-selected-summary__topline {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .home-selected-summary__modes {
+    gap: 0.5rem;
+  }
+
+  .home-mode-pill {
+    width: 100%;
+    justify-content: center;
   }
 
   .flow-step {
