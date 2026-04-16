@@ -27,12 +27,12 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=20260415a" />
+    <link rel="stylesheet" href="/styles.css?v=20260415c" />
   </head>
   <body data-page="home">
     <div class="site-shell">
       <header class="site-header">
-        <div class="container header-inner">
+        <div class="container header-inner header-inner--home">
           <a class="brand" href="/" aria-label="Go to homepage">
             <span class="brand-mark">
               <img class="brand-logo" id="brand-logo" src="/assets/logo-icon.png?v=20260404e" alt="Alli Ajagbe logo" />
@@ -43,65 +43,95 @@
             </span>
           </a>
 
-          <nav class="site-nav" aria-label="Primary navigation">
-            <a href="/about/" class="nav-link" data-page="about">About</a>
-            <a href="/projects/" class="nav-link" data-page="projects">Projects</a>
-            <a href="/expertise/" class="nav-link" data-page="services">Expertise</a>
-            <a href="/contact/" class="nav-link" data-page="contact">Contact</a>
+          <nav class="site-nav site-nav--home" aria-label="Primary navigation">
+            <a href="#about" class="nav-link nav-link--anchor"><span>01.</span> About</a>
+            <a href="#experience" class="nav-link nav-link--anchor"><span>02.</span> Experience</a>
+            <a href="#work" class="nav-link nav-link--anchor"><span>03.</span> Work</a>
+            <a href="#contact" class="nav-link nav-link--anchor"><span>04.</span> Contact</a>
           </nav>
 
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Activate dark mode">
-            <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
-            <span class="theme-toggle__label" id="theme-toggle-label">Light</span>
-          </button>
+          <div class="header-actions">
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Activate dark mode">
+              <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
+              <span class="theme-toggle__label" id="theme-toggle-label">Light</span>
+            </button>
+            <a class="resume-button" href="/AlliAjagbeResume.pdf" target="_blank" rel="noreferrer">Resume</a>
+          </div>
         </div>
       </header>
 
-      <main class="home-document">
-        <section class="section hero hero--document">
-          <div class="container home-document__column">
-            <div class="home-section home-section--hero" id="home-hero" data-animate></div>
-            <div class="home-section home-section--callout" id="home-impact" data-animate></div>
-            <div class="home-section" id="home-focus"></div>
-            <div class="home-section" id="home-lens"></div>
-            <div class="home-section" id="home-project-preview"></div>
-            <div class="home-section" id="home-snapshot"></div>
-            <div class="home-section home-section--cta" id="home-cta" data-animate></div>
+      <main class="editor-home" id="top">
+        <aside class="edge-rail edge-rail--left" id="home-social-rail" aria-label="Social links"></aside>
+        <aside class="edge-rail edge-rail--right" id="home-email-rail" aria-label="Email"></aside>
+
+        <section class="editor-home__hero" aria-labelledby="home-title">
+          <div class="container editor-home__container">
+            <div class="editor-home__hero-copy" id="home-hero-copy"></div>
+          </div>
+        </section>
+
+        <section class="editor-home__section" id="about" aria-labelledby="about-title">
+          <div class="container editor-home__container">
+            <div class="editor-home__heading">
+              <p class="editor-home__number">01.</p>
+              <h2 id="about-title">About</h2>
+              <span class="editor-home__line" aria-hidden="true"></span>
+            </div>
+            <div class="editor-home__about-grid">
+              <div class="editor-home__copy" id="home-about-copy"></div>
+              <div class="editor-home__aside" id="home-about-aside"></div>
+            </div>
+            <div class="editor-home__tech">
+              <p class="editor-home__eyebrow">Some tools I use</p>
+              <div class="editor-home__tech-list" id="home-about-tech"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="editor-home__section" id="experience" aria-labelledby="experience-title">
+          <div class="container editor-home__container">
+            <div class="editor-home__heading">
+              <p class="editor-home__number">02.</p>
+              <h2 id="experience-title">Experience</h2>
+              <span class="editor-home__line" aria-hidden="true"></span>
+            </div>
+            <div class="editor-home__experience-grid">
+              <div class="editor-home__tabs" id="home-experience-tabs" role="tablist" aria-label="Experience"></div>
+              <div class="editor-home__tab-panel" id="home-experience-panel"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="editor-home__section" id="work" aria-labelledby="work-title">
+          <div class="container editor-home__container">
+            <div class="editor-home__heading">
+              <p class="editor-home__number">03.</p>
+              <h2 id="work-title">Selected Work</h2>
+              <span class="editor-home__line" aria-hidden="true"></span>
+            </div>
+            <div class="editor-home__featured-work" id="home-featured-work"></div>
+            <div class="editor-home__more-work" id="home-more-work" hidden></div>
+            <div class="editor-home__actions">
+              <button class="ghost-button" id="home-work-toggle" type="button" aria-expanded="false">Show More</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="editor-home__section editor-home__section--contact" id="contact" aria-labelledby="contact-title">
+          <div class="container editor-home__container editor-home__container--narrow">
+            <div class="editor-home__contact" id="home-contact-copy"></div>
           </div>
         </section>
       </main>
 
-      <footer class="site-footer">
-        <div class="container footer-grid">
-          <div class="footer-branding">
-            <div class="footer-wordmark-shell">
-              <img class="footer-wordmark" id="footer-wordmark" src="/assets/logo-wordmark.png?v=20260404e" alt="Alli Ajagbe wordmark" />
-            </div>
-            <p class="section-label">Portfolio</p>
-            <h3 id="footer-name">Alli Ajagbe</h3>
-            <p id="footer-note">Portfolio summary.</p>
-          </div>
-          <div class="footer-links-group">
-            <p class="footer-heading">Explore</p>
-            <div class="footer-links" id="footer-secondary-links"></div>
-          </div>
-          <div class="footer-links-group">
-            <p class="footer-heading">Connect</p>
-            <div class="footer-links" id="footer-socials"></div>
-          </div>
-          <div class="footer-links-group">
-            <p class="footer-heading">Resume</p>
-            <a class="footer-resume-link" id="footer-resume-link" href="/AlliAjagbeResume.pdf" download>View / download resume</a>
-          </div>
-        </div>
-        <div class="container footer-bottom">
-          <p id="footer-meta">Analytics engineering, machine learning, and decision-focused data products.</p>
-          <p>&copy; <span id="current-year"></span> <span id="footer-year-name">Alli Ajagbe</span></p>
+      <footer class="site-footer site-footer--minimal">
+        <div class="container site-footer--minimal__inner">
+          <p>Designed and built by <span id="footer-year-name">Alli Ajagbe</span>.</p>
         </div>
       </footer>
     </div>
 
-    <script src="/content.js?v=20260411c" defer></script>
-    <script src="/script.js?v=20260415a" defer></script>
+    <script src="/content.js?v=20260415c" defer></script>
+    <script src="/script.js?v=20260415c" defer></script>
   </body>
 </html>

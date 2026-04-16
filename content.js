@@ -3,10 +3,20 @@ window.portfolioContent = {
     name: "Alli Ajagbe",
     brandTag: "Data science, analytics, and AI",
     title: "Data Scientist, Analytics & AI Developer",
+    homeIntro: "Hi, my name is",
+    homeStatement: "I build data products, models, and AI tools.",
     tagline:
       "I build analytics systems, predictive models, and AI tools that help teams make clearer decisions.",
+    homeSummary:
+      "I work across analytics, machine learning, and decision systems, building structured tools that help teams move from messy data to measurable action.",
     bio:
       "I work across consulting, operations, analytics, and machine learning. I am currently completing an MS in Business Analytics at Wake Forest after studying Data Science, Economics, and Business at Plaksha University.",
+    aboutParagraphs: [
+      "I enjoy building analytical systems that make decisions clearer. My work has moved between consulting, startup operations, machine learning, and social-impact data projects.",
+      "Right now I am completing an MS in Business Analytics at Wake Forest, after studying Data Science, Economics, and Business at Plaksha University."
+    ],
+    contactBlurb:
+      "I am open to roles, collaborations, and thoughtful conversations across data science, analytics, and AI.",
     location: "Winston-Salem, NC",
     phone: "+1 743-240-7497",
     email: "ajagao25@wfu.edu",

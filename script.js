@@ -187,44 +187,286 @@ function setupReveal() {
 }
 
 function renderHome() {
-  const hero = document.querySelector("#home-hero");
+  const hero = document.querySelector("#home-hero-copy");
   if (!hero) {
     return;
   }
 
-  const { profile, homeModes, projects, experience, education } = portfolioContent;
-  const homeDocument = document.querySelector(".home-document");
-  const impact = document.querySelector("#home-impact");
-  const focus = document.querySelector("#home-focus");
-  const lens = document.querySelector("#home-lens");
-  const projectPreview = document.querySelector("#home-project-preview");
-  const snapshot = document.querySelector("#home-snapshot");
-  const cta = document.querySelector("#home-cta");
+  const {
+    profile,
+    skills,
+    experience,
+    projects,
+    education,
+    socials
+  } = portfolioContent;
+  const aboutCopy = document.querySelector("#home-about-copy");
+  const aboutAside = document.querySelector("#home-about-aside");
+  const aboutTech = document.querySelector("#home-about-tech");
+  const experienceTabs = document.querySelector("#home-experience-tabs");
+  const experiencePanel = document.querySelector("#home-experience-panel");
+  const featuredWork = document.querySelector("#home-featured-work");
+  const moreWork = document.querySelector("#home-more-work");
+  const workToggle = document.querySelector("#home-work-toggle");
+  const contactCopy = document.querySelector("#home-contact-copy");
+  const socialRail = document.querySelector("#home-social-rail");
+  const emailRail = document.querySelector("#home-email-rail");
+  if (
+    !aboutCopy ||
+    !aboutAside ||
+    !aboutTech ||
+    !experienceTabs ||
+    !experiencePanel ||
+    !featuredWork ||
+    !moreWork ||
+    !workToggle ||
+    !contactCopy ||
+    !socialRail ||
+    !emailRail
+  ) {
+    return;
+  }
 
   document.title = `${profile.name} | ${profile.title}`;
 
   hero.innerHTML = `
-    <div class="home-choice-grid" id="home-choice-grid" role="tablist" aria-label="Choose a profile view">
-      ${renderHomeModeCards(homeModes)}
+    <p class="editor-home__intro" data-animate>${profile.homeIntro}</p>
+    <h1 id="home-title" data-animate>${profile.name}</h1>
+    <h2 class="editor-home__statement" data-animate>${profile.homeStatement}</h2>
+    <p class="editor-home__summary" data-animate>
+      ${profile.homeSummary}
+    </p>
+    <div class="editor-home__meta" data-animate>
+      <span>${profile.location}</span>
+      <span>${profile.relocation}</span>
+      <span>${profile.availability}</span>
     </div>
-    <div class="home-selected-summary" id="home-selected-summary" hidden></div>
+    <div class="editor-home__hero-actions" data-animate>
+      <a class="ghost-button ghost-button--filled" href="#work">View work</a>
+      <a class="ghost-button" href="${profile.resumeUrl}" target="_blank" rel="noreferrer">Resume</a>
+    </div>
   `;
 
-  if (lens) {
-    lens.hidden = true;
-  }
+  aboutCopy.innerHTML = profile.aboutParagraphs
+    .map((paragraph, index) => `<p data-animate style="--delay: ${index * 0.06}s">${paragraph}</p>`)
+    .join("");
 
-  setupHomeModes(homeModes, projects);
-  [impact, focus, projectPreview, snapshot, cta].forEach((section) => {
-    if (section) {
-      section.hidden = true;
-      section.innerHTML = "";
+  aboutAside.innerHTML = `
+    <article class="home-aside-card" data-animate>
+      <div class="home-aside-card__wordmark">
+        <img src="${profile.logoWordmarkUrl}" alt="${profile.name} wordmark" />
+      </div>
+      <div class="home-aside-card__rows">
+        <div>
+          <span class="section-label">Based in</span>
+          <strong>${profile.location}</strong>
+        </div>
+        <div>
+          <span class="section-label">Currently</span>
+          <strong>${education[0].credential}</strong>
+        </div>
+        <div>
+          <span class="section-label">Open to</span>
+          <strong>${profile.relocation}</strong>
+        </div>
+      </div>
+    </article>
+  `;
+
+  const preferredTools = [
+    "Python",
+    "SQL",
+    "Power BI",
+    "Tableau",
+    "Scikit-learn",
+    "XGBoost",
+    "Vertex AI",
+    "Microsoft Fabric"
+  ];
+  const availableTools = new Set(skills.flatMap((group) => group.items));
+  const techItems = preferredTools.filter((item) => availableTools.has(item));
+  aboutTech.innerHTML = techItems
+    .map(
+      (item, index) => `
+        <div class="editor-home__tech-item" data-animate style="--delay: ${index * 0.04}s">
+          <span class="editor-home__tech-bullet">${icon("share")}</span>
+          <span>${item}</span>
+        </div>
+      `
+    )
+    .join("");
+
+  experienceTabs.innerHTML = experience
+    .map(
+      (item, index) => `
+        <button
+          class="editor-home__tab${index === 0 ? " is-active" : ""}"
+          type="button"
+          role="tab"
+          aria-selected="${index === 0 ? "true" : "false"}"
+          data-home-experience="${index}"
+        >
+          ${item.company}
+        </button>
+      `
+    )
+    .join("");
+
+  const renderExperiencePanel = (index) => {
+    const item = experience[index];
+    if (!item) {
+      return;
     }
+
+    experiencePanel.innerHTML = `
+      <article class="editor-home__experience-card" data-animate>
+        <h3>${item.role} <span>@ ${item.company}</span></h3>
+        <p class="editor-home__experience-meta">${item.dates} / ${item.location}</p>
+        ${item.summary.length
+          ? `
+            <div class="editor-home__experience-notes">
+              ${item.summary
+                .slice(0, 3)
+                .map((note) => `<p>${note}</p>`)
+                .join("")}
+            </div>
+          `
+          : ""}
+      </article>
+    `;
+    revealRenderedContent([experiencePanel]);
+  };
+
+  renderExperiencePanel(0);
+
+  experienceTabs.addEventListener("click", (event) => {
+    const tab = event.target.closest("[data-home-experience]");
+    if (!tab) {
+      return;
+    }
+
+    const nextIndex = Number(tab.dataset.homeExperience);
+    experienceTabs.querySelectorAll("[data-home-experience]").forEach((button, buttonIndex) => {
+      const isActive = buttonIndex === nextIndex;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-selected", String(isActive));
+    });
+    renderExperiencePanel(nextIndex);
   });
 
-  if (homeDocument) {
-    homeDocument.classList.add("home-document--chooser");
+  const featuredIds = ["recommerce-routing", "founder-forward", "data4good-nlp"];
+  const featuredProjects = featuredIds
+    .map((projectId) => projects.find((project) => project.id === projectId))
+    .filter(Boolean);
+  const extraProjects = projects.filter((project) => !featuredIds.includes(project.id));
+
+  featuredWork.innerHTML = featuredProjects
+    .map((project, index) => renderHomeFeaturedProject(project, index))
+    .join("");
+
+  moreWork.innerHTML = `
+    <div class="editor-home__more-grid">
+      ${extraProjects
+        .map(
+          (project, index) => `
+            <article class="editor-home__mini-project" data-animate style="--delay: ${index * 0.05}s">
+              <p class="section-label">${project.categories.join(" / ")}</p>
+              <h3>${project.shortTitle}</h3>
+              <p>${project.problem}</p>
+              <div class="editor-home__mini-metrics">
+                ${project.metrics
+                  .slice(0, 2)
+                  .map((metric) => `<span>${metric.value} ${metric.label}</span>`)
+                  .join("")}
+              </div>
+            </article>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+
+  if (!extraProjects.length) {
+    workToggle.hidden = true;
+  } else {
+    workToggle.hidden = false;
+    workToggle.addEventListener("click", () => {
+      const isExpanded = workToggle.getAttribute("aria-expanded") === "true";
+      moreWork.hidden = isExpanded;
+      workToggle.setAttribute("aria-expanded", String(!isExpanded));
+      workToggle.textContent = isExpanded ? "Show More" : "Show Less";
+      if (!isExpanded) {
+        revealRenderedContent([moreWork]);
+      }
+    });
   }
+
+  contactCopy.innerHTML = `
+    <p class="editor-home__contact-eyebrow" data-animate>04. What's next?</p>
+    <h2 id="contact-title" data-animate>Get In Touch</h2>
+    <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
+    <div class="editor-home__contact-actions" data-animate>
+      <a class="ghost-button ghost-button--filled" href="mailto:${profile.email}">Say Hello</a>
+    </div>
+  `;
+
+  const railLinks = socials.filter((item) => ["GitHub", "LinkedIn", "Email"].includes(item.platform));
+  socialRail.innerHTML = `
+    <div class="edge-rail__links">
+      ${railLinks
+        .map(
+          (item) => `
+            <a href="${item.url}" ${externalAttrs(item.url)} aria-label="${item.platform}">
+              ${icon(item.icon)}
+            </a>
+          `
+        )
+        .join("")}
+    </div>
+    <span class="edge-rail__line" aria-hidden="true"></span>
+  `;
+
+  emailRail.innerHTML = `
+    <a class="edge-rail__email" href="mailto:${profile.email}">${profile.email}</a>
+    <span class="edge-rail__line" aria-hidden="true"></span>
+  `;
+}
+
+function renderHomeFeaturedProject(project, index) {
+  const isReversed = index % 2 === 1;
+  return `
+    <article class="editor-home__feature${isReversed ? " is-reversed" : ""}" data-animate style="--delay: ${index * 0.08}s">
+      <div class="editor-home__feature-visual">
+        <div class="editor-home__feature-screen">
+          <p class="editor-home__feature-kicker">${project.categories.join(" / ")}</p>
+          <h3>${project.shortTitle}</h3>
+          <div class="editor-home__feature-bars">
+            ${project.metrics
+              .slice(0, 3)
+              .map(
+                (metric, metricIndex) => `
+                  <div class="editor-home__feature-bar" style="--bar-width: ${78 - metricIndex * 14}%">
+                    <span>${metric.value}</span>
+                    <small>${metric.label}</small>
+                  </div>
+                `
+              )
+              .join("")}
+          </div>
+        </div>
+      </div>
+      <div class="editor-home__feature-copy">
+        <p class="editor-home__eyebrow">Featured Project</p>
+        <h3>${project.title}</h3>
+        <div class="editor-home__feature-card">
+          <p>${project.approach}</p>
+        </div>
+        <div class="editor-home__feature-tools">
+          ${project.tools.map((tool) => `<span>${tool}</span>`).join("")}
+        </div>
+      </div>
+    </article>
+  `;
 }
 
 function renderHomeModeCards(modes) {
