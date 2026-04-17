@@ -281,7 +281,7 @@ function renderHome() {
     "Scikit-learn",
     "XGBoost",
     "Vertex AI",
-    "Microsoft Fabric"
+    "Google Cloud Platform (GCP)"
   ];
   const availableTools = new Set(skills.flatMap((group) => group.items));
   const techItems = preferredTools.filter((item) => availableTools.has(item));
