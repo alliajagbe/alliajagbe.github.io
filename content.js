@@ -89,7 +89,7 @@ window.portfolioContent = {
         {
           icon: "search",
           title: "Evaluation",
-          copy: "Test whether a model is actually useful beyond headline accuracy."
+          copy: "Test whether a model is actually useful beyond just accuracy."
         },
         {
           icon: "compass",
