@@ -174,7 +174,7 @@ window.portfolioContent = {
       icon: "workflow",
       title: "Build reliable analytical systems",
       copy: "I enjoy creating the structure around analytics: pipelines, definitions, reporting logic, and workflows that teams can trust.",
-      accents: ["ETL", "KPI design", "Quality checks"]
+      accents: ["ETL Pipeline", "KPI design", "Quality checks"]
     },
     {
       id: "model",
