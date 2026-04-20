@@ -189,7 +189,7 @@ window.portfolioContent = {
       label: "Communicate",
       icon: "compass",
       title: "Translate analysis into action",
-      copy: "The part I care about most is making insights understandable, usable, and persuasive for the people making the call.",
+      copy: "I prioritize making insights understandable, usable, and persuasive for the people making the call.",
       accents: ["Storytelling", "Dashboards", "Decision support"]
     }
   ],
