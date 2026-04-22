@@ -1966,32 +1966,6 @@ body[data-page="home"] .theme-toggle__label {
   font-size: 0.95rem;
 }
 
-.editor-home__highlights {
-  display: grid;
-  gap: 0.9rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 52rem;
-}
-
-.editor-home__highlight {
-  display: grid;
-  gap: 0.18rem;
-  padding: 0.95rem 1rem;
-  border-radius: 0.55rem;
-  background: color-mix(in srgb, var(--surface) 70%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
-}
-
-.editor-home__highlight strong {
-  font-size: 1.15rem;
-  color: var(--heading);
-}
-
-.editor-home__highlight span {
-  color: var(--text-soft);
-  font-size: 0.87rem;
-}
-
 .editor-home__meta span {
   position: relative;
 }
@@ -2335,23 +2309,30 @@ body[data-page="home"] .theme-toggle__label {
 
 .editor-home__achievements {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  max-width: 48rem;
+  border-top: 1px solid var(--border);
 }
 
-.editor-home__achievement-card {
+.editor-home__achievement-row {
   display: grid;
-  gap: 0.65rem;
-  padding: 1.15rem;
-  border-radius: 0.4rem;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.editor-home__achievement-row h3 {
+  font-size: 1.02rem;
+  line-height: 1.45;
 }
 
 .editor-home__achievement-year {
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.8rem;
   color: var(--accent);
+  padding-top: 0.12rem;
 }
 
 .editor-home__section--contact {
@@ -2484,9 +2465,7 @@ body[data-page="home"] .theme-toggle__label {
   .editor-home__about-grid,
   .editor-home__experience-grid,
   .editor-home__feature,
-  .editor-home__more-grid,
-  .editor-home__achievements,
-  .editor-home__highlights {
+  .editor-home__more-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2576,6 +2555,11 @@ body[data-page="home"] .theme-toggle__label {
 
   .editor-home__heading h2 {
     grid-column: 2;
+  }
+
+  .editor-home__achievement-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 
   .editor-home__line {

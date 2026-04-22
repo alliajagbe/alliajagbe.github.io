@@ -273,7 +273,7 @@ function renderHome() {
   achievementsGrid.innerHTML = achievements
     .map(
       (item, index) => `
-        <article class="editor-home__achievement-card" data-animate style="--delay: ${index * 0.04}s">
+        <article class="editor-home__achievement-row" data-animate style="--delay: ${index * 0.04}s">
           <span class="editor-home__achievement-year">${item.year}</span>
           <h3>${item.title}</h3>
         </article>
@@ -406,18 +406,6 @@ function renderHome() {
       <p class="editor-home__summary" data-animate>
         ${mode.summary}
       </p>
-      <div class="editor-home__highlights" data-animate>
-        ${mode.highlights
-          .map(
-            (item) => `
-              <article class="editor-home__highlight">
-                <strong>${item.value}</strong>
-                <span>${item.label}</span>
-              </article>
-            `
-          )
-          .join("")}
-      </div>
       <div class="editor-home__meta" data-animate>
         <span>${profile.location}</span>
         <span>${profile.relocation}</span>

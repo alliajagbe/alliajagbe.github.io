@@ -254,8 +254,7 @@ window.portfolioContent = {
       location: "Winston-Salem, NC",
       dates: "Mar 2026 - Present",
       summary: [
-        "Developing a Gemini-powered conversational chatbot using LLM APIs and prompt engineering to deliver personalized, interactive learning of the Ethical Decision-Action Making (EDAM) framework.",
-        "Supporting 500+ students across the university through a more engaging, guided learning experience.",
+        "Developing a Gemini-powered conversational chatbot using LLM APIs and prompt engineering to deliver personalized, interactive learning of the Ethical Decision-Action Making (EDAM) framework, supporting 500+ students across the university through a more engaging, guided learning experience.",
         "Building GenAI-driven personalization workflows for the enrollment team across a pipeline of 2,000+ prospective students, improving admissions-funnel engagement and operational efficiency."
       ]
     },
