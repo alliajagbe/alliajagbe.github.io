@@ -2314,25 +2314,23 @@ body[data-page="home"] .theme-toggle__label {
   border-top: 1px solid var(--border);
 }
 
-.editor-home__achievement-row {
+.editor-home__education-card,
+.editor-home__experience-card--compact {
   display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
-  gap: 1.2rem;
-  align-items: start;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--border);
+  gap: 0.9rem;
+  max-width: 38rem;
 }
 
-.editor-home__achievement-row h3 {
-  font-size: 1.02rem;
-  line-height: 1.45;
+.editor-home__education-card h3,
+.editor-home__experience-card--compact h3 {
+  font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.9rem);
 }
 
+.editor-home__education-meta,
 .editor-home__achievement-year {
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   color: var(--accent);
-  padding-top: 0.12rem;
 }
 
 .editor-home__section--contact {
@@ -2555,11 +2553,6 @@ body[data-page="home"] .theme-toggle__label {
 
   .editor-home__heading h2 {
     grid-column: 2;
-  }
-
-  .editor-home__achievement-row {
-    grid-template-columns: 1fr;
-    gap: 0.35rem;
   }
 
   .editor-home__line {

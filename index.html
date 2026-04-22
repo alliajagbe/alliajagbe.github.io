@@ -27,7 +27,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=20260422a" />
+    <link rel="stylesheet" href="/styles.css?v=20260422b" />
   </head>
   <body data-page="home">
     <div class="site-shell">
@@ -58,10 +58,11 @@
 
           <nav class="site-nav site-nav--home" aria-label="Primary navigation">
             <a href="#about" class="nav-link nav-link--anchor"><span>01.</span> About</a>
-            <a href="#experience" class="nav-link nav-link--anchor"><span>02.</span> Experience</a>
-            <a href="#work" class="nav-link nav-link--anchor"><span>03.</span> Work</a>
-            <a href="#achievements" class="nav-link nav-link--anchor"><span>04.</span> Achievements</a>
-            <a href="#contact" class="nav-link nav-link--anchor"><span>05.</span> Contact</a>
+            <a href="#education" class="nav-link nav-link--anchor"><span>02.</span> Education</a>
+            <a href="#experience" class="nav-link nav-link--anchor"><span>03.</span> Experience</a>
+            <a href="#work" class="nav-link nav-link--anchor"><span>04.</span> Work</a>
+            <a href="#achievements" class="nav-link nav-link--anchor"><span>05.</span> Achievements</a>
+            <a href="#contact" class="nav-link nav-link--anchor"><span>06.</span> Contact</a>
           </nav>
 
           <div class="header-actions">
@@ -103,10 +104,24 @@
           </div>
         </section>
 
-        <section class="editor-home__section" id="experience" aria-labelledby="experience-title">
+        <section class="editor-home__section" id="education" aria-labelledby="education-title">
           <div class="container editor-home__container">
             <div class="editor-home__heading">
               <p class="editor-home__number">02.</p>
+              <h2 id="education-title">Education</h2>
+              <span class="editor-home__line" aria-hidden="true"></span>
+            </div>
+            <div class="editor-home__experience-grid">
+              <div class="editor-home__tabs" id="home-education-tabs" role="tablist" aria-label="Education"></div>
+              <div class="editor-home__tab-panel" id="home-education-panel"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="editor-home__section" id="experience" aria-labelledby="experience-title">
+          <div class="container editor-home__container">
+            <div class="editor-home__heading">
+              <p class="editor-home__number">03.</p>
               <h2 id="experience-title">Experience</h2>
               <span class="editor-home__line" aria-hidden="true"></span>
             </div>
@@ -120,7 +135,7 @@
         <section class="editor-home__section" id="work" aria-labelledby="work-title">
           <div class="container editor-home__container">
             <div class="editor-home__heading">
-              <p class="editor-home__number">03.</p>
+              <p class="editor-home__number">04.</p>
               <h2 id="work-title">Selected Work</h2>
               <span class="editor-home__line" aria-hidden="true"></span>
             </div>
@@ -136,11 +151,14 @@
         <section class="editor-home__section" id="achievements" aria-labelledby="achievements-title">
           <div class="container editor-home__container">
             <div class="editor-home__heading">
-              <p class="editor-home__number">04.</p>
+              <p class="editor-home__number">05.</p>
               <h2 id="achievements-title">Achievements</h2>
               <span class="editor-home__line" aria-hidden="true"></span>
             </div>
-            <div class="editor-home__achievements" id="home-achievements"></div>
+            <div class="editor-home__experience-grid">
+              <div class="editor-home__tabs" id="home-achievement-tabs" role="tablist" aria-label="Achievements by year"></div>
+              <div class="editor-home__tab-panel" id="home-achievement-panel"></div>
+            </div>
           </div>
         </section>
 
@@ -159,7 +177,7 @@
       </footer>
     </div>
 
-    <script src="/content.js?v=20260422a" defer></script>
-    <script src="/script.js?v=20260422a" defer></script>
+    <script src="/content.js?v=20260422b" defer></script>
+    <script src="/script.js?v=20260422b" defer></script>
   </body>
 </html>

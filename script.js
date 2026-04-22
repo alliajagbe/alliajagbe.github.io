@@ -204,12 +204,15 @@ function renderHome() {
   const aboutCopy = document.querySelector("#home-about-copy");
   const aboutAside = document.querySelector("#home-about-aside");
   const aboutTech = document.querySelector("#home-about-tech");
+  const educationTabs = document.querySelector("#home-education-tabs");
+  const educationPanel = document.querySelector("#home-education-panel");
   const experienceTabs = document.querySelector("#home-experience-tabs");
   const experiencePanel = document.querySelector("#home-experience-panel");
   const featuredWork = document.querySelector("#home-featured-work");
   const moreWork = document.querySelector("#home-more-work");
   const workToggle = document.querySelector("#home-work-toggle");
-  const achievementsGrid = document.querySelector("#home-achievements");
+  const achievementTabs = document.querySelector("#home-achievement-tabs");
+  const achievementPanel = document.querySelector("#home-achievement-panel");
   const contactCopy = document.querySelector("#home-contact-copy");
   const socialRail = document.querySelector("#home-social-rail");
   const emailRail = document.querySelector("#home-email-rail");
@@ -221,12 +224,15 @@ function renderHome() {
     !aboutCopy ||
     !aboutAside ||
     !aboutTech ||
+    !educationTabs ||
+    !educationPanel ||
     !experienceTabs ||
     !experiencePanel ||
     !featuredWork ||
     !moreWork ||
     !workToggle ||
-    !achievementsGrid ||
+    !achievementTabs ||
+    !achievementPanel ||
     !contactCopy ||
     !socialRail ||
     !emailRail ||
@@ -270,19 +276,42 @@ function renderHome() {
     </article>
   `;
 
-  achievementsGrid.innerHTML = achievements
-    .map(
-      (item, index) => `
-        <article class="editor-home__achievement-row" data-animate style="--delay: ${index * 0.04}s">
-          <span class="editor-home__achievement-year">${item.year}</span>
-          <h3>${item.title}</h3>
-        </article>
-      `
-    )
-    .join("");
-
   const modeMap = new Map(homeModes.map((mode) => [mode.id, mode]));
   let activeMode = modeMap.get(profile.defaultModeId) || homeModes[0];
+
+  const renderEducationTabs = (selectedInstitution) => {
+    educationTabs.innerHTML = education
+      .map(
+        (item, index) => `
+          <button
+            class="editor-home__tab${item.institution === selectedInstitution ? " is-active" : ""}"
+            type="button"
+            role="tab"
+            aria-selected="${item.institution === selectedInstitution ? "true" : "false"}"
+            data-home-education="${index}"
+          >
+            ${item.institution}
+          </button>
+        `
+      )
+      .join("");
+  };
+
+  const renderEducationPanel = (index) => {
+    const item = education[index];
+    if (!item) {
+      return;
+    }
+
+    educationPanel.innerHTML = `
+      <article class="editor-home__education-card" data-animate>
+        <h3>${item.credential}</h3>
+        <p class="editor-home__education-meta">${item.institution}</p>
+        <p class="editor-home__experience-meta">${item.location}</p>
+      </article>
+    `;
+    revealRenderedContent([educationPanel]);
+  };
 
   const renderLaunchCards = (activeModeId) =>
     homeModes
@@ -343,6 +372,39 @@ function renderHome() {
       </article>
     `;
     revealRenderedContent([experiencePanel]);
+  };
+
+  const achievementYears = [...new Set(achievements.map((item) => item.year))];
+
+  const renderAchievementTabs = (selectedYear) => {
+    achievementTabs.innerHTML = achievementYears
+      .map(
+        (year) => `
+          <button
+            class="editor-home__tab${year === selectedYear ? " is-active" : ""}"
+            type="button"
+            role="tab"
+            aria-selected="${year === selectedYear ? "true" : "false"}"
+            data-home-achievement-year="${year}"
+          >
+            ${year}
+          </button>
+        `
+      )
+      .join("");
+  };
+
+  const renderAchievementPanel = (selectedYear) => {
+    const yearItems = achievements.filter((item) => item.year === selectedYear);
+    achievementPanel.innerHTML = `
+      <article class="editor-home__experience-card editor-home__experience-card--compact" data-animate>
+        <h3>${selectedYear}</h3>
+        <div class="editor-home__experience-notes">
+          ${yearItems.map((item) => `<p>${item.title}</p>`).join("")}
+        </div>
+      </article>
+    `;
+    revealRenderedContent([achievementPanel]);
   };
 
   const setTools = (mode) => {
@@ -421,7 +483,7 @@ function renderHome() {
 
   const setContact = (mode) => {
     contactCopy.innerHTML = `
-      <p class="editor-home__contact-eyebrow" data-animate>05. What's next?</p>
+      <p class="editor-home__contact-eyebrow" data-animate>06. What's next?</p>
       <h2 id="contact-title" data-animate>Get In Touch</h2>
       <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
       <div class="editor-home__contact-actions" data-animate>
@@ -478,6 +540,36 @@ function renderHome() {
     renderExperiencePanel(nextIndex);
   });
 
+  educationTabs.addEventListener("click", (event) => {
+    const tab = event.target.closest("[data-home-education]");
+    if (!tab) {
+      return;
+    }
+
+    const nextIndex = Number(tab.dataset.homeEducation);
+    educationTabs.querySelectorAll("[data-home-education]").forEach((button, buttonIndex) => {
+      const isActive = buttonIndex === nextIndex;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-selected", String(isActive));
+    });
+    renderEducationPanel(nextIndex);
+  });
+
+  achievementTabs.addEventListener("click", (event) => {
+    const tab = event.target.closest("[data-home-achievement-year]");
+    if (!tab) {
+      return;
+    }
+
+    const selectedYear = tab.dataset.homeAchievementYear;
+    achievementTabs.querySelectorAll("[data-home-achievement-year]").forEach((button) => {
+      const isActive = button.dataset.homeAchievementYear === selectedYear;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-selected", String(isActive));
+    });
+    renderAchievementPanel(selectedYear);
+  });
+
   const railLinks = socials.filter((item) => ["GitHub", "LinkedIn", "Email"].includes(item.platform));
   socialRail.innerHTML = `
     <div class="edge-rail__links">
@@ -525,8 +617,12 @@ function renderHome() {
   });
 
   applyMode(profile.defaultModeId);
+  renderEducationTabs(education[0].institution);
+  renderEducationPanel(0);
+  renderAchievementTabs(achievementYears[0]);
+  renderAchievementPanel(achievementYears[0]);
   showLauncher();
-  revealRenderedContent([achievementsGrid, aboutAside, aboutCopy, socialRail, emailRail]);
+  revealRenderedContent([aboutAside, aboutCopy, socialRail, emailRail]);
 }
 
 function renderHomeFeaturedProject(project, index) {
