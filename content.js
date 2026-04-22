@@ -2,6 +2,7 @@ window.portfolioContent = {
   profile: {
     name: "Alli Ajagbe",
     brandTag: "Data science, analytics, and AI",
+    defaultModeId: "scientist",
     title: "Data Scientist, Analytics & AI Developer",
     homeIntro: "Hi, my name is",
     homeStatement: "I build data products, models, and AI tools.",
@@ -31,7 +32,7 @@ window.portfolioContent = {
     ],
     quickFacts: ["Open to relocation", "Data Science", "Data storytelling", "Decision-focused analytics"],
     interests: ["Data Science", "Data storytelling", "Decision-focused analytics", "Applied AI", "Social Impact"],
-    resumeUrl: "/AlliAjagbeResume.pdf",
+    resumeUrl: "/resume/AlliAjagbeDataScientistResume.pdf",
     logoIconUrl: "/assets/logo-icon.png?v=20260404e",
     logoWordmarkUrl: "/assets/logo-wordmark.png?v=20260404e",
     highlights: [
@@ -47,7 +48,13 @@ window.portfolioContent = {
       label: "Data Analyst",
       icon: "chart",
       heroTitle: "Data Analyst",
+      statement: "I turn messy data into clearer decisions.",
+      summary:
+        "I build reporting systems, dashboards, and operational analytics that help teams move faster with confidence.",
       tagline: "Clean metrics, better reporting, clearer decisions.",
+      resumeUrl: "/resume/AlliAjagbeBusinessAnalystResume.pdf",
+      toolItems: ["SQL", "Power BI", "Tableau", "Excel", "Dashboard Design", "KPI Design"],
+      experienceCompany: "Founder Forward",
       accents: ["Dashboards", "KPI logic", "Data cleanup"],
       expertise: [
         {
@@ -78,7 +85,13 @@ window.portfolioContent = {
       label: "Data Scientist",
       icon: "brain",
       heroTitle: "Data Scientist",
+      statement: "I build models with real operating stakes.",
+      summary:
+        "I work on forecasting, classification, evaluation, and applied research where the model needs to improve an actual business or operational outcome.",
       tagline: "Models with practical stakes and measurable outcomes.",
+      resumeUrl: "/resume/AlliAjagbeDataScientistResume.pdf",
+      toolItems: ["Python", "Scikit-learn", "XGBoost", "Time Series", "Statistical Modeling", "Vertex AI"],
+      experienceCompany: "Castlery",
       accents: ["Forecasting", "Evaluation", "Applied ML"],
       expertise: [
         {
@@ -109,7 +122,13 @@ window.portfolioContent = {
       label: "AI Developer",
       icon: "workflow",
       heroTitle: "AI Developer",
+      statement: "I build AI workflows people can actually use.",
+      summary:
+        "I prototype conversational systems, evaluation loops, and GenAI workflows that are useful, measurable, and grounded in the task they support.",
       tagline: "AI tools, evaluation loops, and workflows people can use.",
+      resumeUrl: "/resume/AlliAjagbeAIEngineerResume.pdf",
+      toolItems: ["Gemini", "LLM APIs", "Prompt Engineering", "Microsoft Fabric", "Azure Synapse", "Vertex AI"],
+      experienceCompany: "Wake Forest University",
       accents: ["LLM workflows", "AI evaluation", "Applied systems"],
       expertise: [
         {
@@ -137,10 +156,16 @@ window.portfolioContent = {
     },
     {
       id: "full-spectrum",
-      label: "Full Spectrum",
+      label: "Full Profile",
       icon: "layers",
       heroTitle: "Data Scientist, Analytics & AI Developer",
+      statement: "I build across analytics, modeling, and AI.",
+      summary:
+        "My work sits at the intersection of decision systems, machine learning, dashboards, and AI tools, with a focus on usefulness over noise.",
       tagline: "The full picture across analytics, modeling, and AI systems.",
+      resumeUrl: "/resume/AlliAjagbeDataScientistResume.pdf",
+      toolItems: ["Python", "SQL", "Power BI", "XGBoost", "LLM APIs", "Microsoft Fabric"],
+      experienceCompany: "Wake Forest University",
       accents: ["Analytics", "Modeling", "AI workflows"],
       expertise: [
         {
@@ -224,6 +249,17 @@ window.portfolioContent = {
   ],
   experience: [
     {
+      role: "AI Engineer",
+      company: "Wake Forest University",
+      location: "Winston-Salem, NC",
+      dates: "Mar 2026 - Present",
+      summary: [
+        "Developing a Gemini-powered conversational chatbot using LLM APIs and prompt engineering to deliver personalized, interactive learning of the Ethical Decision-Action Making (EDAM) framework.",
+        "Supporting 500+ students across the university through a more engaging, guided learning experience.",
+        "Building GenAI-driven personalization workflows for the enrollment team across a pipeline of 2,000+ prospective students, improving admissions-funnel engagement and operational efficiency."
+      ]
+    },
+    {
       role: "Graduate Consultant",
       company: "Castlery",
       location: "Winston-Salem, NC",
@@ -261,7 +297,11 @@ window.portfolioContent = {
       company: "Fito Network",
       location: "Colorado, USA",
       dates: "Jul 2023 - Nov 2023",
-      summary: []
+      summary: [
+        "Maintained and cleaned operational database records to support more reliable downstream reporting.",
+        "Structured updates across internal datasets and helped keep shared records consistent across teams.",
+        "Supported basic analytics and documentation workflows so stakeholders could work from cleaner data."
+      ]
     },
     {
       role: "Data Scientist",
@@ -286,7 +326,7 @@ window.portfolioContent = {
         "Replace manual vendor selection for returned-product routing and reduce inconsistent operational decisions.",
       approach:
         "Designed a recommerce decision model that combined cost logic, vendor performance, and operational constraints into one scalable framework.",
-      tools: ["Decision Modeling", "Operations Analytics", "Python", "Business Rules"],
+      tools: ["Decision Modeling", "Operations Analytics", "Business Rules"],
       metrics: [
         { value: "$500", label: "Saved per returned product" },
         { value: "-20%", label: "Customer friction points" }
@@ -302,7 +342,7 @@ window.portfolioContent = {
         "Bring fragmented founder and program data into one reliable system that teams could analyze and act on quickly.",
       approach:
         "Built a Python ETL workflow for 5K+ records, automated six database processes, and delivered four dashboards that made operational reporting faster and more dependable.",
-      tools: ["Python", "ETL", "Dashboard Design", "Database Automation", "Business Intelligence"],
+      tools: ["Dashboard Design", "Database Automation", "Business Intelligence"],
       metrics: [
         { value: "45%", label: "Improvement in data reliability" },
         { value: "40%", label: "Faster time to insight" },
@@ -337,6 +377,7 @@ window.portfolioContent = {
       approach:
         "Led a pipeline evaluating 12 NLP and generative AI models using sentence embeddings, XGBoost, and LLM ensembles, with supporting infrastructure in Microsoft Fabric and Azure Synapse.",
       tools: ["Python", "Sentence Embeddings", "XGBoost", "LLMs", "Azure Synapse", "Microsoft Fabric"],
+      githubUrl: "https://github.com/alliajagbe/data4good",
       metrics: [
         { value: "0.97", label: "Macro-F1" },
         { value: "120", label: "Teams competed against" }
@@ -428,6 +469,10 @@ window.portfolioContent = {
   achievements: [
     {
       year: "2026",
+      title: "Beta Gamma Sigma Inductee"
+    },
+    {
+      year: "2026",
       title: "DataCamp Data4Good Competition, First Runner-Up"
     },
     {
@@ -505,6 +550,6 @@ window.portfolioContent = {
     { platform: "Phone", icon: "phone", label: "+1 743-240-7497", url: "tel:+17432407497" },
     { platform: "LinkedIn", icon: "linkedin", label: "linkedin.com/in/alliajagbe", url: "https://linkedin.com/in/alliajagbe" },
     { platform: "GitHub", icon: "github", label: "github.com/alliajagbe", url: "https://github.com/alliajagbe" },
-    { platform: "Resume", icon: "document", label: "Open PDF resume", url: "/AlliAjagbeResume.pdf" }
+    { platform: "Resume", icon: "document", label: "Open PDF resume", url: "/resume/AlliAjagbeDataScientistResume.pdf" }
   ]
 };

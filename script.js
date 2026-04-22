@@ -194,11 +194,12 @@ function renderHome() {
 
   const {
     profile,
-    skills,
+    homeModes,
     experience,
     projects,
     education,
-    socials
+    socials,
+    achievements
   } = portfolioContent;
   const aboutCopy = document.querySelector("#home-about-copy");
   const aboutAside = document.querySelector("#home-about-aside");
@@ -208,9 +209,14 @@ function renderHome() {
   const featuredWork = document.querySelector("#home-featured-work");
   const moreWork = document.querySelector("#home-more-work");
   const workToggle = document.querySelector("#home-work-toggle");
+  const achievementsGrid = document.querySelector("#home-achievements");
   const contactCopy = document.querySelector("#home-contact-copy");
   const socialRail = document.querySelector("#home-social-rail");
   const emailRail = document.querySelector("#home-email-rail");
+  const modeLaunch = document.querySelector("#mode-launch");
+  const modeLaunchGrid = document.querySelector("#mode-launch-grid");
+  const modeButton = document.querySelector("#home-mode-button");
+  const resumeButton = document.querySelector("#home-resume-button");
   if (
     !aboutCopy ||
     !aboutAside ||
@@ -220,32 +226,19 @@ function renderHome() {
     !featuredWork ||
     !moreWork ||
     !workToggle ||
+    !achievementsGrid ||
     !contactCopy ||
     !socialRail ||
-    !emailRail
+    !emailRail ||
+    !modeLaunch ||
+    !modeLaunchGrid ||
+    !modeButton ||
+    !resumeButton
   ) {
     return;
   }
 
   document.title = `${profile.name} | ${profile.title}`;
-
-  hero.innerHTML = `
-    <p class="editor-home__intro" data-animate>${profile.homeIntro}</p>
-    <h1 id="home-title" data-animate>${profile.name}</h1>
-    <h2 class="editor-home__statement" data-animate>${profile.homeStatement}</h2>
-    <p class="editor-home__summary" data-animate>
-      ${profile.homeSummary}
-    </p>
-    <div class="editor-home__meta" data-animate>
-      <span>${profile.location}</span>
-      <span>${profile.relocation}</span>
-      <span>${profile.availability}</span>
-    </div>
-    <div class="editor-home__hero-actions" data-animate>
-      <a class="ghost-button ghost-button--filled" href="#work">View work</a>
-      <a class="ghost-button" href="${profile.resumeUrl}" target="_blank" rel="noreferrer">Resume</a>
-    </div>
-  `;
 
   aboutCopy.innerHTML = profile.aboutParagraphs
     .map((paragraph, index) => `<p data-animate style="--delay: ${index * 0.06}s">${paragraph}</p>`)
@@ -266,6 +259,10 @@ function renderHome() {
           <strong>${education[0].credential}</strong>
         </div>
         <div>
+          <span class="section-label">Default view</span>
+          <strong>Data Scientist</strong>
+        </div>
+        <div>
           <span class="section-label">Open to</span>
           <strong>${profile.relocation}</strong>
         </div>
@@ -273,44 +270,55 @@ function renderHome() {
     </article>
   `;
 
-  const preferredTools = [
-    "Python",
-    "SQL",
-    "Power BI",
-    "Tableau",
-    "Scikit-learn",
-    "XGBoost",
-    "Vertex AI",
-    "Google Cloud Platform (GCP)"
-  ];
-  const availableTools = new Set(skills.flatMap((group) => group.items));
-  const techItems = preferredTools.filter((item) => availableTools.has(item));
-  aboutTech.innerHTML = techItems
+  achievementsGrid.innerHTML = achievements
     .map(
       (item, index) => `
-        <div class="editor-home__tech-item" data-animate style="--delay: ${index * 0.04}s">
-          <span class="editor-home__tech-bullet">${icon("share")}</span>
-          <span>${item}</span>
-        </div>
+        <article class="editor-home__achievement-card" data-animate style="--delay: ${index * 0.04}s">
+          <span class="editor-home__achievement-year">${item.year}</span>
+          <h3>${item.title}</h3>
+        </article>
       `
     )
     .join("");
 
-  experienceTabs.innerHTML = experience
-    .map(
-      (item, index) => `
-        <button
-          class="editor-home__tab${index === 0 ? " is-active" : ""}"
-          type="button"
-          role="tab"
-          aria-selected="${index === 0 ? "true" : "false"}"
-          data-home-experience="${index}"
-        >
-          ${item.company}
-        </button>
-      `
-    )
-    .join("");
+  const modeMap = new Map(homeModes.map((mode) => [mode.id, mode]));
+  let activeMode = modeMap.get(profile.defaultModeId) || homeModes[0];
+
+  const renderLaunchCards = (activeModeId) =>
+    homeModes
+      .map(
+        (mode) => `
+          <button
+            class="mode-launch__card${mode.id === activeModeId ? " is-active" : ""}"
+            type="button"
+            data-launch-mode="${mode.id}"
+            aria-pressed="${mode.id === activeModeId ? "true" : "false"}"
+          >
+            <span class="mode-launch__icon">${icon(mode.icon)}</span>
+            <span class="mode-launch__label">${mode.label}</span>
+            ${mode.id === profile.defaultModeId ? '<span class="mode-launch__default">Default</span>' : ""}
+          </button>
+        `
+      )
+      .join("");
+
+  const renderExperienceTabs = (selectedCompany) => {
+    experienceTabs.innerHTML = experience
+      .map(
+        (item, index) => `
+          <button
+            class="editor-home__tab${item.company === selectedCompany ? " is-active" : ""}"
+            type="button"
+            role="tab"
+            aria-selected="${item.company === selectedCompany ? "true" : "false"}"
+            data-home-experience="${index}"
+          >
+            ${item.company}
+          </button>
+        `
+      )
+      .join("");
+  };
 
   const renderExperiencePanel = (index) => {
     const item = experience[index];
@@ -337,7 +345,135 @@ function renderHome() {
     revealRenderedContent([experiencePanel]);
   };
 
-  renderExperiencePanel(0);
+  const setTools = (mode) => {
+    aboutTech.innerHTML = mode.toolItems
+      .map(
+        (item, index) => `
+          <div class="editor-home__tech-item" data-animate style="--delay: ${index * 0.04}s">
+            <span class="editor-home__tech-bullet">${icon("share")}</span>
+            <span>${item}</span>
+          </div>
+        `
+      )
+      .join("");
+    revealRenderedContent([aboutTech]);
+  };
+
+  const setProjects = (mode) => {
+    const featuredProjects = mode.projectIds
+      .map((projectId) => projects.find((project) => project.id === projectId))
+      .filter(Boolean);
+    const extraProjects = projects.filter((project) => !mode.projectIds.includes(project.id));
+
+    featuredWork.innerHTML = featuredProjects
+      .map((project, index) => renderHomeFeaturedProject(project, index))
+      .join("");
+
+    moreWork.innerHTML = `
+      <div class="editor-home__more-grid">
+        ${extraProjects
+          .map(
+            (project, index) => `
+              <article class="editor-home__mini-project" data-animate style="--delay: ${index * 0.05}s">
+                <p class="section-label">${project.categories.join(" / ")}</p>
+                <h3>${project.shortTitle}</h3>
+                <p>${project.problem}</p>
+                <div class="editor-home__mini-metrics">
+                  ${project.metrics
+                    .slice(0, 2)
+                    .map((metric) => `<span>${metric.value} ${metric.label}</span>`)
+                    .join("")}
+                </div>
+              </article>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+
+    moreWork.hidden = true;
+    workToggle.setAttribute("aria-expanded", "false");
+    workToggle.textContent = "Show More";
+    workToggle.hidden = !extraProjects.length;
+    revealRenderedContent([featuredWork]);
+  };
+
+  const setHero = (mode) => {
+    hero.innerHTML = `
+      <p class="editor-home__intro" data-animate>${profile.homeIntro}</p>
+      <h1 id="home-title" data-animate>${profile.name}</h1>
+      <h2 class="editor-home__statement" data-animate>${mode.statement}</h2>
+      <p class="editor-home__summary" data-animate>
+        ${mode.summary}
+      </p>
+      <div class="editor-home__highlights" data-animate>
+        ${mode.highlights
+          .map(
+            (item) => `
+              <article class="editor-home__highlight">
+                <strong>${item.value}</strong>
+                <span>${item.label}</span>
+              </article>
+            `
+          )
+          .join("")}
+      </div>
+      <div class="editor-home__meta" data-animate>
+        <span>${profile.location}</span>
+        <span>${profile.relocation}</span>
+        <span>${profile.availability}</span>
+      </div>
+      <div class="editor-home__hero-actions" data-animate>
+        <a class="ghost-button ghost-button--filled" href="#work">View work</a>
+        <a class="ghost-button" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">Open ${mode.label} resume</a>
+      </div>
+    `;
+    revealRenderedContent([hero]);
+  };
+
+  const setContact = (mode) => {
+    contactCopy.innerHTML = `
+      <p class="editor-home__contact-eyebrow" data-animate>05. What's next?</p>
+      <h2 id="contact-title" data-animate>Get In Touch</h2>
+      <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
+      <div class="editor-home__contact-actions" data-animate>
+        <a class="ghost-button ghost-button--filled" href="mailto:${profile.email}">Say Hello</a>
+        <a class="ghost-button" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">Open ${mode.label} resume</a>
+      </div>
+    `;
+    revealRenderedContent([contactCopy]);
+  };
+
+  const applyMode = (modeId) => {
+    const nextMode = modeMap.get(modeId) || modeMap.get(profile.defaultModeId) || homeModes[0];
+    activeMode = nextMode;
+
+    modeButton.textContent = nextMode.label;
+    resumeButton.href = nextMode.resumeUrl;
+    resumeButton.textContent = "Resume";
+
+    setHero(nextMode);
+    setTools(nextMode);
+    setProjects(nextMode);
+    setContact(nextMode);
+
+    const defaultExperienceIndex = experience.findIndex((item) => item.company === nextMode.experienceCompany);
+    const resolvedExperienceIndex = defaultExperienceIndex >= 0 ? defaultExperienceIndex : 0;
+    renderExperienceTabs(experience[resolvedExperienceIndex].company);
+    renderExperiencePanel(resolvedExperienceIndex);
+
+    modeLaunchGrid.innerHTML = renderLaunchCards(nextMode.id);
+  };
+
+  workToggle.addEventListener("click", () => {
+    const isExpanded = workToggle.getAttribute("aria-expanded") === "true";
+    moreWork.hidden = isExpanded;
+    workToggle.setAttribute("aria-expanded", String(!isExpanded));
+    workToggle.textContent = isExpanded ? "Show More" : "Show Less";
+    if (!isExpanded) {
+      revealRenderedContent([moreWork]);
+    }
+  });
 
   experienceTabs.addEventListener("click", (event) => {
     const tab = event.target.closest("[data-home-experience]");
@@ -353,62 +489,6 @@ function renderHome() {
     });
     renderExperiencePanel(nextIndex);
   });
-
-  const featuredIds = ["recommerce-routing", "founder-forward", "data4good-nlp"];
-  const featuredProjects = featuredIds
-    .map((projectId) => projects.find((project) => project.id === projectId))
-    .filter(Boolean);
-  const extraProjects = projects.filter((project) => !featuredIds.includes(project.id));
-
-  featuredWork.innerHTML = featuredProjects
-    .map((project, index) => renderHomeFeaturedProject(project, index))
-    .join("");
-
-  moreWork.innerHTML = `
-    <div class="editor-home__more-grid">
-      ${extraProjects
-        .map(
-          (project, index) => `
-            <article class="editor-home__mini-project" data-animate style="--delay: ${index * 0.05}s">
-              <p class="section-label">${project.categories.join(" / ")}</p>
-              <h3>${project.shortTitle}</h3>
-              <p>${project.problem}</p>
-              <div class="editor-home__mini-metrics">
-                ${project.metrics
-                  .slice(0, 2)
-                  .map((metric) => `<span>${metric.value} ${metric.label}</span>`)
-                  .join("")}
-              </div>
-            </article>
-          `
-        )
-        .join("")}
-    </div>
-  `;
-
-  if (!extraProjects.length) {
-    workToggle.hidden = true;
-  } else {
-    workToggle.hidden = false;
-    workToggle.addEventListener("click", () => {
-      const isExpanded = workToggle.getAttribute("aria-expanded") === "true";
-      moreWork.hidden = isExpanded;
-      workToggle.setAttribute("aria-expanded", String(!isExpanded));
-      workToggle.textContent = isExpanded ? "Show More" : "Show Less";
-      if (!isExpanded) {
-        revealRenderedContent([moreWork]);
-      }
-    });
-  }
-
-  contactCopy.innerHTML = `
-    <p class="editor-home__contact-eyebrow" data-animate>04. What's next?</p>
-    <h2 id="contact-title" data-animate>Get In Touch</h2>
-    <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
-    <div class="editor-home__contact-actions" data-animate>
-      <a class="ghost-button ghost-button--filled" href="mailto:${profile.email}">Say Hello</a>
-    </div>
-  `;
 
   const railLinks = socials.filter((item) => ["GitHub", "LinkedIn", "Email"].includes(item.platform));
   socialRail.innerHTML = `
@@ -430,6 +510,35 @@ function renderHome() {
     <a class="edge-rail__email" href="mailto:${profile.email}">${profile.email}</a>
     <span class="edge-rail__line" aria-hidden="true"></span>
   `;
+
+  const showLauncher = () => {
+    modeLaunch.classList.remove("is-hidden");
+    document.body.classList.add("mode-launch-open");
+    modeLaunchGrid.innerHTML = renderLaunchCards(activeMode.id);
+  };
+
+  const hideLauncher = () => {
+    modeLaunch.classList.add("is-hidden");
+    document.body.classList.remove("mode-launch-open");
+  };
+
+  modeLaunchGrid.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-launch-mode]");
+    if (!card) {
+      return;
+    }
+
+    applyMode(card.dataset.launchMode);
+    hideLauncher();
+  });
+
+  modeButton.addEventListener("click", () => {
+    showLauncher();
+  });
+
+  applyMode(profile.defaultModeId);
+  showLauncher();
+  revealRenderedContent([achievementsGrid, aboutAside, aboutCopy, socialRail, emailRail]);
 }
 
 function renderHomeFeaturedProject(project, index) {
@@ -463,6 +572,9 @@ function renderHomeFeaturedProject(project, index) {
         </div>
         <div class="editor-home__feature-tools">
           ${project.tools.map((tool) => `<span>${tool}</span>`).join("")}
+        </div>
+        <div class="editor-home__feature-actions">
+          ${project.githubUrl ? `<a class="text-link" href="${project.githubUrl}" target="_blank" rel="noreferrer">GitHub</a>` : ""}
         </div>
       </div>
     </article>

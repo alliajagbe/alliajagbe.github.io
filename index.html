@@ -27,10 +27,23 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=20260415c" />
+    <link rel="stylesheet" href="/styles.css?v=20260422a" />
   </head>
   <body data-page="home">
     <div class="site-shell">
+      <div class="mode-launch" id="mode-launch" role="dialog" aria-modal="true" aria-labelledby="mode-launch-title">
+        <div class="mode-launch__inner">
+          <div class="mode-launch__brand">
+            <span class="brand-mark">
+              <img class="brand-logo" src="/assets/logo-icon.png?v=20260404e" alt="Alli Ajagbe logo" />
+            </span>
+          </div>
+          <p class="mode-launch__eyebrow">Choose a view</p>
+          <h1 class="mode-launch__title" id="mode-launch-title">Alli Ajagbe</h1>
+          <div class="mode-launch__grid" id="mode-launch-grid"></div>
+        </div>
+      </div>
+
       <header class="site-header">
         <div class="container header-inner header-inner--home">
           <a class="brand" href="/" aria-label="Go to homepage">
@@ -47,15 +60,17 @@
             <a href="#about" class="nav-link nav-link--anchor"><span>01.</span> About</a>
             <a href="#experience" class="nav-link nav-link--anchor"><span>02.</span> Experience</a>
             <a href="#work" class="nav-link nav-link--anchor"><span>03.</span> Work</a>
-            <a href="#contact" class="nav-link nav-link--anchor"><span>04.</span> Contact</a>
+            <a href="#achievements" class="nav-link nav-link--anchor"><span>04.</span> Achievements</a>
+            <a href="#contact" class="nav-link nav-link--anchor"><span>05.</span> Contact</a>
           </nav>
 
           <div class="header-actions">
+            <button class="mode-button" id="home-mode-button" type="button">Data Scientist</button>
             <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Activate dark mode">
               <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
               <span class="theme-toggle__label" id="theme-toggle-label">Light</span>
             </button>
-            <a class="resume-button" href="/AlliAjagbeResume.pdf" target="_blank" rel="noreferrer">Resume</a>
+            <a class="resume-button" id="home-resume-button" href="/resume/AlliAjagbeDataScientistResume.pdf" target="_blank" rel="noreferrer">Resume</a>
           </div>
         </div>
       </header>
@@ -113,7 +128,19 @@
             <div class="editor-home__more-work" id="home-more-work" hidden></div>
             <div class="editor-home__actions">
               <button class="ghost-button" id="home-work-toggle" type="button" aria-expanded="false">Show More</button>
+              <a class="ghost-button" href="https://github.com/alliajagbe" target="_blank" rel="noreferrer">More on GitHub</a>
             </div>
+          </div>
+        </section>
+
+        <section class="editor-home__section" id="achievements" aria-labelledby="achievements-title">
+          <div class="container editor-home__container">
+            <div class="editor-home__heading">
+              <p class="editor-home__number">04.</p>
+              <h2 id="achievements-title">Achievements</h2>
+              <span class="editor-home__line" aria-hidden="true"></span>
+            </div>
+            <div class="editor-home__achievements" id="home-achievements"></div>
           </div>
         </section>
 
@@ -126,12 +153,13 @@
 
       <footer class="site-footer site-footer--minimal">
         <div class="container site-footer--minimal__inner">
-          <p>Designed and built by <span id="footer-year-name">Alli Ajagbe</span>.</p>
+          <p>Built by <span id="footer-year-name">Alli Ajagbe</span> and Codex</p>
+          <p class="site-footer--minimal__subline">Inspired by v4.brittanychiang.com</p>
         </div>
       </footer>
     </div>
 
-    <script src="/content.js?v=20260415c" defer></script>
-    <script src="/script.js?v=20260415c" defer></script>
+    <script src="/content.js?v=20260422a" defer></script>
+    <script src="/script.js?v=20260422a" defer></script>
   </body>
 </html>
