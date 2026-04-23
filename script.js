@@ -204,8 +204,7 @@ function renderHome() {
   const aboutCopy = document.querySelector("#home-about-copy");
   const aboutAside = document.querySelector("#home-about-aside");
   const aboutTech = document.querySelector("#home-about-tech");
-  const educationTabs = document.querySelector("#home-education-tabs");
-  const educationPanel = document.querySelector("#home-education-panel");
+  const educationList = document.querySelector("#home-education-list");
   const experienceTabs = document.querySelector("#home-experience-tabs");
   const experiencePanel = document.querySelector("#home-experience-panel");
   const featuredWork = document.querySelector("#home-featured-work");
@@ -224,8 +223,7 @@ function renderHome() {
     !aboutCopy ||
     !aboutAside ||
     !aboutTech ||
-    !educationTabs ||
-    !educationPanel ||
+    !educationList ||
     !experienceTabs ||
     !experiencePanel ||
     !featuredWork ||
@@ -279,38 +277,19 @@ function renderHome() {
   const modeMap = new Map(homeModes.map((mode) => [mode.id, mode]));
   let activeMode = modeMap.get(profile.defaultModeId) || homeModes[0];
 
-  const renderEducationTabs = (selectedInstitution) => {
-    educationTabs.innerHTML = education
+  const renderEducationList = () => {
+    educationList.innerHTML = education
       .map(
         (item, index) => `
-          <button
-            class="editor-home__tab${item.institution === selectedInstitution ? " is-active" : ""}"
-            type="button"
-            role="tab"
-            aria-selected="${item.institution === selectedInstitution ? "true" : "false"}"
-            data-home-education="${index}"
-          >
-            ${item.institution}
-          </button>
+          <article class="editor-home__education-card" data-animate style="--delay: ${index * 0.05}s">
+            <p class="editor-home__education-meta">${item.institution}</p>
+            <h3>${item.credential}</h3>
+            <p class="editor-home__experience-meta">${item.location}</p>
+          </article>
         `
       )
       .join("");
-  };
-
-  const renderEducationPanel = (index) => {
-    const item = education[index];
-    if (!item) {
-      return;
-    }
-
-    educationPanel.innerHTML = `
-      <article class="editor-home__education-card" data-animate>
-        <h3>${item.credential}</h3>
-        <p class="editor-home__education-meta">${item.institution}</p>
-        <p class="editor-home__experience-meta">${item.location}</p>
-      </article>
-    `;
-    revealRenderedContent([educationPanel]);
+    revealRenderedContent([educationList]);
   };
 
   const renderLaunchCards = (activeModeId) =>
@@ -540,21 +519,6 @@ function renderHome() {
     renderExperiencePanel(nextIndex);
   });
 
-  educationTabs.addEventListener("click", (event) => {
-    const tab = event.target.closest("[data-home-education]");
-    if (!tab) {
-      return;
-    }
-
-    const nextIndex = Number(tab.dataset.homeEducation);
-    educationTabs.querySelectorAll("[data-home-education]").forEach((button, buttonIndex) => {
-      const isActive = buttonIndex === nextIndex;
-      button.classList.toggle("is-active", isActive);
-      button.setAttribute("aria-selected", String(isActive));
-    });
-    renderEducationPanel(nextIndex);
-  });
-
   achievementTabs.addEventListener("click", (event) => {
     const tab = event.target.closest("[data-home-achievement-year]");
     if (!tab) {
@@ -617,8 +581,7 @@ function renderHome() {
   });
 
   applyMode(profile.defaultModeId);
-  renderEducationTabs(education[0].institution);
-  renderEducationPanel(0);
+  renderEducationList();
   renderAchievementTabs(achievementYears[0]);
   renderAchievementPanel(achievementYears[0]);
   showLauncher();

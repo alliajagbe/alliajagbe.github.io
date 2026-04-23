@@ -2087,6 +2087,12 @@ body[data-page="home"] .theme-toggle__label {
   grid-template-columns: 180px minmax(0, 1fr);
 }
 
+.editor-home__education-list {
+  display: grid;
+  gap: 1.35rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .editor-home__tabs {
   display: grid;
   align-content: start;
@@ -2314,7 +2320,6 @@ body[data-page="home"] .theme-toggle__label {
   border-top: 1px solid var(--border);
 }
 
-.editor-home__education-card,
 .editor-home__experience-card--compact {
   display: grid;
   gap: 0.9rem;
@@ -2324,6 +2329,15 @@ body[data-page="home"] .theme-toggle__label {
 .editor-home__education-card h3,
 .editor-home__experience-card--compact h3 {
   font-size: clamp(1.4rem, 1.2rem + 0.6vw, 1.9rem);
+}
+
+.editor-home__education-card {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
+  min-height: 100%;
 }
 
 .editor-home__education-meta,
@@ -2462,6 +2476,7 @@ body[data-page="home"] .theme-toggle__label {
   .mode-launch__grid,
   .editor-home__about-grid,
   .editor-home__experience-grid,
+  .editor-home__education-list,
   .editor-home__feature,
   .editor-home__more-grid {
     grid-template-columns: 1fr;
