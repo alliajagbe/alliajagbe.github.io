@@ -1916,7 +1916,7 @@ body[data-page="home"] .theme-toggle__label {
 }
 
 .editor-home__hero-copy {
-  max-width: 46rem;
+  max-width: 58rem;
   display: grid;
   gap: 1rem;
 }
@@ -1932,14 +1932,14 @@ body[data-page="home"] .theme-toggle__label {
 }
 
 .editor-home__hero-copy h1 {
-  font-size: clamp(3.4rem, 8vw, 6rem);
+  font-size: clamp(3.2rem, 7vw, 5.7rem);
   line-height: 0.96;
   letter-spacing: -0.055em;
 }
 
 .editor-home__statement {
-  max-width: 54rem;
-  font-size: clamp(2.8rem, 7vw, 5.4rem);
+  max-width: 58rem;
+  font-size: clamp(2.4rem, 5.6vw, 4.9rem);
   line-height: 0.98;
   letter-spacing: -0.055em;
   color: color-mix(in srgb, var(--heading) 58%, var(--text-soft));
@@ -2000,14 +2000,20 @@ body[data-page="home"] .theme-toggle__label {
 .editor-home__about-grid,
 .editor-home__experience-grid {
   display: grid;
-  gap: 3rem;
-  grid-template-columns: minmax(0, 1.18fr) minmax(290px, 0.82fr);
+  gap: 3.5rem;
+  grid-template-columns: minmax(0, 1.28fr) minmax(280px, 0.72fr);
+}
+
+.editor-home__about-main {
+  display: grid;
+  gap: 2rem;
+  align-content: start;
 }
 
 .editor-home__copy {
   display: grid;
   gap: 1.2rem;
-  max-width: 34rem;
+  max-width: 42rem;
   color: var(--text-soft);
   font-size: 1.03rem;
 }
@@ -2051,10 +2057,9 @@ body[data-page="home"] .theme-toggle__label {
 }
 
 .editor-home__tech {
-  margin-top: 2.25rem;
   display: grid;
   gap: 0.95rem;
-  max-width: 32rem;
+  max-width: 42rem;
 }
 
 .editor-home__tech-list {
@@ -2503,6 +2508,7 @@ body[data-page="home"] .theme-toggle__label {
 
   .mode-launch__grid,
   .editor-home__about-grid,
+  .editor-home__about-main,
   .editor-home__experience-grid,
   .editor-home__education-list,
   .editor-home__feature,
