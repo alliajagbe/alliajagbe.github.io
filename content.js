@@ -33,6 +33,7 @@ window.portfolioContent = {
     quickFacts: ["Open to relocation", "Data Science", "Data storytelling", "Decision-focused analytics"],
     interests: ["Data Science", "Data storytelling", "Decision-focused analytics", "Applied AI", "Social Impact"],
     resumeUrl: "/resume/AlliAjagbeDataScientistResume.pdf",
+    headshotUrl: "/assets/el%20presidente.jpg?v=20260428a",
     logoIconUrl: "/assets/logo-icon.png?v=20260404e",
     logoWordmarkUrl: "/assets/logo-wordmark.png?v=20260404e",
     highlights: [
@@ -468,6 +469,14 @@ window.portfolioContent = {
   achievements: [
     {
       year: "2026",
+      title: "Outstanding Wake Forest Graduate Business Ambassador"
+    },
+    {
+      year: "2026",
+      title: "Practicum Team MVP"
+    },
+    {
+      year: "2026",
       title: "Beta Gamma Sigma Inductee"
     },
     {
@@ -487,12 +496,36 @@ window.portfolioContent = {
       title: "Top 1% in NPTEL Database Management Systems"
     },
     {
+      year: "2024",
+      title: "Top 7 Deep Learning Projects Nominated for Publication"
+    },
+    {
+      year: "2023",
+      title: "Top 19% Coursera Data Science Competition"
+    },
+    {
       year: "2022",
       title: "Diana Award Recipient"
     },
     {
+      year: "2022",
+      title: "Expert Panelist for IYD2022"
+    },
+    {
+      year: "2021",
+      title: "African Leadership Academy Resilience Award"
+    },
+    {
       year: "2020",
       title: "25Under25 Leadership Gamechangers in Africa"
+    },
+    {
+      year: "2020",
+      title: "Winner: Zlance Logo Design Competition"
+    },
+    {
+      year: "2020",
+      title: "Winner: SAIF Logo Design Competition"
     }
   ],
   services: [

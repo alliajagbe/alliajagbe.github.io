@@ -250,8 +250,8 @@ function renderHome() {
 
   aboutAside.innerHTML = `
     <article class="home-aside-card" data-animate>
-      <div class="home-aside-card__wordmark">
-        <img src="${profile.logoWordmarkUrl}" alt="${profile.name} wordmark" />
+      <div class="home-aside-card__portrait">
+        <img src="${profile.headshotUrl}" alt="${profile.name} headshot" />
       </div>
       <div class="home-aside-card__rows">
         <div>
@@ -261,10 +261,6 @@ function renderHome() {
         <div>
           <span class="section-label">Currently</span>
           <strong>${education[0].credential}</strong>
-        </div>
-        <div>
-          <span class="section-label">Default view</span>
-          <strong>Data Scientist</strong>
         </div>
         <div>
           <span class="section-label">Open to</span>
@@ -353,33 +349,63 @@ function renderHome() {
     revealRenderedContent([experiencePanel]);
   };
 
-  const achievementYears = [...new Set(achievements.map((item) => item.year))];
+  const achievementYears = [...new Set(achievements.map((item) => item.year))]
+    .sort((first, second) => Number(second) - Number(first));
+  const achievementGroups = [];
+  for (let index = 0; index < achievementYears.length; index += 3) {
+    const years = achievementYears.slice(index, index + 3);
+    achievementGroups.push({
+      id: years.join("-"),
+      label: years.length === 1 ? years[0] : `${years[0]}-${years[years.length - 1]}`,
+      years
+    });
+  }
 
-  const renderAchievementTabs = (selectedYear) => {
-    achievementTabs.innerHTML = achievementYears
+  const renderAchievementTabs = (selectedGroupId) => {
+    achievementTabs.innerHTML = achievementGroups
       .map(
-        (year) => `
+        (group) => `
           <button
-            class="editor-home__tab${year === selectedYear ? " is-active" : ""}"
+            class="editor-home__tab${group.id === selectedGroupId ? " is-active" : ""}"
             type="button"
             role="tab"
-            aria-selected="${year === selectedYear ? "true" : "false"}"
-            data-home-achievement-year="${year}"
+            aria-selected="${group.id === selectedGroupId ? "true" : "false"}"
+            data-home-achievement-group="${group.id}"
           >
-            ${year}
+            ${group.label}
           </button>
         `
       )
       .join("");
   };
 
-  const renderAchievementPanel = (selectedYear) => {
-    const yearItems = achievements.filter((item) => item.year === selectedYear);
+  const renderAchievementPanel = (selectedGroupId, selectedYear) => {
+    const activeGroup = achievementGroups.find((group) => group.id === selectedGroupId) || achievementGroups[0];
+    const resolvedYear = activeGroup.years.includes(selectedYear) ? selectedYear : activeGroup.years[0];
     achievementPanel.innerHTML = `
       <article class="editor-home__experience-card editor-home__experience-card--compact" data-animate>
-        <h3>${selectedYear}</h3>
+        <div class="editor-home__year-pills">
+          ${activeGroup.years
+            .map(
+              (year) => `
+                <button
+                  class="editor-home__year-pill${year === resolvedYear ? " is-active" : ""}"
+                  type="button"
+                  data-home-achievement-year="${year}"
+                  aria-pressed="${year === resolvedYear ? "true" : "false"}"
+                >
+                  ${year}
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+        <h3>${resolvedYear}</h3>
         <div class="editor-home__experience-notes">
-          ${yearItems.map((item) => `<p>${item.title}</p>`).join("")}
+          ${achievements
+            .filter((item) => item.year === resolvedYear)
+            .map((item) => `<p>${item.title}</p>`)
+            .join("")}
         </div>
       </article>
     `;
@@ -520,18 +546,30 @@ function renderHome() {
   });
 
   achievementTabs.addEventListener("click", (event) => {
-    const tab = event.target.closest("[data-home-achievement-year]");
+    const tab = event.target.closest("[data-home-achievement-group]");
     if (!tab) {
       return;
     }
 
-    const selectedYear = tab.dataset.homeAchievementYear;
-    achievementTabs.querySelectorAll("[data-home-achievement-year]").forEach((button) => {
-      const isActive = button.dataset.homeAchievementYear === selectedYear;
+    const selectedGroupId = tab.dataset.homeAchievementGroup;
+    const nextGroup = achievementGroups.find((group) => group.id === selectedGroupId) || achievementGroups[0];
+    achievementTabs.querySelectorAll("[data-home-achievement-group]").forEach((button) => {
+      const isActive = button.dataset.homeAchievementGroup === selectedGroupId;
       button.classList.toggle("is-active", isActive);
       button.setAttribute("aria-selected", String(isActive));
     });
-    renderAchievementPanel(selectedYear);
+    renderAchievementPanel(nextGroup.id, nextGroup.years[0]);
+  });
+
+  achievementPanel.addEventListener("click", (event) => {
+    const pill = event.target.closest("[data-home-achievement-year]");
+    if (!pill) {
+      return;
+    }
+
+    const activeGroupButton = achievementTabs.querySelector(".is-active[data-home-achievement-group]");
+    const selectedGroupId = activeGroupButton?.dataset.homeAchievementGroup || achievementGroups[0]?.id;
+    renderAchievementPanel(selectedGroupId, pill.dataset.homeAchievementYear);
   });
 
   const railLinks = socials.filter((item) => ["GitHub", "LinkedIn", "Email"].includes(item.platform));
@@ -582,8 +620,8 @@ function renderHome() {
 
   applyMode(profile.defaultModeId);
   renderEducationList();
-  renderAchievementTabs(achievementYears[0]);
-  renderAchievementPanel(achievementYears[0]);
+  renderAchievementTabs(achievementGroups[0].id);
+  renderAchievementPanel(achievementGroups[0].id, achievementGroups[0].years[0]);
   showLauncher();
   revealRenderedContent([aboutAside, aboutCopy, socialRail, emailRail]);
 }
