@@ -253,20 +253,6 @@ function renderHome() {
       <div class="home-aside-card__portrait">
         <img src="${profile.headshotUrl}" alt="${profile.name} headshot" />
       </div>
-      <div class="home-aside-card__rows">
-        <div>
-          <span class="section-label">Based in</span>
-          <strong>${profile.location}</strong>
-        </div>
-        <div>
-          <span class="section-label">Currently</span>
-          <strong>${education[0].credential}</strong>
-        </div>
-        <div>
-          <span class="section-label">Open to</span>
-          <strong>${profile.relocation}</strong>
-        </div>
-      </div>
     </article>
   `;
 
