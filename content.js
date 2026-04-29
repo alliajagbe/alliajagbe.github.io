@@ -463,7 +463,7 @@ window.portfolioContent = {
     {
       credential: "High School Diploma",
       institution: "African Leadership Academy",
-      location: "South Africa"
+      location: "Johannesburg, South Africa"
     }
   ],
   achievements: [
