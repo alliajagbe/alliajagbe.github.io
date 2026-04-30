@@ -96,6 +96,66 @@ function setupThemeToggle() {
   });
 }
 
+function setupMobileNav() {
+  const header = document.querySelector(".site-header");
+  const toggle = document.querySelector("#mobile-nav-toggle");
+  const nav = document.querySelector(".site-nav");
+  const actions = document.querySelector(".header-actions");
+
+  if (!header || !toggle || !nav) {
+    return;
+  }
+
+  const closeNav = () => {
+    header.classList.remove("is-open");
+    document.body.classList.remove("mobile-nav-open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  const openNav = () => {
+    header.classList.add("is-open");
+    document.body.classList.add("mobile-nav-open");
+    toggle.setAttribute("aria-expanded", "true");
+  };
+
+  toggle.addEventListener("click", () => {
+    if (header.classList.contains("is-open")) {
+      closeNav();
+      return;
+    }
+
+    openNav();
+  });
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeNav);
+  });
+
+  actions?.querySelectorAll("a, button").forEach((control) => {
+    if (control === toggle) {
+      return;
+    }
+
+    control.addEventListener("click", () => {
+      if (window.innerWidth <= 860) {
+        closeNav();
+      }
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 860) {
+      closeNav();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeNav();
+    }
+  });
+}
+
 function setSharedBranding() {
   const { profile, socials } = portfolioContent;
   const brandName = document.querySelector("#brand-name");
@@ -1412,6 +1472,7 @@ function renderContact() {
 
 function init() {
   setSharedBranding();
+  setupMobileNav();
   setupThemeToggle();
   setupActiveNav();
   renderHome();

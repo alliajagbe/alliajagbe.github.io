@@ -27,7 +27,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=20260429a" />
+    <link rel="stylesheet" href="/styles.css?v=20260430a" />
   </head>
   <body data-page="projects">
     <div class="site-shell">
@@ -43,17 +43,24 @@
             </span>
           </a>
 
-          <nav class="site-nav" aria-label="Primary navigation">
+          <button class="mobile-nav-toggle" id="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+            <span class="mobile-nav-toggle__icon" aria-hidden="true"></span>
+            <span class="mobile-nav-toggle__label">Menu</span>
+          </button>
+
+          <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation">
             <a href="/about/" class="nav-link" data-page="about">About</a>
             <a href="/projects/" class="nav-link" data-page="projects">Projects</a>
             <a href="/expertise/" class="nav-link" data-page="services">Expertise</a>
             <a href="/contact/" class="nav-link" data-page="contact">Contact</a>
           </nav>
 
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Activate dark mode">
-            <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
-            <span class="theme-toggle__label" id="theme-toggle-label">Light</span>
-          </button>
+          <div class="header-actions">
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Activate dark mode">
+              <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
+              <span class="theme-toggle__label" id="theme-toggle-label">Light</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -121,6 +128,6 @@
     </div>
 
     <script src="/content.js?v=20260429c" defer></script>
-    <script src="/script.js?v=20260429b" defer></script>
+    <script src="/script.js?v=20260430a" defer></script>
   </body>
 </html>
