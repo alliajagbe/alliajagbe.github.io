@@ -276,6 +276,7 @@ function renderHome() {
   const socialRail = document.querySelector("#home-social-rail");
   const emailRail = document.querySelector("#home-email-rail");
   const modeLaunch = document.querySelector("#mode-launch");
+  const brandIntro = document.querySelector("#brand-intro");
   const modeLaunchGrid = document.querySelector("#mode-launch-grid");
   const modeButton = document.querySelector("#home-mode-button");
   const resumeButton = document.querySelector("#home-resume-button");
@@ -295,6 +296,7 @@ function renderHome() {
     !socialRail ||
     !emailRail ||
     !modeLaunch ||
+    !brandIntro ||
     !modeLaunchGrid ||
     !modeButton ||
     !resumeButton
@@ -650,6 +652,26 @@ function renderHome() {
     document.body.classList.remove("mode-launch-open");
   };
 
+  const playBrandIntro = () => {
+    document.body.classList.add("brand-intro-open");
+    requestAnimationFrame(() => {
+      brandIntro.classList.add("is-active");
+    });
+
+    const exitDelay = prefersReducedMotion ? 180 : 900;
+    const totalDuration = prefersReducedMotion ? 420 : 1450;
+
+    window.setTimeout(() => {
+      brandIntro.classList.add("is-exiting");
+    }, exitDelay);
+
+    window.setTimeout(() => {
+      brandIntro.classList.add("is-hidden");
+      document.body.classList.remove("brand-intro-open");
+      showLauncher();
+    }, totalDuration);
+  };
+
   modeLaunchGrid.addEventListener("click", (event) => {
     const card = event.target.closest("[data-launch-mode]");
     if (!card) {
@@ -668,7 +690,7 @@ function renderHome() {
   renderEducationList();
   renderAchievementTabs(achievementGroups[0].id);
   renderAchievementPanel(achievementGroups[0].id, achievementGroups[0].years[0]);
-  showLauncher();
+  playBrandIntro();
   revealRenderedContent([aboutAside, aboutCopy, socialRail, emailRail]);
 }
 
