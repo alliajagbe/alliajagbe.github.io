@@ -662,13 +662,13 @@ function renderHome() {
     const totalDuration = prefersReducedMotion ? 420 : 1450;
 
     window.setTimeout(() => {
+      showLauncher();
       brandIntro.classList.add("is-exiting");
     }, exitDelay);
 
     window.setTimeout(() => {
       brandIntro.classList.add("is-hidden");
       document.body.classList.remove("brand-intro-open");
-      showLauncher();
     }, totalDuration);
   };
 

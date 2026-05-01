@@ -1884,22 +1884,12 @@ body[data-page="home"] .site-shell {
   object-fit: contain;
 }
 
-.brand-intro__wordmark {
-  width: min(15rem, 70vw);
-  opacity: 0;
-  transform: translateY(10px);
-}
-
 .brand-intro.is-active .brand-intro__halo {
   animation: brandIntroHalo 1.25s ease forwards;
 }
 
 .brand-intro.is-active .brand-intro__mark {
   animation: brandIntroMark 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.brand-intro.is-active .brand-intro__wordmark {
-  animation: brandIntroWordmark 0.65s ease forwards 0.18s;
 }
 
 .brand-intro.is-exiting .brand-intro__inner {
@@ -1936,18 +1926,6 @@ body[data-page="home"] .site-shell {
   100% {
     opacity: 0.1;
     transform: scale(1.28);
-  }
-}
-
-@keyframes brandIntroWordmark {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
