@@ -11,10 +11,10 @@ window.portfolioContent = {
     homeSummary:
       "I work across analytics, machine learning, and decision systems, building structured tools that help teams move from messy data to measurable action.",
     bio:
-      "I work across consulting, operations, analytics, and machine learning. I am currently completing an MS in Business Analytics at Wake Forest after studying Data Science, Economics, and Business at Plaksha University.",
+      "I work across consulting, operations, analytics, and machine learning. I graduated from Wake Forest with an MS in Business Analytics with distinction after studying Data Science, Economics, and Business at Plaksha University.",
     aboutParagraphs: [
       "I enjoy building analytical systems that make decisions clearer. My work has moved between consulting, startup operations, machine learning, and social-impact data projects.",
-      "Right now I am completing an MS in Business Analytics at Wake Forest, after studying Data Science, Economics, and Business at Plaksha University."
+      "I graduated from Wake Forest with an MS in Business Analytics with distinction and finished top of my cohort, after studying Data Science, Economics, and Business at Plaksha University."
     ],
     contactBlurb:
       "I am open to roles, collaborations, and thoughtful conversations across data science, analytics, and AI.",
@@ -451,7 +451,7 @@ window.portfolioContent = {
   ],
   education: [
     {
-      credential: "MS in Business Analytics",
+      credential: "MS in Business Analytics, with Distinction",
       institution: "Wake Forest School of Business",
       location: "North Carolina, USA"
     },
@@ -467,6 +467,14 @@ window.portfolioContent = {
     }
   ],
   achievements: [
+    {
+      year: "2026",
+      title: "Graduated Top of Cohort, MS in Business Analytics"
+    },
+    {
+      year: "2026",
+      title: "Graduated with Distinction, Wake Forest University"
+    },
     {
       year: "2026",
       title: "Outstanding Wake Forest Graduate Business Ambassador"

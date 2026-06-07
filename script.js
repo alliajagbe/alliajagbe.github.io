@@ -1169,7 +1169,7 @@ function renderAbout() {
         <p class="section-label">Quick facts</p>
       </div>
       <div class="facts-list">
-        <div class="fact-item">${renderIconBadge("graduation", "MSBA Candidate at Wake Forest")}</div>
+        <div class="fact-item">${renderIconBadge("graduation", "Wake Forest MSBA, with Distinction")}</div>
         <div class="fact-item">${renderIconBadge("briefcase", "Based in Winston-Salem, NC")}</div>
         <div class="fact-item">${renderIconBadge("spark", `Interests: ${profile.interests.slice(0, 2).join(" / ")}`)}</div>
         <div class="fact-item">${renderIconBadge("compass", `Interests: ${profile.interests.slice(2).join(" / ")}`)}</div>
