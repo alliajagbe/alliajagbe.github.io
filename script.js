@@ -259,7 +259,8 @@ function renderHome() {
     projects,
     education,
     socials,
-    achievements
+    achievements,
+    deskItems = []
   } = portfolioContent;
   const aboutCopy = document.querySelector("#home-about-copy");
   const aboutAside = document.querySelector("#home-about-aside");
@@ -272,6 +273,7 @@ function renderHome() {
   const workToggle = document.querySelector("#home-work-toggle");
   const achievementTabs = document.querySelector("#home-achievement-tabs");
   const achievementPanel = document.querySelector("#home-achievement-panel");
+  const interactiveDesk = document.querySelector("#interactive-desk");
   const contactCopy = document.querySelector("#home-contact-copy");
   const socialRail = document.querySelector("#home-social-rail");
   const emailRail = document.querySelector("#home-email-rail");
@@ -292,6 +294,7 @@ function renderHome() {
     !workToggle ||
     !achievementTabs ||
     !achievementPanel ||
+    !interactiveDesk ||
     !contactCopy ||
     !socialRail ||
     !emailRail ||
@@ -536,7 +539,7 @@ function renderHome() {
 
   const setContact = (mode) => {
     contactCopy.innerHTML = `
-      <p class="editor-home__contact-eyebrow" data-animate>06. What's next?</p>
+      <p class="editor-home__contact-eyebrow" data-animate>07. What's next?</p>
       <h2 id="contact-title" data-animate>Get In Touch</h2>
       <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
       <div class="editor-home__contact-actions" data-animate>
@@ -545,6 +548,79 @@ function renderHome() {
       </div>
     `;
     revealRenderedContent([contactCopy]);
+  };
+
+  const renderDeskAction = (item, mode) => {
+    if (item.href === "shuffle") {
+      return `<button class="text-link text-link--button" type="button" data-desk-shuffle>${item.action}</button>`;
+    }
+
+    const href = item.href === "modeResume" ? mode.resumeUrl : item.href;
+    const attrs = item.href === "modeResume" ? 'target="_blank" rel="noreferrer"' : "";
+    return `<a class="text-link" href="${href}" ${attrs}>${item.action}</a>`;
+  };
+
+  const renderDeskPanel = (selectedItem, mode) => `
+    <article class="interactive-desk__panel" data-animate>
+      <p class="editor-home__eyebrow">Selected object</p>
+      <h3>${selectedItem.title}</h3>
+      <p>${selectedItem.copy}</p>
+      ${renderDeskAction(selectedItem, mode)}
+    </article>
+  `;
+
+  const renderDesk = (mode, selectedItemId = deskItems[0]?.id) => {
+    const selectedItem = deskItems.find((item) => item.id === selectedItemId) || deskItems[0];
+    if (!selectedItem) {
+      interactiveDesk.hidden = true;
+      return;
+    }
+
+    interactiveDesk.hidden = false;
+    interactiveDesk.innerHTML = `
+      <div class="interactive-desk__surface" data-animate>
+        <div class="interactive-desk__topline">
+          <p class="editor-home__eyebrow">Explore the desk</p>
+          <button class="interactive-desk__shuffle" type="button" data-desk-shuffle>Shuffle</button>
+        </div>
+        <div class="interactive-desk__objects" role="group" aria-label="Interactive desk objects">
+          ${deskItems
+            .map(
+              (item, index) => `
+                <button
+                  class="interactive-desk__object interactive-desk__object--${item.id}${item.id === selectedItem.id ? " is-active" : ""}"
+                  type="button"
+                  data-desk-item="${item.id}"
+                  aria-pressed="${item.id === selectedItem.id ? "true" : "false"}"
+                  style="--desk-delay: ${index * 0.04}s"
+                >
+                  <span class="interactive-desk__object-icon">${icon(item.icon)}</span>
+                  <span class="interactive-desk__object-label">${item.label}</span>
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+      </div>
+      <div class="interactive-desk__detail" aria-live="polite">
+        ${renderDeskPanel(selectedItem, mode)}
+      </div>
+    `;
+    revealRenderedContent([interactiveDesk]);
+  };
+
+  const selectDeskItem = (itemId) => {
+    renderDesk(activeMode, itemId);
+  };
+
+  const shuffleDesk = () => {
+    const currentItemId = interactiveDesk.querySelector(".interactive-desk__object.is-active")?.dataset.deskItem;
+    const options = deskItems.filter((item) => item.id !== currentItemId);
+    const pool = options.length ? options : deskItems;
+    const nextItem = pool[Math.floor(Math.random() * pool.length)];
+    if (nextItem) {
+      renderDesk(activeMode, nextItem.id);
+    }
   };
 
   const applyMode = (modeId) => {
@@ -559,6 +635,7 @@ function renderHome() {
     setTools(nextMode);
     setProjects(nextMode);
     setContact(nextMode);
+    renderDesk(nextMode);
 
     const defaultExperienceIndex = experience.findIndex((item) => item.company === nextMode.experienceCompany);
     const resolvedExperienceIndex = defaultExperienceIndex >= 0 ? defaultExperienceIndex : 0;
@@ -618,6 +695,21 @@ function renderHome() {
     const activeGroupButton = achievementTabs.querySelector(".is-active[data-home-achievement-group]");
     const selectedGroupId = activeGroupButton?.dataset.homeAchievementGroup || achievementGroups[0]?.id;
     renderAchievementPanel(selectedGroupId, pill.dataset.homeAchievementYear);
+  });
+
+  interactiveDesk.addEventListener("click", (event) => {
+    const shuffleButton = event.target.closest("[data-desk-shuffle]");
+    if (shuffleButton) {
+      shuffleDesk();
+      return;
+    }
+
+    const itemButton = event.target.closest("[data-desk-item]");
+    if (!itemButton) {
+      return;
+    }
+
+    selectDeskItem(itemButton.dataset.deskItem);
   });
 
   const railLinks = socials.filter((item) => ["GitHub", "LinkedIn", "Email"].includes(item.platform));

@@ -2296,7 +2296,7 @@ body[data-page="home"] .theme-toggle__label {
   overflow: hidden;
   border-radius: 1.25rem;
   border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
-  background: color-mix(in srgb, var(--surface) 84%, var(--paper-beige));
+  background: color-mix(in srgb, var(--surface) 84%, #f4efc9);
 }
 
 .home-aside-card__portrait img {
@@ -2646,6 +2646,206 @@ body[data-page="home"] .theme-toggle__label {
   outline: none;
 }
 
+.interactive-desk {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.interactive-desk__surface {
+  position: relative;
+  min-height: 28rem;
+  padding: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+  border-radius: 0.8rem;
+  background:
+    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 28%),
+    radial-gradient(circle at 78% 72%, rgba(244, 239, 201, 0.24), transparent 30%),
+    color-mix(in srgb, var(--surface) 70%, transparent);
+  overflow: hidden;
+}
+
+.interactive-desk__surface::before,
+.interactive-desk__surface::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.interactive-desk__surface::before {
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 5.5rem;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 18%, var(--border));
+}
+
+.interactive-desk__surface::after {
+  width: 15rem;
+  height: 15rem;
+  right: -6rem;
+  top: -6rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
+  border-radius: 999px;
+}
+
+.interactive-desk__topline {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.interactive-desk__shuffle {
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
+  color: var(--accent);
+  padding: 0.42rem 0.78rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), background-color var(--transition);
+}
+
+.interactive-desk__shuffle:hover,
+.interactive-desk__shuffle:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  outline: none;
+}
+
+.interactive-desk__objects {
+  position: relative;
+  z-index: 2;
+  min-height: 23rem;
+}
+
+.interactive-desk__object {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  width: 6.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+  animation: deskFloatIn 420ms ease both;
+  animation-delay: var(--desk-delay);
+  transition: color var(--transition), transform var(--transition);
+}
+
+.interactive-desk__object:hover,
+.interactive-desk__object:focus-visible,
+.interactive-desk__object.is-active {
+  color: var(--heading);
+  transform: translateY(-5px);
+  outline: none;
+}
+
+.interactive-desk__object-icon {
+  width: 4.4rem;
+  height: 4.4rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+  border-radius: 1.15rem;
+  background: var(--paper-beige);
+  color: var(--accent);
+  box-shadow: 0 14px 30px rgba(0, 34, 45, 0.08);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.interactive-desk__object-icon svg {
+  width: 1.65rem;
+  height: 1.65rem;
+}
+
+.interactive-desk__object:hover .interactive-desk__object-icon,
+.interactive-desk__object:focus-visible .interactive-desk__object-icon,
+.interactive-desk__object.is-active .interactive-desk__object-icon {
+  border-color: color-mix(in srgb, var(--accent) 46%, var(--border));
+  box-shadow: 0 18px 38px rgba(0, 34, 45, 0.14);
+}
+
+.interactive-desk__object.is-active .interactive-desk__object-icon {
+  transform: rotate(-2deg);
+}
+
+.interactive-desk__object-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+}
+
+.interactive-desk__object--laptop {
+  left: 9%;
+  top: 32%;
+}
+
+.interactive-desk__object--notebook {
+  left: 36%;
+  top: 20%;
+}
+
+.interactive-desk__object--folder {
+  right: 10%;
+  top: 34%;
+}
+
+.interactive-desk__object--resume {
+  left: 20%;
+  bottom: 6%;
+}
+
+.interactive-desk__object--map {
+  left: 49%;
+  bottom: 13%;
+}
+
+.interactive-desk__object--mug {
+  right: 8%;
+  bottom: 4%;
+}
+
+.interactive-desk__detail {
+  min-height: 16rem;
+}
+
+.interactive-desk__panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.45rem;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+}
+
+.interactive-desk__panel h3 {
+  font-size: clamp(1.6rem, 1.35rem + 0.9vw, 2.35rem);
+}
+
+.interactive-desk__panel p:not(.editor-home__eyebrow) {
+  max-width: 31rem;
+  color: var(--text-soft);
+}
+
+@keyframes deskFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .editor-home__section--contact {
   padding-top: 4rem;
   padding-bottom: 5rem;
@@ -2836,8 +3036,13 @@ body[data-page="home"] .theme-toggle__label {
   .editor-home__experience-grid,
   .editor-home__education-list,
   .editor-home__feature,
-  .editor-home__more-grid {
+  .editor-home__more-grid,
+  .interactive-desk {
     grid-template-columns: 1fr;
+  }
+
+  .interactive-desk {
+    align-items: stretch;
   }
 
   .editor-home__feature-copy,
@@ -2862,6 +3067,32 @@ body[data-page="home"] .theme-toggle__label {
 
   .editor-home__feature.is-reversed .editor-home__feature-copy {
     order: 2;
+  }
+
+  .interactive-desk__surface {
+    min-height: auto;
+  }
+
+  .interactive-desk__surface::before {
+    display: none;
+  }
+
+  .interactive-desk__objects {
+    min-height: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .interactive-desk__object {
+    position: static;
+    width: 100%;
+    min-height: 7.5rem;
+    padding: 0.85rem 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--surface-strong) 62%, transparent);
   }
 
   .edge-rail {
@@ -3005,6 +3236,39 @@ body[data-page="home"] .theme-toggle__label {
   .editor-home__feature-card {
     padding: 1rem 1.05rem;
     background: color-mix(in srgb, var(--surface-strong) 94%, var(--bg));
+  }
+
+  .interactive-desk__surface,
+  .interactive-desk__panel {
+    padding: 1rem;
+  }
+
+  .interactive-desk__topline {
+    align-items: flex-start;
+  }
+
+  .interactive-desk__objects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .interactive-desk__object {
+    min-height: 6.8rem;
+  }
+
+  .interactive-desk__object-icon {
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 1rem;
+  }
+
+  .interactive-desk__object-icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .interactive-desk__panel {
+    border-left: 0;
+    border-top: 2px solid var(--accent);
   }
 
   .editor-home__year-pill {

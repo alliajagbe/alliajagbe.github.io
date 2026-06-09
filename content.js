@@ -219,6 +219,62 @@ window.portfolioContent = {
       accents: ["Storytelling", "Dashboards", "Decision support"]
     }
   ],
+  deskItems: [
+    {
+      id: "laptop",
+      icon: "code",
+      label: "Laptop",
+      title: "Builds in progress",
+      copy: "A quick doorway into the systems, models, and prototypes I have shipped or shaped.",
+      action: "Open work",
+      href: "#work"
+    },
+    {
+      id: "notebook",
+      icon: "build",
+      label: "Notebook",
+      title: "Builder notes",
+      copy: "I like turning fuzzy ideas into simple flows, testable assumptions, and usable products.",
+      action: "Read about me",
+      href: "#about"
+    },
+    {
+      id: "folder",
+      icon: "award",
+      label: "Folder",
+      title: "Receipts",
+      copy: "A compact trail of recognitions, milestones, and the occasional very useful proof point.",
+      action: "See achievements",
+      href: "#achievements"
+    },
+    {
+      id: "resume",
+      icon: "document",
+      label: "Resume",
+      title: "Resume drawer",
+      copy: "This opens the resume that matches the profile view you are currently exploring.",
+      action: "Open resume",
+      href: "modeResume"
+    },
+    {
+      id: "map",
+      icon: "compass",
+      label: "Map",
+      title: "Open to the right room",
+      copy: "I am open to relocation and to teams building with data, AI, or product discipline.",
+      action: "Start a note",
+      href: "#contact"
+    },
+    {
+      id: "mug",
+      icon: "spark",
+      label: "Mug",
+      title: "Tiny human detail",
+      copy: "I enjoy products with taste: calm interfaces, smart defaults, and one delightful surprise.",
+      action: "Shuffle again",
+      href: "shuffle"
+    }
+  ],
   skills: [
     {
       category: "Languages & Development",
