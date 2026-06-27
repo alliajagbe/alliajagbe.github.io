@@ -536,7 +536,7 @@ function renderHome() {
 
   const setContact = (mode) => {
     contactCopy.innerHTML = `
-      <p class="editor-home__contact-eyebrow" data-animate>07. What's next?</p>
+      <p class="editor-home__contact-eyebrow" data-animate>06. What's next?</p>
       <h2 id="contact-title" data-animate>Get In Touch</h2>
       <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
       <div class="editor-home__contact-actions" data-animate>
@@ -1493,8 +1493,9 @@ function renderContact() {
 }
 
 function renderTerminal() {
-  const container = document.querySelector("#portfolio-terminal");
-  if (!container) return;
+  const fab = document.querySelector("#terminal-fab");
+  const widget = document.querySelector("#terminal-widget");
+  if (!fab || !widget) return;
 
   const { profile, skills, experience, projects, education, socials } = portfolioContent;
 
@@ -1511,23 +1512,9 @@ function renderTerminal() {
       "  ls         — site sections",
       "  clear      — clear terminal",
     ],
-    about: () => [
-      profile.name,
-      profile.title,
-      "",
-      ...profile.aboutParagraphs,
-    ],
-    whoami: () => [
-      profile.name,
-      profile.title,
-      `${profile.location} · ${profile.relocation}`,
-      profile.availability,
-    ],
-    skills: () => skills.flatMap(group => [
-      `[${group.category}]`,
-      `  ${group.items.join(", ")}`,
-      "",
-    ]),
+    about: () => [profile.name, profile.title, "", ...profile.aboutParagraphs],
+    whoami: () => [profile.name, profile.title, `${profile.location} · ${profile.relocation}`, profile.availability],
+    skills: () => skills.flatMap(group => [`[${group.category}]`, `  ${group.items.join(", ")}`, ""]),
     projects: () => projects.map((p, i) => `${String(i + 1).padStart(2, "0")}  ${p.shortTitle}`),
     experience: () => experience.map(e => `${e.role} @ ${e.company}  (${e.dates})`),
     education: () => education.flatMap(e => [e.credential, `    ${e.institution} · ${e.location}`, ""]),
@@ -1539,13 +1526,14 @@ function renderTerminal() {
     "sudo hire": () => [`permission granted. → ${profile.email}`],
   };
 
-  container.innerHTML = `
+  widget.innerHTML = `
     <div class="terminal">
       <div class="terminal__chrome">
         <span class="terminal__dot terminal__dot--red" aria-hidden="true"></span>
         <span class="terminal__dot terminal__dot--yellow" aria-hidden="true"></span>
         <span class="terminal__dot terminal__dot--green" aria-hidden="true"></span>
         <span class="terminal__title">alli@portfolio ~</span>
+        <button class="terminal__close" type="button" id="terminal-close" aria-label="Close terminal">✕</button>
       </div>
       <div class="terminal__body" id="terminal-body">
         <div class="terminal__output" id="terminal-output">
@@ -1569,9 +1557,10 @@ function renderTerminal() {
     </div>
   `;
 
-  const outputEl = container.querySelector("#terminal-output");
-  const inputEl = container.querySelector("#terminal-input");
-  const bodyEl = container.querySelector("#terminal-body");
+  const outputEl = widget.querySelector("#terminal-output");
+  const inputEl = widget.querySelector("#terminal-input");
+  const bodyEl = widget.querySelector("#terminal-body");
+  const closeBtn = widget.querySelector("#terminal-close");
 
   const print = (cmd, lines) => {
     const cmdEl = document.createElement("p");
@@ -1602,21 +1591,34 @@ function renderTerminal() {
       return;
     }
     if (e.key !== "Enter") return;
-
     const raw = inputEl.value.trim();
     if (!raw) return;
     cmdHistory.unshift(raw);
     histIdx = -1;
     inputEl.value = "";
-
     const cmd = raw.toLowerCase();
     if (cmd === "clear") { outputEl.innerHTML = ""; return; }
-
     const handler = COMMANDS[cmd];
     print(raw, handler ? handler() : [`command not found: ${cmd}  (try 'help')`]);
   });
 
   bodyEl.addEventListener("click", () => inputEl.focus());
+
+  const openTerminal = () => {
+    widget.hidden = false;
+    fab.setAttribute("aria-expanded", "true");
+    inputEl.focus();
+  };
+
+  const closeTerminal = () => {
+    widget.hidden = true;
+    fab.setAttribute("aria-expanded", "false");
+    fab.focus();
+  };
+
+  fab.addEventListener("click", () => widget.hidden ? openTerminal() : closeTerminal());
+  closeBtn.addEventListener("click", closeTerminal);
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !widget.hidden) closeTerminal(); });
 }
 
 function init() {
