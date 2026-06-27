@@ -20,7 +20,7 @@ window.portfolioContent = {
       "I am open to roles, collaborations, and thoughtful conversations across data science, analytics, and AI.",
     location: "Winston-Salem, NC",
     phone: "+1 743-240-7497",
-    email: "ajagao25@wfu.edu",
+    email: "alliajagbe001@gmail.com",
     availability: "Open to data science, analytics, and AI/ML opportunities.",
     relocation: "Open to relocation",
     focusAreas: [
@@ -586,7 +586,7 @@ window.portfolioContent = {
     }
   ],
   socials: [
-    { platform: "Email", icon: "mail", label: "ajagao25@wfu.edu", url: "mailto:ajagao25@wfu.edu" },
+    { platform: "Email", icon: "mail", label: "alliajagbe001@gmail.com", url: "mailto:alliajagbe001@gmail.com" },
     { platform: "Phone", icon: "phone", label: "+1 743-240-7497", url: "tel:+17432407497" },
     { platform: "LinkedIn", icon: "linkedin", label: "linkedin.com/in/alliajagbe", url: "https://linkedin.com/in/alliajagbe" },
     { platform: "GitHub", icon: "github", label: "github.com/alliajagbe", url: "https://github.com/alliajagbe" },
