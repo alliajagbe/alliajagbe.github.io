@@ -536,7 +536,7 @@ function renderHome() {
 
   const setContact = (mode) => {
     contactCopy.innerHTML = `
-      <p class="editor-home__contact-eyebrow" data-animate>06. What's next?</p>
+      <p class="editor-home__contact-eyebrow" data-animate>07. What's next?</p>
       <h2 id="contact-title" data-animate>Get In Touch</h2>
       <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
       <div class="editor-home__contact-actions" data-animate>
@@ -1492,6 +1492,133 @@ function renderContact() {
   `;
 }
 
+function renderTerminal() {
+  const container = document.querySelector("#portfolio-terminal");
+  if (!container) return;
+
+  const { profile, skills, experience, projects, education, socials } = portfolioContent;
+
+  const COMMANDS = {
+    help: () => [
+      "available commands:",
+      "",
+      "  about      — who I am",
+      "  skills     — tools and languages",
+      "  projects   — selected work",
+      "  experience — where I've worked",
+      "  education  — where I studied",
+      "  contact    — how to reach me",
+      "  ls         — site sections",
+      "  clear      — clear terminal",
+    ],
+    about: () => [
+      profile.name,
+      profile.title,
+      "",
+      ...profile.aboutParagraphs,
+    ],
+    whoami: () => [
+      profile.name,
+      profile.title,
+      `${profile.location} · ${profile.relocation}`,
+      profile.availability,
+    ],
+    skills: () => skills.flatMap(group => [
+      `[${group.category}]`,
+      `  ${group.items.join(", ")}`,
+      "",
+    ]),
+    projects: () => projects.map((p, i) => `${String(i + 1).padStart(2, "0")}  ${p.shortTitle}`),
+    experience: () => experience.map(e => `${e.role} @ ${e.company}  (${e.dates})`),
+    education: () => education.flatMap(e => [e.credential, `    ${e.institution} · ${e.location}`, ""]),
+    contact: () => socials.filter(s => s.platform !== "Resume").map(s => `${s.platform.padEnd(12)}${s.label}`),
+    ls: () => ["about/  education/  experience/  work/  achievements/  contact/"],
+    pwd: () => [`/home/${profile.name.toLowerCase().replace(" ", "")}/portfolio`],
+    date: () => [new Date().toDateString()],
+    hire: () => ["smart move."],
+    "sudo hire": () => [`permission granted. → ${profile.email}`],
+  };
+
+  container.innerHTML = `
+    <div class="terminal">
+      <div class="terminal__chrome">
+        <span class="terminal__dot terminal__dot--red" aria-hidden="true"></span>
+        <span class="terminal__dot terminal__dot--yellow" aria-hidden="true"></span>
+        <span class="terminal__dot terminal__dot--green" aria-hidden="true"></span>
+        <span class="terminal__title">alli@portfolio ~</span>
+      </div>
+      <div class="terminal__body" id="terminal-body">
+        <div class="terminal__output" id="terminal-output">
+          <p class="terminal__line terminal__line--muted">Type <span class="terminal__kbd">help</span> to see available commands.</p>
+        </div>
+        <label class="terminal__input-line" for="terminal-input">
+          <span class="terminal__prompt" aria-hidden="true">❯</span>
+          <input
+            class="terminal__input"
+            id="terminal-input"
+            type="text"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            aria-label="Terminal command input"
+            placeholder="enter command"
+          />
+        </label>
+      </div>
+    </div>
+  `;
+
+  const outputEl = container.querySelector("#terminal-output");
+  const inputEl = container.querySelector("#terminal-input");
+  const bodyEl = container.querySelector("#terminal-body");
+
+  const print = (cmd, lines) => {
+    const cmdEl = document.createElement("p");
+    cmdEl.className = "terminal__line terminal__line--cmd";
+    cmdEl.textContent = `❯ ${cmd}`;
+    outputEl.appendChild(cmdEl);
+    lines.forEach(line => {
+      const el = document.createElement("p");
+      el.className = "terminal__line";
+      el.textContent = line;
+      outputEl.appendChild(el);
+    });
+    bodyEl.scrollTop = bodyEl.scrollHeight;
+  };
+
+  const cmdHistory = [];
+  let histIdx = -1;
+
+  inputEl.addEventListener("keydown", e => {
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (histIdx < cmdHistory.length - 1) { histIdx++; inputEl.value = cmdHistory[histIdx]; }
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      histIdx > 0 ? (histIdx--, inputEl.value = cmdHistory[histIdx]) : (histIdx = -1, inputEl.value = "");
+      return;
+    }
+    if (e.key !== "Enter") return;
+
+    const raw = inputEl.value.trim();
+    if (!raw) return;
+    cmdHistory.unshift(raw);
+    histIdx = -1;
+    inputEl.value = "";
+
+    const cmd = raw.toLowerCase();
+    if (cmd === "clear") { outputEl.innerHTML = ""; return; }
+
+    const handler = COMMANDS[cmd];
+    print(raw, handler ? handler() : [`command not found: ${cmd}  (try 'help')`]);
+  });
+
+  bodyEl.addEventListener("click", () => inputEl.focus());
+}
+
 function init() {
   setSharedBranding();
   setupMobileNav();
@@ -1502,6 +1629,7 @@ function init() {
   renderProjects();
   renderServices();
   renderContact();
+  renderTerminal();
   setupReveal();
 }
 
