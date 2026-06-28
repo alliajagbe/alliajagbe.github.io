@@ -1820,7 +1820,7 @@ h1,
 }
 
 body[data-page="home"] {
-  background: var(--bg);
+  background-color: var(--bg);
 }
 
 body.mode-launch-open {
