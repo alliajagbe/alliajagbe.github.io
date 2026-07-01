@@ -513,13 +513,14 @@ function renderHome() {
     revealRenderedContent([featuredWork]);
   };
 
-  const setHero = (mode) => {
+  const setHero = (mode, options = {}) => {
+    const startEmpty = options.animateIntro && !prefersReducedMotion;
     hero.innerHTML = `
       <p class="editor-home__intro" data-animate>
-        <span id="home-intro-text">${profile.homeIntro}</span>
+        <span id="home-intro-text">${startEmpty ? "" : profile.homeIntro}</span>
       </p>
-      <h1 id="home-title" data-animate><span id="home-name-text">${profile.name}</span></h1>
-      <h2 class="editor-home__statement" data-animate><span id="home-statement-text">${mode.statement}</span></h2>
+      <h1 id="home-title" data-animate><span id="home-name-text">${startEmpty ? "" : profile.name}</span></h1>
+      <h2 class="editor-home__statement" data-animate><span id="home-statement-text">${startEmpty ? "" : mode.statement}</span></h2>
       <p class="editor-home__summary" data-animate>
         ${mode.summary}
       </p>
@@ -552,7 +553,7 @@ function renderHome() {
       setTimeout(typeNextChar, speed);
     });
 
-  const playHeroTypewriter = async () => {
+  const playHeroTypewriter = async (mode) => {
     if (prefersReducedMotion) {
       return;
     }
@@ -564,16 +565,13 @@ function renderHome() {
       return;
     }
 
-    const introFull = introText.textContent;
-    const nameFull = nameText.textContent;
-    const statementFull = statementText.textContent;
     const pause = () => new Promise((resolve) => setTimeout(resolve, 150));
 
-    await typeInto(introText, introFull, 32);
+    await typeInto(introText, profile.homeIntro, 32);
     await pause();
-    await typeInto(nameText, nameFull, 45);
+    await typeInto(nameText, profile.name, 45);
     await pause();
-    await typeInto(statementText, statementFull, 22);
+    await typeInto(statementText, mode.statement, 22);
   };
 
   const setContact = (mode) => {
@@ -589,7 +587,7 @@ function renderHome() {
     revealRenderedContent([contactCopy]);
   };
 
-  const applyMode = (modeId) => {
+  const applyMode = (modeId, heroOptions = {}) => {
     const nextMode = modeMap.get(modeId) || modeMap.get(profile.defaultModeId) || homeModes[0];
     activeMode = nextMode;
 
@@ -597,7 +595,7 @@ function renderHome() {
     resumeButton.href = nextMode.resumeUrl;
     resumeButton.textContent = "Resume";
 
-    setHero(nextMode);
+    setHero(nextMode, heroOptions);
     setTools(nextMode);
     setProjects(nextMode);
     setContact(nextMode);
@@ -722,12 +720,13 @@ function renderHome() {
       return;
     }
 
-    applyMode(card.dataset.launchMode);
+    const shouldAnimateIntro = !hasPlayedIntroTypewriter;
+    applyMode(card.dataset.launchMode, { animateIntro: shouldAnimateIntro });
     hideLauncher();
 
-    if (!hasPlayedIntroTypewriter) {
+    if (shouldAnimateIntro) {
       hasPlayedIntroTypewriter = true;
-      playHeroTypewriter();
+      playHeroTypewriter(activeMode);
     }
   });
 
