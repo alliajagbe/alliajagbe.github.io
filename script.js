@@ -513,9 +513,13 @@ function renderHome() {
     revealRenderedContent([featuredWork]);
   };
 
+  let hasTypedIntro = false;
+
   const setHero = (mode) => {
     hero.innerHTML = `
-      <p class="editor-home__intro" data-animate>${profile.homeIntro}</p>
+      <p class="editor-home__intro" data-animate>
+        <span id="home-intro-text"></span><span class="editor-home__intro-cursor" aria-hidden="true"></span>
+      </p>
       <h1 id="home-title" data-animate>${profile.name}</h1>
       <h2 class="editor-home__statement" data-animate>${mode.statement}</h2>
       <p class="editor-home__summary" data-animate>
@@ -532,6 +536,24 @@ function renderHome() {
       </div>
     `;
     revealRenderedContent([hero]);
+
+    const introText = document.querySelector("#home-intro-text");
+    if (introText) {
+      if (prefersReducedMotion || hasTypedIntro) {
+        introText.textContent = profile.homeIntro;
+      } else {
+        hasTypedIntro = true;
+        let charIndex = 0;
+        const typeNextChar = () => {
+          charIndex += 1;
+          introText.textContent = profile.homeIntro.slice(0, charIndex);
+          if (charIndex < profile.homeIntro.length) {
+            setTimeout(typeNextChar, 32);
+          }
+        };
+        setTimeout(typeNextChar, 300);
+      }
+    }
   };
 
   const setContact = (mode) => {

@@ -2182,15 +2182,60 @@ body[data-page="home"] .theme-toggle__label {
 }
 
 .editor-home__hero {
+  position: relative;
   min-height: 100vh;
   display: grid;
   align-items: center;
+  overflow: hidden;
+}
+
+.editor-home__hero::before {
+  content: "";
+  position: absolute;
+  inset: -10% -10%;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--accent) 45%, transparent) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.28;
+  animation: heroGridDrift 50s linear infinite;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .editor-home__hero-copy {
+  position: relative;
+  z-index: 1;
   max-width: 58rem;
   display: grid;
   gap: 1rem;
+}
+
+@keyframes heroGridDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-30px, -30px, 0);
+  }
+}
+
+.editor-home__intro-cursor {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1em;
+  margin-left: 0.15ch;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: introCursorBlink 1s step-end infinite;
+}
+
+@keyframes introCursorBlink {
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 .editor-home__intro,
