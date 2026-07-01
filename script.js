@@ -518,8 +518,8 @@ function renderHome() {
       <p class="editor-home__intro" data-animate>
         <span id="home-intro-text">${profile.homeIntro}</span>
       </p>
-      <h1 id="home-title" data-animate>${profile.name}</h1>
-      <h2 class="editor-home__statement" data-animate>${mode.statement}</h2>
+      <h1 id="home-title" data-animate><span id="home-name-text">${profile.name}</span></h1>
+      <h2 class="editor-home__statement" data-animate><span id="home-statement-text">${mode.statement}</span></h2>
       <p class="editor-home__summary" data-animate>
         ${mode.summary}
       </p>
@@ -536,27 +536,44 @@ function renderHome() {
     revealRenderedContent([hero]);
   };
 
-  const playIntroTypewriter = () => {
+  const typeInto = (element, fullText, speed) =>
+    new Promise((resolve) => {
+      element.textContent = "";
+      let charIndex = 0;
+      const typeNextChar = () => {
+        charIndex += 1;
+        element.textContent = fullText.slice(0, charIndex);
+        if (charIndex < fullText.length) {
+          setTimeout(typeNextChar, speed);
+        } else {
+          resolve();
+        }
+      };
+      setTimeout(typeNextChar, speed);
+    });
+
+  const playHeroTypewriter = async () => {
     if (prefersReducedMotion) {
       return;
     }
 
     const introText = document.querySelector("#home-intro-text");
-    if (!introText) {
+    const nameText = document.querySelector("#home-name-text");
+    const statementText = document.querySelector("#home-statement-text");
+    if (!introText || !nameText || !statementText) {
       return;
     }
 
-    const fullText = profile.homeIntro;
-    introText.textContent = "";
-    let charIndex = 0;
-    const typeNextChar = () => {
-      charIndex += 1;
-      introText.textContent = fullText.slice(0, charIndex);
-      if (charIndex < fullText.length) {
-        setTimeout(typeNextChar, 32);
-      }
-    };
-    setTimeout(typeNextChar, 150);
+    const introFull = introText.textContent;
+    const nameFull = nameText.textContent;
+    const statementFull = statementText.textContent;
+    const pause = () => new Promise((resolve) => setTimeout(resolve, 150));
+
+    await typeInto(introText, introFull, 32);
+    await pause();
+    await typeInto(nameText, nameFull, 45);
+    await pause();
+    await typeInto(statementText, statementFull, 22);
   };
 
   const setContact = (mode) => {
@@ -710,7 +727,7 @@ function renderHome() {
 
     if (!hasPlayedIntroTypewriter) {
       hasPlayedIntroTypewriter = true;
-      playIntroTypewriter();
+      playHeroTypewriter();
     }
   });
 
