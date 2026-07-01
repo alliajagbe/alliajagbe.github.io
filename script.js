@@ -513,12 +513,10 @@ function renderHome() {
     revealRenderedContent([featuredWork]);
   };
 
-  let hasTypedIntro = false;
-
   const setHero = (mode) => {
     hero.innerHTML = `
       <p class="editor-home__intro" data-animate>
-        <span id="home-intro-text"></span><span class="editor-home__intro-cursor" aria-hidden="true"></span>
+        <span id="home-intro-text">${profile.homeIntro}</span>
       </p>
       <h1 id="home-title" data-animate>${profile.name}</h1>
       <h2 class="editor-home__statement" data-animate>${mode.statement}</h2>
@@ -536,24 +534,29 @@ function renderHome() {
       </div>
     `;
     revealRenderedContent([hero]);
+  };
+
+  const playIntroTypewriter = () => {
+    if (prefersReducedMotion) {
+      return;
+    }
 
     const introText = document.querySelector("#home-intro-text");
-    if (introText) {
-      if (prefersReducedMotion || hasTypedIntro) {
-        introText.textContent = profile.homeIntro;
-      } else {
-        hasTypedIntro = true;
-        let charIndex = 0;
-        const typeNextChar = () => {
-          charIndex += 1;
-          introText.textContent = profile.homeIntro.slice(0, charIndex);
-          if (charIndex < profile.homeIntro.length) {
-            setTimeout(typeNextChar, 32);
-          }
-        };
-        setTimeout(typeNextChar, 300);
-      }
+    if (!introText) {
+      return;
     }
+
+    const fullText = profile.homeIntro;
+    introText.textContent = "";
+    let charIndex = 0;
+    const typeNextChar = () => {
+      charIndex += 1;
+      introText.textContent = fullText.slice(0, charIndex);
+      if (charIndex < fullText.length) {
+        setTimeout(typeNextChar, 32);
+      }
+    };
+    setTimeout(typeNextChar, 150);
   };
 
   const setContact = (mode) => {
@@ -694,6 +697,8 @@ function renderHome() {
     }, totalDuration);
   };
 
+  let hasPlayedIntroTypewriter = false;
+
   modeLaunchGrid.addEventListener("click", (event) => {
     const card = event.target.closest("[data-launch-mode]");
     if (!card) {
@@ -702,6 +707,11 @@ function renderHome() {
 
     applyMode(card.dataset.launchMode);
     hideLauncher();
+
+    if (!hasPlayedIntroTypewriter) {
+      hasPlayedIntroTypewriter = true;
+      playIntroTypewriter();
+    }
   });
 
   modeButton.addEventListener("click", () => {

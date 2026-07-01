@@ -2218,26 +2218,6 @@ body[data-page="home"] .theme-toggle__label {
   }
 }
 
-.editor-home__intro-cursor {
-  display: inline-block;
-  width: 0.55ch;
-  height: 1em;
-  margin-left: 0.15ch;
-  vertical-align: -0.15em;
-  background: currentColor;
-  animation: introCursorBlink 1s step-end infinite;
-}
-
-@keyframes introCursorBlink {
-  from,
-  to {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
 .editor-home__intro,
 .editor-home__eyebrow,
 .editor-home__contact-eyebrow,
