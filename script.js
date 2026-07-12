@@ -776,6 +776,7 @@ function renderHomeFeaturedProject(project, index) {
         </div>
         <div class="editor-home__feature-actions">
           ${project.githubUrl ? `<a class="text-link" href="${project.githubUrl}" target="_blank" rel="noreferrer">GitHub</a>` : ""}
+          ${project.writeupUrl ? `<a class="text-link" href="${project.writeupUrl}" target="_blank" rel="noreferrer">Write-up</a>` : ""}
         </div>
       </div>
     </article>

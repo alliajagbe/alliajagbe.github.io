@@ -74,7 +74,7 @@ window.portfolioContent = {
           copy: "Define KPIs that actually support the next move."
         }
       ],
-      projectIds: ["founder-forward", "recommerce-routing"],
+      projectIds: ["founder-forward", "recommerce-routing", "hotel-dynamic-pricing"],
       highlights: [
         { value: "93%", label: "Efficiency lift across Founder Forward workflows" },
         { value: "45%", label: "Improvement in data reliability across 5K+ records" },
@@ -111,7 +111,7 @@ window.portfolioContent = {
           copy: "Work through ambiguity with structured experiments and iteration."
         }
       ],
-      projectIds: ["sbsf-agritech", "fraud-detection", "povertypred"],
+      projectIds: ["sbsf-agritech", "fraud-detection", "povertypred", "hotel-dynamic-pricing"],
       highlights: [
         { value: "23%", label: "Model performance improvement in agritech suitability modeling" },
         { value: "0.97", label: "Macro-F1 in factuality classification" },
@@ -413,6 +413,24 @@ window.portfolioContent = {
       metrics: [
         { value: "91%", label: "Accuracy" },
         { value: "Top 7", label: "Publication-nominated submission" }
+      ]
+    },
+    {
+      id: "hotel-dynamic-pricing",
+      icon: "chart",
+      title: "Hotel Revenue Optimization & Dynamic Pricing Strategy",
+      shortTitle: "Hotel Dynamic Pricing Model",
+      categories: ["Analytics", "Modeling"],
+      problem:
+        "Set nightly rates without knowing how price-sensitive different guest segments are, leaving elastic-demand revenue unclaimed and inelastic segments underpriced.",
+      approach:
+        "Segmented 75K+ hotel reservations into five customer cohorts using K-Means clustering, then built log-log regression models per cohort to estimate price elasticity and identify the highest-value segment for rate optimization.",
+      tools: ["Python", "K-Means Clustering", "Regression Modeling", "Price Elasticity Analysis"],
+      writeupUrl: "https://docs.google.com/document/d/1nJfEAjmNxuK_6_jzTZnsb77rFUpRpdPHRXDs5DGj0jA/edit?usp=sharing",
+      metrics: [
+        { value: "75K+", label: "Reservations segmented into 5 cohorts" },
+        { value: "27%", label: "Projected revenue increase" },
+        { value: "33.5%", label: "Adjusted R² vs. 6% baseline" }
       ]
     }
   ],
