@@ -43,10 +43,11 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=20260712a" />
+    <link rel="stylesheet" href="/styles.css?v=20261111b" />
   </head>
   <body data-page="home">
     <div class="site-shell">
+      <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
       <div class="brand-intro" id="brand-intro" aria-hidden="true">
         <div class="brand-intro__inner">
           <span class="brand-intro__halo" aria-hidden="true"></span>
@@ -64,44 +65,43 @@
             </span>
           </div>
           <p class="mode-launch__eyebrow">Choose a view</p>
-          <h1 class="mode-launch__title" id="mode-launch-title">Alli Ajagbe</h1>
+          <p class="mode-launch__title" id="mode-launch-title">Alli Ajagbe</p>
+          <p class="mode-launch__hint">You can switch views any time from the top of the page.</p>
           <div class="mode-launch__grid" id="mode-launch-grid"></div>
         </div>
       </div>
 
-      <header class="site-header">
-        <div class="container header-inner header-inner--home">
-          <a class="brand" href="/" aria-label="Go to homepage">
-            <span class="brand-mark">
-              <img class="brand-logo" id="brand-logo" src="/assets/logo-icon.png?v=20260404e" alt="Alli Ajagbe logo" />
-            </span>
-            <span class="brand-name-group">
-              <span class="brand-name" id="brand-name">Alli Ajagbe</span>
-              <span class="brand-tag" id="brand-tag">Data science, analytics, and AI</span>
-            </span>
+      <header class="topbar" id="topbar">
+        <div class="topbar__bar">
+          <a class="topbar__brand" href="#top" aria-label="Back to top">
+            <img id="brand-logo" src="/assets/logo-icon.png?v=20260404e" alt="Alli Ajagbe logo" />
           </a>
 
-          <button class="mobile-nav-toggle" id="mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
-            <span class="mobile-nav-toggle__icon" aria-hidden="true"></span>
-            <span class="mobile-nav-toggle__label">Menu</span>
-          </button>
-
-          <nav class="site-nav site-nav--home" id="primary-navigation" aria-label="Primary navigation">
-            <a href="#about" class="nav-link nav-link--anchor"><span>01.</span> About</a>
-            <a href="#education" class="nav-link nav-link--anchor"><span>02.</span> Education</a>
-            <a href="#experience" class="nav-link nav-link--anchor"><span>03.</span> Experience</a>
-            <a href="#work" class="nav-link nav-link--anchor"><span>04.</span> Work</a>
-            <a href="#achievements" class="nav-link nav-link--anchor"><span>05.</span> Achievements</a>
-            <a href="#contact" class="nav-link nav-link--anchor"><span>06.</span> Contact</a>
+          <nav class="topbar__nav" id="primary-navigation" aria-label="Primary navigation">
+            <a href="#about" class="topbar__link" data-section="about">About</a>
+            <a href="#education" class="topbar__link" data-section="education">Education</a>
+            <a href="#experience" class="topbar__link" data-section="experience">Experience</a>
+            <a href="#work" class="topbar__link" data-section="work">Work</a>
+            <a href="#achievements" class="topbar__link" data-section="achievements">Achievements</a>
+            <a href="#contact" class="topbar__link" data-section="contact">Contact</a>
           </nav>
 
-          <div class="header-actions">
-            <button class="mode-button" id="home-mode-button" type="button">Data Scientist</button>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Activate dark mode">
-              <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
-              <span class="theme-toggle__label" id="theme-toggle-label">Light</span>
+          <div class="topbar__actions">
+            <button class="topbar__search" id="palette-trigger" type="button" aria-haspopup="dialog" aria-label="Open command menu">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="5.8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m19 19-3.4-3.4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"/></svg>
+              <span class="topbar__search-label">Search</span>
+              <kbd class="be-kbd" id="palette-shortcut">⌘K</kbd>
             </button>
-            <a class="resume-button" id="home-resume-button" href="/resume/AlliAjagbeDataScientistResume.pdf" target="_blank" rel="noreferrer">Resume</a>
+            <button class="be-icon-btn" id="theme-toggle" type="button" aria-pressed="false" aria-label="Activate dark mode">
+              <span class="theme-icon" aria-hidden="true">
+                <svg class="theme-icon__moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>
+                <svg class="theme-icon__sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"/></svg>
+              </span>
+            </button>
+            <a class="be-btn be-btn--primary be-btn--sm" id="home-resume-button" href="/resume/AlliAjagbeDataScientistResume.pdf" target="_blank" rel="noreferrer">Resume</a>
+            <button class="be-icon-btn topbar__menu" id="topbar-menu" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open menu">
+              <span class="topbar__burger" aria-hidden="true"></span>
+            </button>
           </div>
         </div>
       </header>
@@ -112,7 +112,13 @@
 
         <section class="editor-home__hero" aria-labelledby="home-title">
           <div class="container editor-home__container">
-            <div class="editor-home__hero-copy" id="home-hero-copy"></div>
+            <div class="editor-home__hero-inner">
+              <div class="view-switch">
+                <span class="view-switch__label" id="view-switch-label">View as</span>
+                <div class="be-tabs" id="home-mode-tabs" role="radiogroup" aria-labelledby="view-switch-label"></div>
+              </div>
+              <div class="editor-home__hero-copy" id="home-hero-copy"></div>
+            </div>
           </div>
         </section>
 
@@ -128,7 +134,7 @@
                 <div class="editor-home__copy" id="home-about-copy"></div>
                 <div class="editor-home__tech">
                   <p class="editor-home__eyebrow">Some tools I use</p>
-                  <div class="editor-home__tech-list" id="home-about-tech"></div>
+                  <div class="be-chips" id="home-about-tech"></div>
                 </div>
               </div>
               <div class="editor-home__aside" id="home-about-aside"></div>
@@ -155,8 +161,8 @@
               <span class="editor-home__line" aria-hidden="true"></span>
             </div>
             <div class="editor-home__experience-grid">
-              <div class="editor-home__tabs" id="home-experience-tabs" role="tablist" aria-label="Experience"></div>
-              <div class="editor-home__tab-panel" id="home-experience-panel"></div>
+              <div class="be-vtabs" id="home-experience-tabs" role="tablist" aria-label="Experience" aria-orientation="vertical"></div>
+              <div class="editor-home__tab-panel" id="home-experience-panel" role="tabpanel" aria-live="polite"></div>
             </div>
           </div>
         </section>
@@ -169,10 +175,15 @@
               <span class="editor-home__line" aria-hidden="true"></span>
             </div>
             <div class="editor-home__featured-work" id="home-featured-work"></div>
-            <div class="editor-home__more-work" id="home-more-work" hidden></div>
+            <div class="be-collapse" id="home-more-work" inert>
+              <div class="be-collapse__inner" id="home-more-work-inner"></div>
+            </div>
             <div class="editor-home__actions">
-              <button class="ghost-button" id="home-work-toggle" type="button" aria-expanded="false">Show More</button>
-              <a class="ghost-button" href="https://github.com/alliajagbe" target="_blank" rel="noreferrer">More on GitHub</a>
+              <button class="be-btn" id="home-work-toggle" type="button" aria-expanded="false" aria-controls="home-more-work">
+                <span id="home-work-toggle-label">Show more projects</span>
+                <svg class="be-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>
+              </button>
+              <a class="be-btn" href="https://github.com/alliajagbe" target="_blank" rel="noreferrer">More on GitHub</a>
             </div>
           </div>
         </section>
@@ -184,9 +195,9 @@
               <h2 id="achievements-title">Achievements</h2>
               <span class="editor-home__line" aria-hidden="true"></span>
             </div>
-            <div class="editor-home__experience-grid">
-              <div class="editor-home__tabs" id="home-achievement-tabs" role="tablist" aria-label="Achievement ranges"></div>
-              <div class="editor-home__tab-panel" id="home-achievement-panel"></div>
+            <div class="editor-home__achievements">
+              <div class="be-tabs" id="home-achievement-tabs" role="tablist" aria-label="Achievements by year"></div>
+              <div class="editor-home__achievement-panel" id="home-achievement-panel" role="tabpanel" aria-live="polite"></div>
             </div>
           </div>
         </section>
@@ -211,7 +222,7 @@
       </footer>
     </div>
 
-    <script src="/content.js?v=20260712a" defer></script>
-    <script src="/script.js?v=20260712a" defer></script>
+    <script src="/content.js?v=20261111b" defer></script>
+    <script src="/script.js?v=20261111b" defer></script>
   </body>
 </html>

@@ -49,7 +49,23 @@ const icons = {
   graduation:
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 9 8-4 8 4-8 4-8-4Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.7"/><path d="M7 10.5v4.3c0 .7 2.2 2.2 5 2.2s5-1.5 5-2.2v-4.3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"/></svg>',
   award:
-    '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m9.5 13 1.2 6L12 17.5 13.3 19l1.2-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>'
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m9.5 13 1.2 6L12 17.5 13.3 19l1.2-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>',
+  arrow:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>',
+  external:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16 16 8m0 0H9.5M16 8v6.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>',
+  check:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5.5 12.5 4.2 4.2 8.8-9.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"/></svg>',
+  copy:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M15 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"/></svg>',
+  pin:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.400 6.500 11 6.500 11Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.7"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
+  terminal:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m7.500 10 2.500 2.200-2.500 2.200M12.500 14.500h4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>',
+  sun:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.600 5.600 7 7m10 10 1.400 1.400M5.600 18.400 7 17M17 7l1.400-1.400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7"/></svg>',
+  moon:
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.500A8 8 0 0 1 9.500 4a8 8 0 1 0 10.500 10.500Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/></svg>'
 };
 
 function icon(name) {
@@ -64,23 +80,49 @@ function renderIconBadge(name, label) {
   return `<span class="icon-badge" aria-hidden="true">${icon(name)}</span>${label ? `<span>${label}</span>` : ""}`;
 }
 
-function setTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  localStorage.setItem("portfolio-theme", theme);
-  updateThemeToggle(theme);
+function setTheme(theme, origin) {
+  const root = document.documentElement;
+  const apply = () => {
+    root.dataset.theme = theme;
+    try {
+      localStorage.setItem("portfolio-theme", theme);
+    } catch (error) {
+      // Storage can be unavailable (private mode); the theme still switches.
+    }
+    updateThemeToggle(theme);
+  };
+
+  if (prefersReducedMotion || !document.startViewTransition) {
+    apply();
+    return;
+  }
+
+  // Reveal the new theme as a circle growing from the click point.
+  const x = origin ? origin.x : window.innerWidth / 2;
+  const y = origin ? origin.y : 0;
+  const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+  root.style.setProperty("--vt-x", `${x}px`);
+  root.style.setProperty("--vt-y", `${y}px`);
+  root.style.setProperty("--vt-r", `${radius}px`);
+  root.dataset.vt = "theme";
+  document.startViewTransition(apply).finished.finally(() => {
+    delete root.dataset.vt;
+  });
 }
 
 function updateThemeToggle(theme) {
   const toggle = document.querySelector("#theme-toggle");
   const label = document.querySelector("#theme-toggle-label");
-  if (!toggle || !label) {
+  if (!toggle) {
     return;
   }
 
   const isDark = theme === "dark";
   toggle.setAttribute("aria-pressed", String(isDark));
   toggle.setAttribute("aria-label", isDark ? "Activate light mode" : "Activate dark mode");
-  label.textContent = isDark ? "Dark" : "Light";
+  if (label) {
+    label.textContent = isDark ? "Dark" : "Light";
+  }
 }
 
 function setupThemeToggle() {
@@ -92,7 +134,11 @@ function setupThemeToggle() {
   updateThemeToggle(document.documentElement.dataset.theme || "light");
   toggle.addEventListener("click", () => {
     const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    setTheme(currentTheme === "dark" ? "light" : "dark");
+    const rect = toggle.getBoundingClientRect();
+    setTheme(currentTheme === "dark" ? "light" : "dark", {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2
+    });
   });
 }
 
@@ -246,94 +292,849 @@ function setupReveal() {
   animatedElements.forEach((element) => observer.observe(element));
 }
 
+/* ─── UI primitives (vanilla ports of beui.dev motion patterns) ─── */
+
+const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+const arrowChip = `<span class="be-btn__arrow" aria-hidden="true">${icon("arrow")}</span>`;
+
+// A single indicator that glides between the items of a group (nav, tabs, menu rows).
+function createGlide(container, { itemSelector, hover = false } = {}) {
+  const indicator = document.createElement("span");
+  indicator.className = "be-glide";
+  indicator.setAttribute("aria-hidden", "true");
+  container.prepend(indicator);
+
+  const move = (target, instant = false) => {
+    if (!target) {
+      container.classList.remove("is-ready");
+      return;
+    }
+
+    const wasHidden = !container.classList.contains("is-ready");
+    if (instant || wasHidden) {
+      indicator.style.transition = "none";
+    }
+    indicator.style.setProperty("--x", `${target.offsetLeft}px`);
+    indicator.style.setProperty("--y", `${target.offsetTop}px`);
+    indicator.style.setProperty("--w", `${target.offsetWidth}px`);
+    indicator.style.setProperty("--h", `${target.offsetHeight}px`);
+    if (instant || wasHidden) {
+      void indicator.offsetWidth;
+      indicator.style.transition = "";
+    }
+    container.classList.add("is-ready");
+  };
+
+  const sync = (instant = false) => move(container.querySelector(`${itemSelector}.is-active`), instant);
+
+  if (hover && canHover) {
+    container.addEventListener("pointerover", (event) => {
+      const item = event.target.closest(itemSelector);
+      if (item) {
+        move(item);
+      }
+    });
+    container.addEventListener("pointerleave", () => sync());
+  }
+
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(() => sync(true)).observe(container);
+  }
+  window.addEventListener("load", () => sync(true));
+  document.fonts?.ready.then(() => sync(true));
+
+  return { move, sync };
+}
+
+// Single-select group (tabs / radios) with a gliding indicator and arrow-key support.
+function createSelectGroup(container, { itemSelector, ariaAttr = "aria-selected", onSelect }) {
+  const glide = createGlide(container, { itemSelector });
+  const items = () => [...container.querySelectorAll(itemSelector)];
+
+  const select = (value, { instant = false, focus = false } = {}) => {
+    items().forEach((item) => {
+      const isActive = item.dataset.value === String(value);
+      item.classList.toggle("is-active", isActive);
+      item.setAttribute(ariaAttr, String(isActive));
+      item.tabIndex = isActive ? 0 : -1;
+      if (isActive && focus) {
+        item.focus();
+      }
+    });
+    glide.sync(instant);
+  };
+
+  const choose = (item, focus = false) => {
+    if (!item || item.classList.contains("is-active")) {
+      return;
+    }
+    select(item.dataset.value, { focus });
+    if (container.scrollWidth > container.clientWidth) {
+      item.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+    onSelect(item.dataset.value);
+  };
+
+  container.addEventListener("click", (event) => choose(event.target.closest(itemSelector)));
+
+  container.addEventListener("keydown", (event) => {
+    const list = items();
+    const current = list.indexOf(document.activeElement);
+    if (current < 0) {
+      return;
+    }
+
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+    let next = null;
+    if (step) {
+      next = list[(current + step + list.length) % list.length];
+    } else if (event.key === "Home") {
+      next = list[0];
+    } else if (event.key === "End") {
+      next = list[list.length - 1];
+    }
+
+    if (next) {
+      event.preventDefault();
+      choose(next, true);
+      next.focus();
+    }
+  });
+
+  return { select };
+}
+
+function revealElement(element) {
+  element.classList.add("is-visible");
+}
+
+const revealObserver =
+  prefersReducedMotion || !("IntersectionObserver" in window)
+    ? null
+    : new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              revealElement(entry.target);
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -5% 0px" }
+      );
+
+// Reveal [data-animate] children as they scroll into view.
+function observeReveal(nodes) {
+  nodes.filter(Boolean).forEach((node) => {
+    node.querySelectorAll("[data-animate]:not(.is-visible)").forEach((element) => {
+      if (revealObserver) {
+        revealObserver.observe(element);
+      } else {
+        revealElement(element);
+      }
+    });
+  });
+}
+
+function setupTilt(root, max = 4) {
+  if (!canHover || prefersReducedMotion) {
+    return;
+  }
+
+  root.querySelectorAll("[data-tilt]:not([data-tilt-ready])").forEach((element) => {
+    element.dataset.tiltReady = "true";
+    element.addEventListener("pointermove", (event) => {
+      const rect = element.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width;
+      const py = (event.clientY - rect.top) / rect.height;
+      element.classList.add("is-tilting");
+      element.style.setProperty("--rx", `${((0.5 - py) * max).toFixed(2)}deg`);
+      element.style.setProperty("--ry", `${((px - 0.5) * max).toFixed(2)}deg`);
+    });
+    element.addEventListener("pointerleave", () => {
+      element.classList.remove("is-tilting");
+      element.style.setProperty("--rx", "0deg");
+      element.style.setProperty("--ry", "0deg");
+    });
+  });
+}
+
+function announce(message) {
+  let region = document.querySelector("#be-live-region");
+  if (!region) {
+    region = document.createElement("div");
+    region.id = "be-live-region";
+    region.className = "sr-only";
+    region.setAttribute("role", "status");
+    document.body.appendChild(region);
+  }
+  region.textContent = "";
+  requestAnimationFrame(() => {
+    region.textContent = message;
+  });
+}
+
+function showToast(message, iconName = "check") {
+  let region = document.querySelector(".be-toast-region");
+  if (!region) {
+    region = document.createElement("div");
+    region.className = "be-toast-region";
+    document.body.appendChild(region);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = "be-toast";
+  toast.innerHTML = icon(iconName);
+  toast.append(message);
+  region.replaceChildren(toast);
+  announce(message);
+
+  requestAnimationFrame(() => toast.classList.add("is-visible"));
+  window.setTimeout(() => {
+    toast.classList.remove("is-visible");
+    window.setTimeout(() => toast.remove(), 400);
+  }, 2400);
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function setupCommandPalette({ trigger, getCommands }) {
+  const palette = document.createElement("div");
+  palette.className = "be-palette";
+  palette.hidden = true;
+  palette.innerHTML = `
+    <button class="be-palette__backdrop" type="button" tabindex="-1" aria-label="Close command menu"></button>
+    <div class="be-palette__panel" role="dialog" aria-modal="true" aria-label="Command menu">
+      <div class="be-palette__search">
+        ${icon("search")}
+        <input
+          class="be-palette__input"
+          type="text"
+          role="combobox"
+          aria-expanded="true"
+          aria-controls="be-palette-list"
+          aria-autocomplete="list"
+          aria-label="Search sections, views, and actions"
+          placeholder="Search sections, views, actions…"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+        <kbd class="be-kbd">esc</kbd>
+      </div>
+      <div class="be-palette__list" id="be-palette-list" role="listbox" aria-label="Commands"></div>
+      <div class="be-palette__footer" aria-hidden="true">
+        <span><kbd class="be-kbd">↑</kbd><kbd class="be-kbd">↓</kbd> navigate</span>
+        <span><kbd class="be-kbd">↵</kbd> select</span>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(palette);
+
+  const input = palette.querySelector(".be-palette__input");
+  const list = palette.querySelector(".be-palette__list");
+  const backdrop = palette.querySelector(".be-palette__backdrop");
+  let glide = null;
+  let results = [];
+  let activeIndex = 0;
+  let closeTimer = null;
+
+  const normalize = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+  const score = (command, tokens) => {
+    const label = normalize(command.label);
+    const extra = normalize(`${command.group} ${command.keywords || ""}`);
+    let total = 0;
+    for (const token of tokens) {
+      const words = label.split(" ");
+      if (words.includes(token)) total += 140;
+      else if (words.some((word) => word.startsWith(token))) total += 120;
+      else if (extra.split(" ").some((word) => word.startsWith(token))) total += 60;
+      else return 0;
+    }
+    return total;
+  };
+
+  const setActive = (index, { scroll = true, instant = false } = {}) => {
+    const rows = [...list.querySelectorAll(".be-palette__row")];
+    activeIndex = Math.max(0, Math.min(index, rows.length - 1));
+    rows.forEach((row, rowIndex) => {
+      const isActive = rowIndex === activeIndex;
+      row.classList.toggle("is-active", isActive);
+      row.setAttribute("aria-selected", String(isActive));
+      if (isActive) {
+        input.setAttribute("aria-activedescendant", row.id);
+        if (scroll) {
+          row.scrollIntoView({ block: "nearest" });
+        }
+      }
+    });
+    glide.sync(instant);
+  };
+
+  const render = () => {
+    const tokens = normalize(input.value).split(" ").filter(Boolean);
+    const commands = getCommands();
+    results = tokens.length
+      ? commands
+          .map((command, order) => ({ command, order, value: score(command, tokens) }))
+          .filter((entry) => entry.value > 0)
+          .sort((first, second) => second.value - first.value || first.order - second.order)
+          .map((entry) => entry.command)
+      : commands;
+
+    if (!results.length) {
+      list.innerHTML = '<p class="be-palette__empty">No matches. Try “work”, “resume”, or “dark”.</p>';
+      input.removeAttribute("aria-activedescendant");
+      glide = createGlide(list, { itemSelector: ".be-palette__row" });
+      return;
+    }
+
+    let lastGroup = null;
+    list.innerHTML = results
+      .map((command, index) => {
+        const heading =
+          !tokens.length && command.group !== lastGroup
+            ? `<p class="be-palette__group" aria-hidden="true">${command.group}</p>`
+            : "";
+        lastGroup = command.group;
+        return `
+          ${heading}
+          <button class="be-palette__row" id="be-palette-row-${index}" type="button" role="option" tabindex="-1" data-index="${index}">
+            ${icon(command.icon)}
+            <span class="be-palette__row-label">${command.label}</span>
+            ${command.hint ? `<span class="be-palette__row-hint">${command.hint}</span>` : ""}
+          </button>
+        `;
+      })
+      .join("");
+    glide = createGlide(list, { itemSelector: ".be-palette__row" });
+    list.scrollTop = 0;
+    setActive(0, { scroll: false, instant: true });
+  };
+
+  const isOpen = () => !palette.hidden && palette.classList.contains("is-open");
+
+  const close = ({ restoreFocus = true } = {}) => {
+    if (palette.hidden) {
+      return;
+    }
+    palette.classList.remove("is-open");
+    document.body.classList.remove("palette-open");
+    trigger?.setAttribute("aria-expanded", "false");
+    closeTimer = window.setTimeout(() => {
+      palette.hidden = true;
+    }, 160);
+    if (restoreFocus) {
+      trigger?.focus({ preventScroll: true });
+    }
+  };
+
+  const open = () => {
+    window.clearTimeout(closeTimer);
+    input.value = "";
+    palette.hidden = false;
+    render();
+    document.body.classList.add("palette-open");
+    trigger?.setAttribute("aria-expanded", "true");
+    requestAnimationFrame(() => {
+      palette.classList.add("is-open");
+      input.focus();
+    });
+  };
+
+  const run = (index) => {
+    const command = results[index];
+    if (!command) {
+      return;
+    }
+    close({ restoreFocus: false });
+    command.run();
+  };
+
+  input.addEventListener("input", render);
+
+  palette.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+    } else if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive(activeIndex + 1);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive(activeIndex - 1);
+    } else if (event.key === "Enter" && !event.isComposing) {
+      event.preventDefault();
+      run(activeIndex);
+    } else if (event.key === "Tab") {
+      event.preventDefault();
+    }
+  });
+
+  list.addEventListener("pointermove", (event) => {
+    const row = event.target.closest(".be-palette__row");
+    if (row && Number(row.dataset.index) !== activeIndex) {
+      setActive(Number(row.dataset.index), { scroll: false });
+    }
+  });
+
+  list.addEventListener("click", (event) => {
+    const row = event.target.closest(".be-palette__row");
+    if (row) {
+      run(Number(row.dataset.index));
+    }
+  });
+
+  backdrop.addEventListener("click", () => close());
+  trigger?.addEventListener("click", open);
+
+  document.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      if (document.body.classList.contains("mode-launch-open") || document.body.classList.contains("brand-intro-open")) {
+        return;
+      }
+      event.preventDefault();
+      if (isOpen()) {
+        close();
+      } else {
+        open();
+      }
+    }
+  });
+
+  return { open, close };
+}
+
+function setupTopbar() {
+  const topbar = document.querySelector("#topbar");
+  const nav = document.querySelector("#primary-navigation");
+  const menuButton = document.querySelector("#topbar-menu");
+  const progressBar = document.querySelector("#scroll-progress-bar");
+  if (!topbar || !nav || !menuButton) {
+    return;
+  }
+
+  const links = [...nav.querySelectorAll(".topbar__link")];
+  const sections = links.map((link) => document.getElementById(link.dataset.section)).filter(Boolean);
+  const glide = createGlide(nav, { itemSelector: ".topbar__link", hover: true });
+
+  const setMenu = (isOpen) => {
+    topbar.classList.toggle("is-open", isOpen);
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+    menuButton.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  };
+
+  menuButton.addEventListener("click", () => setMenu(!topbar.classList.contains("is-open")));
+  links.forEach((link) => link.addEventListener("click", () => setMenu(false)));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setMenu(false);
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (!topbar.contains(event.target)) {
+      setMenu(false);
+    }
+  });
+
+  let activeId = null;
+  let ticking = false;
+
+  const update = () => {
+    ticking = false;
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+    progressBar?.style.setProperty("--progress", progress.toFixed(4));
+
+    const marker = window.innerHeight * 0.4;
+    let current = null;
+    sections.forEach((section) => {
+      if (section.getBoundingClientRect().top <= marker) {
+        current = section.id;
+      }
+    });
+    if (scrollable > 0 && window.scrollY >= scrollable - 4 && sections.length) {
+      current = sections[sections.length - 1].id;
+    }
+
+    if (current === activeId) {
+      return;
+    }
+    activeId = current;
+    links.forEach((link) => {
+      const isActive = link.dataset.section === current;
+      link.classList.toggle("is-active", isActive);
+      if (isActive) {
+        link.setAttribute("aria-current", "location");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+    if (!nav.matches(":hover")) {
+      glide.sync();
+    }
+  };
+
+  const requestUpdate = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+  update();
+}
+
+/* ─── Home page ─── */
+
 function renderHome() {
   const hero = document.querySelector("#home-hero-copy");
   if (!hero) {
     return;
   }
 
-  const {
-    profile,
-    homeModes,
-    experience,
-    projects,
-    education,
-    socials,
-    achievements
-  } = portfolioContent;
-  const aboutCopy = document.querySelector("#home-about-copy");
-  const aboutAside = document.querySelector("#home-about-aside");
-  const aboutTech = document.querySelector("#home-about-tech");
-  const educationList = document.querySelector("#home-education-list");
-  const experienceTabs = document.querySelector("#home-experience-tabs");
-  const experiencePanel = document.querySelector("#home-experience-panel");
-  const featuredWork = document.querySelector("#home-featured-work");
-  const moreWork = document.querySelector("#home-more-work");
-  const workToggle = document.querySelector("#home-work-toggle");
-  const achievementTabs = document.querySelector("#home-achievement-tabs");
-  const achievementPanel = document.querySelector("#home-achievement-panel");
-  const contactCopy = document.querySelector("#home-contact-copy");
-  const socialRail = document.querySelector("#home-social-rail");
-  const emailRail = document.querySelector("#home-email-rail");
-  const modeLaunch = document.querySelector("#mode-launch");
-  const brandIntro = document.querySelector("#brand-intro");
-  const modeLaunchGrid = document.querySelector("#mode-launch-grid");
-  const modeButton = document.querySelector("#home-mode-button");
-  const resumeButton = document.querySelector("#home-resume-button");
-  if (
-    !aboutCopy ||
-    !aboutAside ||
-    !aboutTech ||
-    !educationList ||
-    !experienceTabs ||
-    !experiencePanel ||
-    !featuredWork ||
-    !moreWork ||
-    !workToggle ||
-    !achievementTabs ||
-    !achievementPanel ||
-    !contactCopy ||
-    !socialRail ||
-    !emailRail ||
-    !modeLaunch ||
-    !brandIntro ||
-    !modeLaunchGrid ||
-    !modeButton ||
-    !resumeButton
-  ) {
+  const { profile, homeModes, experience, projects, education, socials, achievements } = portfolioContent;
+  const find = (selector) => document.querySelector(selector);
+  const modeTabs = find("#home-mode-tabs");
+  const aboutCopy = find("#home-about-copy");
+  const aboutAside = find("#home-about-aside");
+  const aboutTech = find("#home-about-tech");
+  const educationList = find("#home-education-list");
+  const experienceTabs = find("#home-experience-tabs");
+  const experiencePanel = find("#home-experience-panel");
+  const featuredWork = find("#home-featured-work");
+  const moreWork = find("#home-more-work");
+  const moreWorkInner = find("#home-more-work-inner");
+  const workToggle = find("#home-work-toggle");
+  const workToggleLabel = find("#home-work-toggle-label");
+  const achievementTabs = find("#home-achievement-tabs");
+  const achievementPanel = find("#home-achievement-panel");
+  const contactCopy = find("#home-contact-copy");
+  const socialRail = find("#home-social-rail");
+  const emailRail = find("#home-email-rail");
+  const modeLaunch = find("#mode-launch");
+  const brandIntro = find("#brand-intro");
+  const modeLaunchGrid = find("#mode-launch-grid");
+  const resumeButton = find("#home-resume-button");
+  const required = [
+    modeTabs, aboutCopy, aboutAside, aboutTech, educationList, experienceTabs, experiencePanel,
+    featuredWork, moreWork, moreWorkInner, workToggle, workToggleLabel, achievementTabs, achievementPanel,
+    contactCopy, socialRail, emailRail, modeLaunch, brandIntro, modeLaunchGrid, resumeButton
+  ];
+  if (required.some((element) => !element)) {
     return;
   }
 
   document.title = `${profile.name} | ${profile.title}`;
+
+  const modeMap = new Map(homeModes.map((mode) => [mode.id, mode]));
+  let storedModeId = null;
+  try {
+    storedModeId = localStorage.getItem("portfolio-mode");
+  } catch (error) {
+    storedModeId = null;
+  }
+  const isReturningVisitor = modeMap.has(storedModeId);
+  let activeMode = modeMap.get(storedModeId) || modeMap.get(profile.defaultModeId) || homeModes[0];
+
+  const railSocials = socials.filter((item) => ["GitHub", "LinkedIn", "Email"].includes(item.platform));
+
+  /* Static sections */
 
   aboutCopy.innerHTML = profile.aboutParagraphs
     .map((paragraph, index) => `<p data-animate style="--delay: ${index * 0.06}s">${paragraph}</p>`)
     .join("");
 
   aboutAside.innerHTML = `
-    <article class="home-aside-card" data-animate>
-      <div class="home-aside-card__portrait">
-        <img src="${profile.headshotUrl}" alt="${profile.name} headshot" />
+    <div class="home-aside-card" data-animate>
+      <div class="home-aside-card__portrait be-tilt" data-tilt>
+        <img src="${profile.headshotUrl}" alt="${profile.name} headshot" loading="lazy" />
       </div>
-    </article>
+    </div>
   `;
 
-  const modeMap = new Map(homeModes.map((mode) => [mode.id, mode]));
-  let activeMode = modeMap.get(profile.defaultModeId) || homeModes[0];
-
-  const renderEducationList = () => {
-    educationList.innerHTML = education
-      .map(
-        (item, index) => `
-          <article class="editor-home__education-card" data-animate style="--delay: ${index * 0.05}s">
+  educationList.innerHTML = education
+    .map(
+      (item, index) => `
+        <div data-animate style="--delay: ${index * 0.06}s">
+          <article class="editor-home__education-card">
             <p class="editor-home__education-meta">${item.institution}</p>
             <h3>${item.credential}</h3>
             <p class="editor-home__experience-meta">${item.location}</p>
           </article>
+        </div>
+      `
+    )
+    .join("");
+
+  socialRail.innerHTML = `
+    <div class="edge-rail__links">
+      ${railSocials
+        .map(
+          (item) => `
+            <a href="${item.url}" ${externalAttrs(item.url)} aria-label="${item.platform}" data-tooltip="${item.platform}" data-tooltip-side="right">
+              ${icon(item.icon)}
+            </a>
+          `
+        )
+        .join("")}
+    </div>
+    <span class="edge-rail__line" aria-hidden="true"></span>
+  `;
+
+  emailRail.innerHTML = `<a class="edge-rail__email" href="mailto:${profile.email}">${profile.email}</a>`;
+
+  /* Experience tabs */
+
+  const renderExperiencePanel = (index) => {
+    const item = experience[index];
+    if (!item) {
+      return;
+    }
+
+    experiencePanel.setAttribute("aria-labelledby", `home-experience-tab-${index}`);
+    experiencePanel.innerHTML = `
+      <article class="editor-home__experience-card be-swap-in">
+        <h3>${item.role} <span>@ ${item.company}</span></h3>
+        <p class="editor-home__experience-meta"><span>${item.dates}</span><span>${item.location}</span></p>
+        <ul class="editor-home__notes be-stagger">
+          ${item.summary
+            .slice(0, 3)
+            .map((note, noteIndex) => `<li style="--i: ${noteIndex + 1}">${note}</li>`)
+            .join("")}
+        </ul>
+      </article>
+    `;
+  };
+
+  experienceTabs.innerHTML = experience
+    .map(
+      (item, index) => `
+        <button
+          class="be-vtabs__tab"
+          id="home-experience-tab-${index}"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="home-experience-panel"
+          data-value="${index}"
+        >
+          ${item.company}
+        </button>
+      `
+    )
+    .join("");
+
+  const experienceGroup = createSelectGroup(experienceTabs, {
+    itemSelector: ".be-vtabs__tab",
+    onSelect: (value) => renderExperiencePanel(Number(value))
+  });
+
+  /* Achievements by year */
+
+  const achievementYears = [...new Set(achievements.map((item) => item.year))].sort(
+    (first, second) => Number(second) - Number(first)
+  );
+
+  const renderAchievementPanel = (year) => {
+    achievementPanel.setAttribute("aria-labelledby", `home-achievement-tab-${year}`);
+    achievementPanel.innerHTML = `
+      <ul class="editor-home__achievement-list be-stagger">
+        ${achievements
+          .filter((item) => item.year === year)
+          .map((item, index) => `<li style="--i: ${index}">${item.title}</li>`)
+          .join("")}
+      </ul>
+    `;
+  };
+
+  achievementTabs.innerHTML = achievementYears
+    .map(
+      (year) => `
+        <button
+          class="be-tabs__tab"
+          id="home-achievement-tab-${year}"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="home-achievement-panel"
+          data-value="${year}"
+        >
+          ${year}
+        </button>
+      `
+    )
+    .join("");
+
+  const achievementGroup = createSelectGroup(achievementTabs, {
+    itemSelector: ".be-tabs__tab",
+    onSelect: renderAchievementPanel
+  });
+
+  /* Mode-dependent sections */
+
+  const setHero = (mode, options = {}) => {
+    const startEmpty = options.animateIntro && !prefersReducedMotion;
+    hero.innerHTML = `
+      <p class="editor-home__intro" data-animate>
+        <span id="home-intro-text">${startEmpty ? "" : profile.homeIntro}</span>
+      </p>
+      <h1 id="home-title" data-animate style="--delay: 0.04s"><span id="home-name-text">${startEmpty ? "" : profile.name}</span></h1>
+      <h2 class="editor-home__statement" data-animate style="--delay: 0.08s"><span id="home-statement-text">${startEmpty ? "" : mode.statement}</span></h2>
+      <p class="editor-home__summary" data-animate style="--delay: 0.12s">${mode.summary}</p>
+      <div class="editor-home__meta" data-animate style="--delay: 0.16s">
+        <span class="be-badge"><span class="be-badge__dot" aria-hidden="true"></span>${profile.availability.replace(/\.$/, "")}</span>
+        <span class="editor-home__meta-item">${icon("pin")}${profile.location}</span>
+        <span class="editor-home__meta-item">${profile.relocation}</span>
+      </div>
+      <div class="editor-home__hero-actions" data-animate style="--delay: 0.2s">
+        <a class="be-btn be-btn--primary be-btn--arrow" href="#work">View work ${arrowChip}</a>
+        <a class="be-btn" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">${icon("document")}${mode.label} resume</a>
+      </div>
+    `;
+
+    observeReveal([hero]);
+  };
+
+  const setTools = (mode) => {
+    aboutTech.innerHTML = mode.toolItems
+      .map((item, index) => `<span class="be-chip" data-animate style="--delay: ${index * 0.04}s">${item}</span>`)
+      .join("");
+    observeReveal([aboutTech]);
+  };
+
+  const renderProjectLinks = (project) => {
+    const links = [
+      project.githubUrl ? `<a class="work-link" href="${project.githubUrl}" target="_blank" rel="noreferrer">GitHub${icon("external")}</a>` : "",
+      project.writeupUrl ? `<a class="work-link" href="${project.writeupUrl}" target="_blank" rel="noreferrer">Write-up${icon("external")}</a>` : ""
+    ].join("");
+    return links ? `<div class="work-links">${links}</div>` : "";
+  };
+
+  const setWorkExpanded = (isExpanded) => {
+    moreWork.classList.toggle("is-open", isExpanded);
+    moreWork.inert = !isExpanded;
+    workToggle.setAttribute("aria-expanded", String(isExpanded));
+    workToggleLabel.textContent = isExpanded ? "Show fewer projects" : "Show more projects";
+    if (isExpanded) {
+      observeReveal([moreWork]);
+    }
+  };
+
+  const setProjects = (mode) => {
+    const featuredProjects = mode.projectIds
+      .map((projectId) => projects.find((project) => project.id === projectId))
+      .filter(Boolean);
+    const extraProjects = projects.filter((project) => !mode.projectIds.includes(project.id));
+
+    featuredWork.innerHTML = featuredProjects
+      .map(
+        (project, index) => `
+          <article class="work-feature${index % 2 === 1 ? " is-reversed" : ""}" data-animate>
+            <div class="work-feature__visual">
+              <div class="work-panel be-tilt" data-tilt>
+                <p class="work-panel__top" aria-hidden="true">${String(index + 1).padStart(2, "0")}</p>
+                <p class="work-panel__title">${project.shortTitle}</p>
+                <div class="work-panel__metrics">
+                  ${project.metrics
+                    .slice(0, 3)
+                    .map(
+                      (metric) => `
+                        <div class="work-panel__metric">
+                          <strong>${metric.value}</strong>
+                          <span>${metric.label}</span>
+                        </div>
+                      `
+                    )
+                    .join("")}
+                </div>
+              </div>
+            </div>
+            <div class="work-feature__copy">
+              <p class="editor-home__eyebrow">${project.categories.join(" / ")}</p>
+              <h3>${project.title}</h3>
+              <dl class="work-feature__detail">
+                <div><dt>Problem</dt><dd>${project.problem}</dd></div>
+                <div><dt>Approach</dt><dd>${project.approach}</dd></div>
+              </dl>
+              <div class="be-chips">
+                ${project.tools.map((tool) => `<span class="be-chip">${tool}</span>`).join("")}
+              </div>
+              ${renderProjectLinks(project)}
+            </div>
+          </article>
         `
       )
       .join("");
-    revealRenderedContent([educationList]);
+
+    moreWorkInner.innerHTML = `
+      <div class="editor-home__more-grid">
+        ${extraProjects
+          .map(
+            (project, index) => `
+              <div data-animate style="--delay: ${index * 0.05}s">
+                <article class="be-card be-card--hover editor-home__mini-project">
+                  <p class="editor-home__mini-top">${project.categories.join(" / ")}</p>
+                  <h3>${project.shortTitle}</h3>
+                  <p>${project.problem}</p>
+                  <div class="editor-home__mini-metrics">
+                    ${project.metrics
+                      .slice(0, 2)
+                      .map((metric) => `<span class="be-chip"><strong>${metric.value}</strong>${metric.label}</span>`)
+                      .join("")}
+                  </div>
+                  ${renderProjectLinks(project)}
+                </article>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+
+    setWorkExpanded(false);
+    workToggle.hidden = !extraProjects.length;
+    setupTilt(featuredWork);
+    observeReveal([featuredWork]);
+  };
+
+  const setContact = (mode) => {
+    contactCopy.innerHTML = `
+      <p class="editor-home__contact-eyebrow" data-animate>06. What's next?</p>
+      <h2 id="contact-title" data-animate>Get In Touch</h2>
+      <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
+      <div class="editor-home__contact-actions" data-animate>
+        <a class="be-btn be-btn--primary be-btn--arrow" href="mailto:${profile.email}">Say hello ${arrowChip}</a>
+        <button class="be-btn be-swap" type="button" data-copy-email>
+          <span class="be-swap__item" data-state="idle">${icon("copy")}Copy email</span>
+          <span class="be-swap__item" data-state="done" aria-hidden="true">${icon("check")}Copied</span>
+        </button>
+        <a class="be-btn" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">${icon("document")}${mode.label} resume</a>
+      </div>
+      <div class="editor-home__contact-socials" data-animate>
+        ${railSocials
+          .map(
+            (item) => `
+              <a class="be-icon-btn be-icon-btn--outline" href="${item.url}" ${externalAttrs(item.url)} aria-label="${item.platform}" data-tooltip="${item.platform}">
+                ${icon(item.icon)}
+              </a>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+    observeReveal([contactCopy]);
   };
 
   const renderLaunchCards = (activeModeId) =>
@@ -354,188 +1155,74 @@ function renderHome() {
       )
       .join("");
 
-  const renderExperienceTabs = (selectedCompany) => {
-    experienceTabs.innerHTML = experience
-      .map(
-        (item, index) => `
-          <button
-            class="editor-home__tab${item.company === selectedCompany ? " is-active" : ""}"
-            type="button"
-            role="tab"
-            aria-selected="${item.company === selectedCompany ? "true" : "false"}"
-            data-home-experience="${index}"
-          >
-            ${item.company}
-          </button>
-        `
-      )
-      .join("");
+  /* View switching */
+
+  modeTabs.innerHTML = homeModes
+    .map(
+      (mode) => `
+        <button class="be-tabs__tab" type="button" role="radio" aria-checked="false" data-value="${mode.id}">
+          ${mode.label}
+        </button>
+      `
+    )
+    .join("");
+
+  const applyMode = (modeId, options = {}) => {
+    const nextMode = modeMap.get(modeId) || modeMap.get(profile.defaultModeId) || homeModes[0];
+    activeMode = nextMode;
+
+    if (options.persist) {
+      try {
+        localStorage.setItem("portfolio-mode", nextMode.id);
+      } catch (error) {
+        // Storage can be unavailable (private mode); the view still switches.
+      }
+    }
+
+    modeGroup.select(nextMode.id, { instant: options.instant });
+    resumeButton.href = nextMode.resumeUrl;
+
+    setHero(nextMode, options);
+    setTools(nextMode);
+    setProjects(nextMode);
+    setContact(nextMode);
+
+    const experienceIndex = Math.max(
+      experience.findIndex((item) => item.company === nextMode.experienceCompany),
+      0
+    );
+    experienceGroup.select(experienceIndex, { instant: options.instant });
+    renderExperiencePanel(experienceIndex);
+
+    modeLaunchGrid.innerHTML = renderLaunchCards(nextMode.id);
   };
 
-  const renderExperiencePanel = (index) => {
-    const item = experience[index];
-    if (!item) {
+  const modeGroup = createSelectGroup(modeTabs, {
+    itemSelector: ".be-tabs__tab",
+    ariaAttr: "aria-checked",
+    onSelect: (modeId) => applyMode(modeId, { persist: true })
+  });
+
+  workToggle.addEventListener("click", () => {
+    setWorkExpanded(workToggle.getAttribute("aria-expanded") !== "true");
+  });
+
+  document.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-copy-email]");
+    if (!button) {
       return;
     }
 
-    experiencePanel.innerHTML = `
-      <article class="editor-home__experience-card" data-animate>
-        <h3>${item.role} <span>@ ${item.company}</span></h3>
-        <p class="editor-home__experience-meta">${item.dates} / ${item.location}</p>
-        ${item.summary.length
-          ? `
-            <div class="editor-home__experience-notes">
-              ${item.summary
-                .slice(0, 3)
-                .map((note) => `<p>${note}</p>`)
-                .join("")}
-            </div>
-          `
-          : ""}
-      </article>
-    `;
-    revealRenderedContent([experiencePanel]);
-  };
+    if (await copyText(profile.email)) {
+      button.classList.add("is-done");
+      announce("Email address copied");
+      window.setTimeout(() => button.classList.remove("is-done"), 2000);
+    } else {
+      showToast(profile.email, "mail");
+    }
+  });
 
-  const achievementYears = [...new Set(achievements.map((item) => item.year))]
-    .sort((first, second) => Number(second) - Number(first));
-  const achievementGroups = [];
-  for (let index = 0; index < achievementYears.length; index += 3) {
-    const years = achievementYears.slice(index, index + 3);
-    achievementGroups.push({
-      id: years.join("-"),
-      label: years.length === 1 ? years[0] : `${years[0]}-${years[years.length - 1]}`,
-      years
-    });
-  }
-
-  const renderAchievementTabs = (selectedGroupId) => {
-    achievementTabs.innerHTML = achievementGroups
-      .map(
-        (group) => `
-          <button
-            class="editor-home__tab${group.id === selectedGroupId ? " is-active" : ""}"
-            type="button"
-            role="tab"
-            aria-selected="${group.id === selectedGroupId ? "true" : "false"}"
-            data-home-achievement-group="${group.id}"
-          >
-            ${group.label}
-          </button>
-        `
-      )
-      .join("");
-  };
-
-  const renderAchievementPanel = (selectedGroupId, selectedYear) => {
-    const activeGroup = achievementGroups.find((group) => group.id === selectedGroupId) || achievementGroups[0];
-    const resolvedYear = activeGroup.years.includes(selectedYear) ? selectedYear : activeGroup.years[0];
-    achievementPanel.innerHTML = `
-      <article class="editor-home__experience-card editor-home__experience-card--compact" data-animate>
-        <div class="editor-home__year-pills">
-          ${activeGroup.years
-            .map(
-              (year) => `
-                <button
-                  class="editor-home__year-pill${year === resolvedYear ? " is-active" : ""}"
-                  type="button"
-                  data-home-achievement-year="${year}"
-                  aria-pressed="${year === resolvedYear ? "true" : "false"}"
-                >
-                  ${year}
-                </button>
-              `
-            )
-            .join("")}
-        </div>
-        <h3>${resolvedYear}</h3>
-        <div class="editor-home__experience-notes">
-          ${achievements
-            .filter((item) => item.year === resolvedYear)
-            .map((item) => `<p>${item.title}</p>`)
-            .join("")}
-        </div>
-      </article>
-    `;
-    revealRenderedContent([achievementPanel]);
-  };
-
-  const setTools = (mode) => {
-    aboutTech.innerHTML = mode.toolItems
-      .map(
-        (item, index) => `
-          <div class="editor-home__tech-item" data-animate style="--delay: ${index * 0.04}s">
-            <span class="editor-home__tech-bullet">${icon("share")}</span>
-            <span>${item}</span>
-          </div>
-        `
-      )
-      .join("");
-    revealRenderedContent([aboutTech]);
-  };
-
-  const setProjects = (mode) => {
-    const featuredProjects = mode.projectIds
-      .map((projectId) => projects.find((project) => project.id === projectId))
-      .filter(Boolean);
-    const extraProjects = projects.filter((project) => !mode.projectIds.includes(project.id));
-
-    featuredWork.innerHTML = featuredProjects
-      .map((project, index) => renderHomeFeaturedProject(project, index))
-      .join("");
-
-    moreWork.innerHTML = `
-      <div class="editor-home__more-grid">
-        ${extraProjects
-          .map(
-            (project, index) => `
-              <article class="editor-home__mini-project" data-animate style="--delay: ${index * 0.05}s">
-                <p class="section-label">${project.categories.join(" / ")}</p>
-                <h3>${project.shortTitle}</h3>
-                <p>${project.problem}</p>
-                <div class="editor-home__mini-metrics">
-                  ${project.metrics
-                    .slice(0, 2)
-                    .map((metric) => `<span>${metric.value} ${metric.label}</span>`)
-                    .join("")}
-                </div>
-              </article>
-            `
-          )
-          .join("")}
-      </div>
-    `;
-
-    moreWork.hidden = true;
-    workToggle.setAttribute("aria-expanded", "false");
-    workToggle.textContent = "Show More";
-    workToggle.hidden = !extraProjects.length;
-    revealRenderedContent([featuredWork]);
-  };
-
-  const setHero = (mode, options = {}) => {
-    const startEmpty = options.animateIntro && !prefersReducedMotion;
-    hero.innerHTML = `
-      <p class="editor-home__intro" data-animate>
-        <span id="home-intro-text">${startEmpty ? "" : profile.homeIntro}</span>
-      </p>
-      <h1 id="home-title" data-animate><span id="home-name-text">${startEmpty ? "" : profile.name}</span></h1>
-      <h2 class="editor-home__statement" data-animate><span id="home-statement-text">${startEmpty ? "" : mode.statement}</span></h2>
-      <p class="editor-home__summary" data-animate>
-        ${mode.summary}
-      </p>
-      <div class="editor-home__meta" data-animate>
-        <span>${profile.location}</span>
-        <span>${profile.relocation}</span>
-        <span>${profile.availability}</span>
-      </div>
-      <div class="editor-home__hero-actions" data-animate>
-        <a class="ghost-button ghost-button--filled" href="#work">View work</a>
-        <a class="ghost-button" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">Open ${mode.label} resume</a>
-      </div>
-    `;
-    revealRenderedContent([hero]);
-  };
+  /* Hero typewriter */
 
   const typeInto = (element, fullText, speed) =>
     new Promise((resolve) => {
@@ -569,117 +1256,14 @@ function renderHome() {
 
     await typeInto(introText, profile.homeIntro, 32);
     await pause();
+    if (!nameText.isConnected) return;
     await typeInto(nameText, profile.name, 45);
     await pause();
+    if (!statementText.isConnected) return;
     await typeInto(statementText, mode.statement, 22);
   };
 
-  const setContact = (mode) => {
-    contactCopy.innerHTML = `
-      <p class="editor-home__contact-eyebrow" data-animate>06. What's next?</p>
-      <h2 id="contact-title" data-animate>Get In Touch</h2>
-      <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
-      <div class="editor-home__contact-actions" data-animate>
-        <a class="ghost-button ghost-button--filled" href="mailto:${profile.email}">Say Hello</a>
-        <a class="ghost-button" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">Open ${mode.label} resume</a>
-      </div>
-    `;
-    revealRenderedContent([contactCopy]);
-  };
-
-  const applyMode = (modeId, heroOptions = {}) => {
-    const nextMode = modeMap.get(modeId) || modeMap.get(profile.defaultModeId) || homeModes[0];
-    activeMode = nextMode;
-
-    modeButton.textContent = nextMode.label;
-    resumeButton.href = nextMode.resumeUrl;
-    resumeButton.textContent = "Resume";
-
-    setHero(nextMode, heroOptions);
-    setTools(nextMode);
-    setProjects(nextMode);
-    setContact(nextMode);
-
-    const defaultExperienceIndex = experience.findIndex((item) => item.company === nextMode.experienceCompany);
-    const resolvedExperienceIndex = defaultExperienceIndex >= 0 ? defaultExperienceIndex : 0;
-    renderExperienceTabs(experience[resolvedExperienceIndex].company);
-    renderExperiencePanel(resolvedExperienceIndex);
-
-    modeLaunchGrid.innerHTML = renderLaunchCards(nextMode.id);
-  };
-
-  workToggle.addEventListener("click", () => {
-    const isExpanded = workToggle.getAttribute("aria-expanded") === "true";
-    moreWork.hidden = isExpanded;
-    workToggle.setAttribute("aria-expanded", String(!isExpanded));
-    workToggle.textContent = isExpanded ? "Show More" : "Show Less";
-    if (!isExpanded) {
-      revealRenderedContent([moreWork]);
-    }
-  });
-
-  experienceTabs.addEventListener("click", (event) => {
-    const tab = event.target.closest("[data-home-experience]");
-    if (!tab) {
-      return;
-    }
-
-    const nextIndex = Number(tab.dataset.homeExperience);
-    experienceTabs.querySelectorAll("[data-home-experience]").forEach((button, buttonIndex) => {
-      const isActive = buttonIndex === nextIndex;
-      button.classList.toggle("is-active", isActive);
-      button.setAttribute("aria-selected", String(isActive));
-    });
-    renderExperiencePanel(nextIndex);
-  });
-
-  achievementTabs.addEventListener("click", (event) => {
-    const tab = event.target.closest("[data-home-achievement-group]");
-    if (!tab) {
-      return;
-    }
-
-    const selectedGroupId = tab.dataset.homeAchievementGroup;
-    const nextGroup = achievementGroups.find((group) => group.id === selectedGroupId) || achievementGroups[0];
-    achievementTabs.querySelectorAll("[data-home-achievement-group]").forEach((button) => {
-      const isActive = button.dataset.homeAchievementGroup === selectedGroupId;
-      button.classList.toggle("is-active", isActive);
-      button.setAttribute("aria-selected", String(isActive));
-    });
-    renderAchievementPanel(nextGroup.id, nextGroup.years[0]);
-  });
-
-  achievementPanel.addEventListener("click", (event) => {
-    const pill = event.target.closest("[data-home-achievement-year]");
-    if (!pill) {
-      return;
-    }
-
-    const activeGroupButton = achievementTabs.querySelector(".is-active[data-home-achievement-group]");
-    const selectedGroupId = activeGroupButton?.dataset.homeAchievementGroup || achievementGroups[0]?.id;
-    renderAchievementPanel(selectedGroupId, pill.dataset.homeAchievementYear);
-  });
-
-  const railLinks = socials.filter((item) => ["GitHub", "LinkedIn", "Email"].includes(item.platform));
-  socialRail.innerHTML = `
-    <div class="edge-rail__links">
-      ${railLinks
-        .map(
-          (item) => `
-            <a href="${item.url}" ${externalAttrs(item.url)} aria-label="${item.platform}">
-              ${icon(item.icon)}
-            </a>
-          `
-        )
-        .join("")}
-    </div>
-    <span class="edge-rail__line" aria-hidden="true"></span>
-  `;
-
-  emailRail.innerHTML = `
-    <a class="edge-rail__email" href="mailto:${profile.email}">${profile.email}</a>
-    <span class="edge-rail__line" aria-hidden="true"></span>
-  `;
+  /* Intro + launcher (first visit only) */
 
   const showLauncher = () => {
     modeLaunch.classList.remove("is-hidden");
@@ -712,75 +1296,129 @@ function renderHome() {
     }, totalDuration);
   };
 
-  let hasPlayedIntroTypewriter = false;
-
   modeLaunchGrid.addEventListener("click", (event) => {
     const card = event.target.closest("[data-launch-mode]");
     if (!card) {
       return;
     }
 
-    const shouldAnimateIntro = !hasPlayedIntroTypewriter;
-    applyMode(card.dataset.launchMode, { animateIntro: shouldAnimateIntro });
+    applyMode(card.dataset.launchMode, { animateIntro: true, persist: true, instant: true });
     hideLauncher();
+    playHeroTypewriter(activeMode);
+  });
 
-    if (shouldAnimateIntro) {
-      hasPlayedIntroTypewriter = true;
-      playHeroTypewriter(activeMode);
+  /* Command menu */
+
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+  };
+
+  const paletteTrigger = find("#palette-trigger");
+  const shortcutLabel = find("#palette-shortcut");
+  if (shortcutLabel && !/Mac|iPhone|iPad/.test(navigator.platform)) {
+    shortcutLabel.textContent = "Ctrl K";
+  }
+
+  setupCommandPalette({
+    trigger: paletteTrigger,
+    getCommands: () => {
+      const isDark = document.documentElement.dataset.theme === "dark";
+      return [
+        ...[
+          ["about", "About", "compass", "bio background"],
+          ["education", "Education", "graduation", "degree school university"],
+          ["experience", "Experience", "briefcase", "jobs roles career"],
+          ["work", "Selected work", "grid", "projects portfolio case"],
+          ["achievements", "Achievements", "award", "awards honors"],
+          ["contact", "Contact", "mail", "email reach hire"]
+        ].map(([id, label, iconName, keywords]) => ({
+          group: "Go to",
+          label,
+          icon: iconName,
+          keywords,
+          run: () => scrollToSection(id)
+        })),
+        ...homeModes.map((mode) => ({
+          group: "View as",
+          label: mode.label,
+          icon: mode.icon,
+          keywords: "view mode lens switch",
+          hint: mode.id === activeMode.id ? "Current" : "",
+          run: () => {
+            applyMode(mode.id, { persist: true });
+            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+          }
+        })),
+        {
+          group: "Actions",
+          label: isDark ? "Switch to light mode" : "Switch to dark mode",
+          icon: isDark ? "sun" : "moon",
+          keywords: "theme dark light appearance",
+          run: () => setTheme(isDark ? "light" : "dark")
+        },
+        {
+          group: "Actions",
+          label: `Open ${activeMode.label} resume`,
+          icon: "document",
+          keywords: "resume cv pdf download",
+          run: () => window.open(activeMode.resumeUrl, "_blank", "noopener")
+        },
+        {
+          group: "Actions",
+          label: "Copy email address",
+          icon: "copy",
+          keywords: "email contact clipboard",
+          run: async () => {
+            const copied = await copyText(profile.email);
+            showToast(copied ? "Email copied to clipboard" : profile.email, copied ? "check" : "mail");
+          }
+        },
+        {
+          group: "Actions",
+          label: "Open terminal",
+          icon: "terminal",
+          keywords: "terminal shell cli console",
+          run: () => {
+            const widget = document.querySelector("#terminal-widget");
+            if (widget?.hidden) {
+              document.querySelector("#terminal-fab")?.click();
+            }
+          }
+        },
+        ...railSocials.map((item) => ({
+          group: "Links",
+          label: item.platform === "Email" ? "Send an email" : item.platform,
+          icon: item.icon,
+          keywords: `social profile ${item.label}`,
+          run: () => {
+            if (item.url.startsWith("http")) {
+              window.open(item.url, "_blank", "noopener");
+            } else {
+              window.location.href = item.url;
+            }
+          }
+        }))
+      ];
     }
   });
 
-  modeButton.addEventListener("click", () => {
-    showLauncher();
-  });
+  /* Boot */
 
-  applyMode(profile.defaultModeId);
-  renderEducationList();
-  renderAchievementTabs(achievementGroups[0].id);
-  renderAchievementPanel(achievementGroups[0].id, achievementGroups[0].years[0]);
-  playBrandIntro();
-  revealRenderedContent([aboutAside, aboutCopy, socialRail, emailRail]);
-}
+  setupTopbar();
+  achievementGroup.select(achievementYears[0], { instant: true });
+  renderAchievementPanel(achievementYears[0]);
 
-function renderHomeFeaturedProject(project, index) {
-  const isReversed = index % 2 === 1;
-  return `
-    <article class="editor-home__feature${isReversed ? " is-reversed" : ""}" data-animate style="--delay: ${index * 0.08}s">
-      <div class="editor-home__feature-visual">
-        <div class="editor-home__feature-screen">
-          <p class="editor-home__feature-kicker">${project.categories.join(" / ")}</p>
-          <h3>${project.shortTitle}</h3>
-          <div class="editor-home__feature-bars">
-            ${project.metrics
-              .slice(0, 3)
-              .map(
-                (metric, metricIndex) => `
-                  <div class="editor-home__feature-bar" style="--bar-width: ${78 - metricIndex * 14}%">
-                    <span>${metric.value}</span>
-                    <small>${metric.label}</small>
-                  </div>
-                `
-              )
-              .join("")}
-          </div>
-        </div>
-      </div>
-      <div class="editor-home__feature-copy">
-        <p class="editor-home__eyebrow">Featured Project</p>
-        <h3>${project.title}</h3>
-        <div class="editor-home__feature-card">
-          <p>${project.approach}</p>
-        </div>
-        <div class="editor-home__feature-tools">
-          ${project.tools.map((tool) => `<span>${tool}</span>`).join("")}
-        </div>
-        <div class="editor-home__feature-actions">
-          ${project.githubUrl ? `<a class="text-link" href="${project.githubUrl}" target="_blank" rel="noreferrer">GitHub</a>` : ""}
-          ${project.writeupUrl ? `<a class="text-link" href="${project.writeupUrl}" target="_blank" rel="noreferrer">Write-up</a>` : ""}
-        </div>
-      </div>
-    </article>
-  `;
+  if (isReturningVisitor) {
+    brandIntro.classList.add("is-hidden");
+    applyMode(activeMode.id, { animateIntro: true, instant: true });
+    playHeroTypewriter(activeMode);
+  } else {
+    applyMode(activeMode.id, { instant: true });
+    playBrandIntro();
+  }
+
+  setupTilt(aboutAside);
+  observeReveal([aboutAside, aboutCopy, educationList]);
 }
 
 function renderHomeModeCards(modes) {
