@@ -437,6 +437,297 @@ function observeReveal(nodes) {
   });
 }
 
+// Horizontal timeline: cards ride a track centred on a playhead. The focused card is full size,
+// its neighbours shrink and dim. Drag, flick, horizontal wheel, click, and arrow keys all move it.
+function createTimeline(stage, { cards, years, onChange }) {
+  const SPRING = { stiffness: 120, damping: 24 };
+  const SIDE_SCALE = 0.72;
+  const SIDE_DIM = 0.45;
+  const DRAG_THRESHOLD = 4;
+  const last = cards.length - 1;
+
+  stage.innerHTML = `
+    <div class="be-timeline__years" aria-hidden="true">
+      ${years.map((year) => `<span data-index="${year.index}">${year.label}</span>`).join("")}
+    </div>
+    <span class="be-timeline__playhead" aria-hidden="true"></span>
+    <div class="be-timeline__ticks" aria-hidden="true">
+      ${cards.slice(1).map(() => "<span><i></i><i></i><i></i><i></i><i></i></span>").join("")}
+    </div>
+    <ul class="be-timeline__track">
+      ${cards
+        .map(
+          (card, index) => `
+            <li class="be-timeline__item">
+              <div class="be-timeline__card">${card.html}</div>
+              <button class="be-timeline__hit" type="button" data-index="${index}" aria-label="${card.label}"></button>
+            </li>
+          `
+        )
+        .join("")}
+    </ul>
+  `;
+
+  const items = [...stage.querySelectorAll(".be-timeline__item")];
+  const hits = items.map((item) => item.querySelector(".be-timeline__hit"));
+  const tickGroups = [...stage.querySelectorAll(".be-timeline__ticks span")];
+  const yearLabels = [...stage.querySelectorAll(".be-timeline__years span")];
+
+  let cardWidth = 320;
+  let step = 300;
+  let position = 0;
+  let target = 0;
+  let velocity = 0;
+  let active = -1;
+  let frame = null;
+  let lastTime = 0;
+
+  const clamp = (value) => Math.max(0, Math.min(value, last));
+  const scaleAt = (offset) => 1 - (1 - SIDE_SCALE) * Math.min(Math.abs(offset), 1);
+
+  const render = () => {
+    items.forEach((item, index) => {
+      const offset = index - position;
+      item.style.transform = `translate(-50%, -50%) translateX(${(offset * step).toFixed(2)}px) scale(${scaleAt(offset).toFixed(4)})`;
+      item.style.zIndex = String(100 - Math.round(Math.abs(offset) * 10));
+      item.style.setProperty("--dim", (SIDE_DIM * Math.min(Math.abs(offset), 1)).toFixed(3));
+    });
+
+    // Ruler ticks sit in whatever space is free between two neighbouring cards.
+    tickGroups.forEach((group, index) => {
+      const leftOffset = index - position;
+      const rightOffset = leftOffset + 1;
+      const leftEdge = leftOffset * step + (cardWidth * scaleAt(leftOffset)) / 2;
+      const rightEdge = rightOffset * step - (cardWidth * scaleAt(rightOffset)) / 2;
+      const free = rightEdge - leftEdge;
+      group.style.width = `${Math.max(free * 0.7, 0).toFixed(2)}px`;
+      group.style.transform = `translate(-50%, -50%) translateX(${((leftEdge + rightEdge) / 2).toFixed(2)}px)`;
+      group.style.opacity = free > 16 ? "1" : "0";
+    });
+
+    // Year numerals drift slower than the track.
+    yearLabels.forEach((label) => {
+      const offset = Number(label.dataset.index) - position;
+      label.style.transform = `translateX(-50%) translateX(${(offset * step * 0.6).toFixed(2)}px)`;
+    });
+  };
+
+  const setActive = (index, notify) => {
+    if (index === active) {
+      return;
+    }
+    active = index;
+    items.forEach((item, itemIndex) => {
+      const isActive = itemIndex === index;
+      item.classList.toggle("is-active", isActive);
+      hits[itemIndex].tabIndex = isActive ? 0 : -1;
+      if (isActive) {
+        hits[itemIndex].setAttribute("aria-current", "step");
+      } else {
+        hits[itemIndex].removeAttribute("aria-current");
+      }
+    });
+    if (notify) {
+      onChange(index);
+    }
+  };
+
+  const stop = () => {
+    if (frame) {
+      cancelAnimationFrame(frame);
+      frame = null;
+    }
+  };
+
+  const tick = (now) => {
+    const delta = Math.min((now - lastTime) / 1000, 0.032);
+    lastTime = now;
+    velocity += (-SPRING.stiffness * (position - target) - SPRING.damping * velocity) * delta;
+    position += velocity * delta;
+
+    if (Math.abs(position - target) < 0.001 && Math.abs(velocity) < 0.01) {
+      position = target;
+      velocity = 0;
+      frame = null;
+    } else {
+      frame = requestAnimationFrame(tick);
+    }
+    render();
+  };
+
+  const glideTo = (index, { instant = false, notify = true, startVelocity = 0 } = {}) => {
+    target = clamp(Math.round(index));
+    setActive(target, notify);
+    stop();
+    if (instant || prefersReducedMotion) {
+      position = target;
+      velocity = 0;
+      render();
+      return;
+    }
+    velocity = startVelocity;
+    lastTime = performance.now();
+    frame = requestAnimationFrame(tick);
+  };
+
+  const measure = () => {
+    const width = stage.clientWidth;
+    if (!width) {
+      return;
+    }
+    cardWidth = Math.min(320, width * (width < 640 ? 0.58 : 0.36));
+    const gap = Math.max(40, Math.min(cardWidth * 0.22, 72));
+    step = cardWidth * SIDE_SCALE + gap;
+    stage.style.setProperty("--card-w", `${cardWidth.toFixed(1)}px`);
+    render();
+  };
+
+  /* Drag + flick */
+
+  let pointerId = null;
+  let startX = 0;
+  let startPosition = 0;
+  let dragging = false;
+  let suppressClick = false;
+  let lastMoveX = 0;
+  let lastMoveTime = 0;
+  let dragVelocity = 0;
+
+  stage.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) {
+      return;
+    }
+    pointerId = event.pointerId;
+    startX = event.clientX;
+    startPosition = position;
+    dragging = false;
+    lastMoveX = event.clientX;
+    lastMoveTime = performance.now();
+    dragVelocity = 0;
+  });
+
+  stage.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== pointerId) {
+      return;
+    }
+    const deltaX = event.clientX - startX;
+    if (!dragging) {
+      if (Math.abs(deltaX) < DRAG_THRESHOLD) {
+        return;
+      }
+      dragging = true;
+      stop();
+      stage.setPointerCapture(pointerId);
+      stage.classList.add("is-dragging");
+    }
+
+    const now = performance.now();
+    if (now > lastMoveTime) {
+      dragVelocity = -((event.clientX - lastMoveX) / step) / ((now - lastMoveTime) / 1000);
+    }
+    lastMoveX = event.clientX;
+    lastMoveTime = now;
+
+    // Rubber-band past either end.
+    const raw = startPosition - deltaX / step;
+    const bounded = clamp(raw);
+    position = bounded + (raw - bounded) * 0.3;
+    render();
+    setActive(Math.round(bounded), true);
+  });
+
+  const endDrag = (event) => {
+    if (event.pointerId !== pointerId) {
+      return;
+    }
+    pointerId = null;
+    if (!dragging) {
+      return;
+    }
+    dragging = false;
+    suppressClick = true;
+    window.setTimeout(() => {
+      suppressClick = false;
+    }, 0);
+    stage.classList.remove("is-dragging");
+
+    const settled = performance.now() - lastMoveTime > 80 ? 0 : dragVelocity;
+    const throwDistance = Math.max(-4, Math.min(settled * 0.3, 4));
+    glideTo(position + throwDistance, { startVelocity: settled });
+  };
+
+  stage.addEventListener("pointerup", endDrag);
+  stage.addEventListener("pointercancel", endDrag);
+
+  stage.addEventListener(
+    "click",
+    (event) => {
+      if (suppressClick) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      const hit = event.target.closest(".be-timeline__hit");
+      if (hit) {
+        glideTo(Number(hit.dataset.index));
+      }
+    },
+    true
+  );
+
+  /* Horizontal wheel / trackpad */
+
+  let wheelTimer = null;
+  stage.addEventListener(
+    "wheel",
+    (event) => {
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) {
+        return;
+      }
+      event.preventDefault();
+      stop();
+      position = clamp(position + event.deltaX / step);
+      render();
+      setActive(Math.round(position), true);
+      window.clearTimeout(wheelTimer);
+      wheelTimer = window.setTimeout(() => glideTo(position), 140);
+    },
+    { passive: false }
+  );
+
+  /* Keyboard */
+
+  stage.addEventListener("keydown", (event) => {
+    const next = {
+      ArrowRight: active + 1,
+      ArrowLeft: active - 1,
+      Home: 0,
+      End: last
+    }[event.key];
+    if (next === undefined) {
+      return;
+    }
+    event.preventDefault();
+    glideTo(next);
+    hits[active].focus({ preventScroll: true });
+  });
+
+  // Focusing an off-centre card must not scroll the clipped stage.
+  stage.addEventListener("scroll", () => {
+    stage.scrollLeft = 0;
+    stage.scrollTop = 0;
+  });
+
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(measure).observe(stage);
+  }
+  measure();
+
+  return {
+    select: (index, { instant = false } = {}) => glideTo(index, { instant, notify: false })
+  };
+}
+
 function setupTilt(root, max = 4) {
   if (!canHover || prefersReducedMotion) {
     return;
@@ -811,7 +1102,7 @@ function renderHome() {
   const aboutAside = find("#home-about-aside");
   const aboutTech = find("#home-about-tech");
   const educationList = find("#home-education-list");
-  const experienceTabs = find("#home-experience-tabs");
+  const experienceTimeline = find("#home-experience-timeline");
   const experiencePanel = find("#home-experience-panel");
   const featuredWork = find("#home-featured-work");
   const moreWork = find("#home-more-work");
@@ -828,7 +1119,7 @@ function renderHome() {
   const modeLaunchGrid = find("#mode-launch-grid");
   const resumeButton = find("#home-resume-button");
   const required = [
-    modeTabs, aboutCopy, aboutAside, aboutTech, educationList, experienceTabs, experiencePanel,
+    modeTabs, aboutCopy, aboutAside, aboutTech, educationList, experienceTimeline, experiencePanel,
     featuredWork, moreWork, moreWorkInner, workToggle, workToggleLabel, achievementTabs, achievementPanel,
     contactCopy, socialRail, emailRail, modeLaunch, brandIntro, modeLaunchGrid, resumeButton
   ];
@@ -895,7 +1186,7 @@ function renderHome() {
 
   emailRail.innerHTML = `<a class="edge-rail__email" href="mailto:${profile.email}">${profile.email}</a>`;
 
-  /* Experience tabs */
+  /* Experience timeline (oldest on the left, newest on the right) */
 
   const renderExperiencePanel = (index) => {
     const item = experience[index];
@@ -903,43 +1194,47 @@ function renderHome() {
       return;
     }
 
-    experiencePanel.setAttribute("aria-labelledby", `home-experience-tab-${index}`);
     experiencePanel.innerHTML = `
-      <article class="editor-home__experience-card be-swap-in">
-        <h3>${item.role} <span>@ ${item.company}</span></h3>
-        <p class="editor-home__experience-meta"><span>${item.dates}</span><span>${item.location}</span></p>
-        <ul class="editor-home__notes be-stagger">
-          ${item.summary
-            .slice(0, 3)
-            .map((note, noteIndex) => `<li style="--i: ${noteIndex + 1}">${note}</li>`)
-            .join("")}
-        </ul>
-      </article>
+      <ul class="editor-home__notes be-stagger" aria-label="${item.role} at ${item.company}">
+        ${item.summary
+          .slice(0, 3)
+          .map((note, noteIndex) => `<li style="--i: ${noteIndex}">${note}</li>`)
+          .join("")}
+      </ul>
     `;
   };
 
-  experienceTabs.innerHTML = experience
-    .map(
-      (item, index) => `
-        <button
-          class="be-vtabs__tab"
-          id="home-experience-tab-${index}"
-          type="button"
-          role="tab"
-          aria-selected="false"
-          aria-controls="home-experience-panel"
-          data-value="${index}"
-        >
-          ${item.company}
-        </button>
-      `
-    )
-    .join("");
-
-  const experienceGroup = createSelectGroup(experienceTabs, {
-    itemSelector: ".be-vtabs__tab",
-    onSelect: (value) => renderExperiencePanel(Number(value))
+  const startYear = (item) => (item.dates.match(/\d{4}/) || [""])[0];
+  const chronological = experience.map((item, index) => ({ item, index })).reverse();
+  const timelineYears = [];
+  chronological.forEach(({ item }, position) => {
+    const year = startYear(item);
+    if (year && !timelineYears.some((entry) => entry.label === year)) {
+      timelineYears.push({ index: position, label: year });
+    }
   });
+
+  const experienceTimelineControl = createTimeline(experienceTimeline, {
+    years: timelineYears,
+    cards: chronological.map(({ item }) => ({
+      label: `${item.role} at ${item.company}, ${item.dates}`,
+      html: `
+        <p class="be-timeline__date">${item.dates}</p>
+        <h3>${item.role}</h3>
+        <p class="be-timeline__org">${item.company}</p>
+        <p class="be-timeline__place">${item.location}</p>
+      `
+    })),
+    onChange: (position) => renderExperiencePanel(chronological[position].index)
+  });
+
+  const selectExperience = (index, options) => {
+    experienceTimelineControl.select(
+      chronological.findIndex((entry) => entry.index === index),
+      options
+    );
+    renderExperiencePanel(index);
+  };
 
   /* Achievements by year */
 
@@ -1191,8 +1486,7 @@ function renderHome() {
       experience.findIndex((item) => item.company === nextMode.experienceCompany),
       0
     );
-    experienceGroup.select(experienceIndex, { instant: options.instant });
-    renderExperiencePanel(experienceIndex);
+    selectExperience(experienceIndex, { instant: options.instant });
 
     modeLaunchGrid.innerHTML = renderLaunchCards(nextMode.id);
   };
