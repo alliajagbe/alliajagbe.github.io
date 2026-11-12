@@ -861,6 +861,75 @@ function setupDock({ onSearch } = {}) {
     terminalButton.hidden = true;
   }
 
+  // Magnification: items swell as the cursor nears them, neighbours a little less.
+  if (canHover && !prefersReducedMotion) {
+    const all = [...dock.querySelectorAll(".be-dock__item")];
+    const MAX = 1.55;
+    const RANGE = 130;
+    const state = all.map(() => ({ current: 1, target: 1, centre: 0 }));
+    let raf = 0;
+    let atRest = true;
+
+    // Centres are measured at rest, relative to the dock's middle, so growth never feeds back.
+    const measure = () => {
+      const middle = dock.offsetWidth / 2;
+      all.forEach((item, index) => {
+        state[index].centre = item.offsetLeft + item.offsetWidth / 2 - middle;
+      });
+    };
+
+    const tick = () => {
+      raf = 0;
+      let moving = false;
+      all.forEach((item, index) => {
+        const entry = state[index];
+        entry.current += (entry.target - entry.current) * 0.22;
+        if (Math.abs(entry.target - entry.current) < 0.002) {
+          entry.current = entry.target;
+        } else {
+          moving = true;
+        }
+        item.style.setProperty("--s", entry.current.toFixed(3));
+      });
+      glide.sync(true);
+      if (moving) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        atRest = state.every((entry) => entry.current === 1);
+      }
+    };
+
+    const run = () => {
+      if (!raf) {
+        raf = requestAnimationFrame(tick);
+      }
+    };
+
+    dock.addEventListener("pointermove", (event) => {
+      if (event.pointerType !== "mouse") {
+        return;
+      }
+      if (atRest) {
+        measure();
+        atRest = false;
+      }
+      const rect = dock.getBoundingClientRect();
+      const x = event.clientX - (rect.left + rect.width / 2);
+      state.forEach((entry) => {
+        const distance = Math.abs(x - entry.centre);
+        entry.target = distance < RANGE ? 1 + (MAX - 1) * Math.cos((distance / RANGE) * (Math.PI / 2)) ** 2 : 1;
+      });
+      run();
+    });
+
+    dock.addEventListener("pointerleave", () => {
+      state.forEach((entry) => {
+        entry.target = 1;
+      });
+      run();
+    });
+  }
+
   return {
     setVisible(isVisible) {
       dock.classList.toggle("is-visible", isVisible);
@@ -1617,19 +1686,117 @@ function renderHome() {
     </div>
   `;
 
-  educationList.innerHTML = education
-    .map(
-      (item, index) => `
-        <div data-animate style="--delay: ${index * 0.06}s">
-          <article class="editor-home__education-card">
-            <p class="editor-home__education-meta">${item.institution}</p>
-            <h3>${item.credential}</h3>
-            <p class="editor-home__experience-meta">${item.location}</p>
-          </article>
-        </div>
-      `
-    )
-    .join("");
+  // Education as a route on a dotted map: oldest stop first, most recent last.
+  const stopCoordinates = {
+    "African Leadership Academy": [-26.2, 28.05],
+    "Plaksha University": [30.7, 76.72],
+    "Wake Forest School of Business": [36.1, -80.24]
+  };
+  const educationStops = [...education].reverse();
+  const map = window.portfolioMap;
+  const UNIT = 10;
+  const project = ([lat, lon]) => [
+    ((lon - map.bounds.west) / map.step) * UNIT,
+    ((map.bounds.north - lat) / map.step) * UNIT
+  ];
+  const stopPoints = map ? educationStops.map((item) => stopCoordinates[item.institution]).map((c) => c && project(c)) : [];
+  const canMap = Boolean(map) && stopPoints.every(Boolean);
+
+  const renderEducationMap = () => {
+    let land = "";
+    map.land.forEach((row, r) => {
+      for (let c = 0; c < row.length; c += 1) {
+        if (row[c] === "1") {
+          land += `M${(c + 0.5) * UNIT} ${(r + 0.5) * UNIT}h0`;
+        }
+      }
+    });
+
+    const arcs = stopPoints
+      .slice(1)
+      .map((to, index) => {
+        const from = stopPoints[index];
+        // Bow each leg gently to the upper side of the straight line between stops.
+        const dx = to[0] - from[0];
+        const dy = to[1] - from[1];
+        const length = Math.hypot(dx, dy);
+        const lift = Math.min(length * 0.2, 90);
+        const side = dx >= 0 ? 1 : -1;
+        const cx = (from[0] + to[0]) / 2 + (dy / length) * lift * side;
+        const cy = (from[1] + to[1]) / 2 - (dx / length) * lift * side;
+        return `<path class="edu-map__arc" style="--i: ${index}" pathLength="1" d="M${from[0].toFixed(1)} ${from[1].toFixed(1)}Q${cx.toFixed(1)} ${cy.toFixed(1)} ${to[0].toFixed(1)} ${to[1].toFixed(1)}" />`;
+      })
+      .join("");
+
+    const pins = stopPoints
+      .map(
+        ([x, y], index) => `
+          <g class="edu-map__pin${index === stopPoints.length - 1 ? " is-latest" : ""}" data-stop="${index}" style="--i: ${index}">
+            <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" />
+            <text x="${(x + 14).toFixed(1)}" y="${(y - 12).toFixed(1)}">${index + 1}</text>
+          </g>
+        `
+      )
+      .join("");
+
+    return `
+      <svg class="edu-map__svg" viewBox="0 0 ${map.cols * UNIT} ${map.rows * UNIT}" aria-hidden="true">
+        <path class="edu-map__land" d="${land}" />
+        ${arcs}
+        ${pins}
+      </svg>
+    `;
+  };
+
+  educationList.innerHTML = `
+    <div class="edu-map${canMap ? "" : " edu-map--plain"}">
+      ${canMap ? renderEducationMap() : ""}
+      <ol class="edu-stops">
+        ${educationStops
+          .map(
+            (item, index) => `
+              <li class="edu-stops__item" data-stop="${index}" data-animate style="--delay: ${index * 0.08}s">
+                <span class="edu-stops__number" aria-hidden="true">${index + 1}</span>
+                <div>
+                  <h3>${item.credential}</h3>
+                  <p class="edu-stops__school">${item.institution}</p>
+                  <p class="edu-stops__place">${item.location}</p>
+                </div>
+              </li>
+            `
+          )
+          .join("")}
+      </ol>
+    </div>
+  `;
+
+  const educationMap = educationList.querySelector(".edu-map");
+  const setActiveStop = (stop) => {
+    educationMap.querySelectorAll("[data-stop]").forEach((element) => {
+      element.classList.toggle("is-active", stop !== null && element.dataset.stop === stop);
+    });
+  };
+  educationMap.addEventListener("pointerover", (event) => {
+    const target = event.target.closest("[data-stop]");
+    setActiveStop(target ? target.dataset.stop : null);
+  });
+  educationMap.addEventListener("pointerleave", () => setActiveStop(null));
+
+  // Draw the route once, the first time the map is on screen.
+  if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+    educationMap.classList.add("is-drawn");
+  } else {
+    const drawObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          educationMap.classList.add("is-drawn");
+          drawObserver.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+    drawObserver.observe(educationMap);
+  }
 
   socialRail.innerHTML = `
     <div class="edge-rail__links">
@@ -1704,38 +1871,45 @@ function renderHome() {
     (first, second) => Number(second) - Number(first)
   );
 
+  const awardsIn = (year) => achievements.filter((item) => item.year === year);
+
   const renderAchievementPanel = (year) => {
+    const awards = awardsIn(year);
     achievementPanel.setAttribute("aria-labelledby", `home-achievement-tab-${year}`);
     achievementPanel.innerHTML = `
+      <p class="editor-home__achievement-head"><span>${year}</span> · ${awards.length} ${awards.length === 1 ? "award" : "awards"}</p>
       <ul class="editor-home__achievement-list be-stagger">
-        ${achievements
-          .filter((item) => item.year === year)
-          .map((item, index) => `<li style="--i: ${index}">${item.title}</li>`)
-          .join("")}
+        ${awards.map((item, index) => `<li style="--i: ${index}">${item.title}</li>`).join("")}
       </ul>
     `;
   };
 
-  achievementTabs.innerHTML = achievementYears
-    .map(
-      (year) => `
+  // One column per year, one block per award, oldest year on the left.
+  achievementTabs.innerHTML = [...achievementYears]
+    .reverse()
+    .map((year) => {
+      const count = awardsIn(year).length;
+      return `
         <button
-          class="be-tabs__tab"
+          class="award-bar"
           id="home-achievement-tab-${year}"
           type="button"
           role="tab"
           aria-selected="false"
           aria-controls="home-achievement-panel"
+          aria-label="${year}, ${count} ${count === 1 ? "award" : "awards"}"
           data-value="${year}"
         >
-          ${year}
+          <span class="award-bar__count" aria-hidden="true">${count}</span>
+          <span class="award-bar__units" aria-hidden="true">${'<span class="award-bar__unit"></span>'.repeat(count)}</span>
+          <span class="award-bar__year" aria-hidden="true">'${year.slice(2)}</span>
         </button>
-      `
-    )
+      `;
+    })
     .join("");
 
   const achievementGroup = createSelectGroup(achievementTabs, {
-    itemSelector: ".be-tabs__tab",
+    itemSelector: ".award-bar",
     onSelect: renderAchievementPanel
   });
 
