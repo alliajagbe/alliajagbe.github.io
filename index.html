@@ -43,7 +43,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=20261112a" />
+    <link rel="stylesheet" href="/styles.css?v=20261112b" />
   </head>
   <body data-page="home">
     <div class="site-shell">
@@ -113,11 +113,17 @@
         <section class="editor-home__hero" aria-labelledby="home-title">
           <div class="container editor-home__container">
             <div class="editor-home__hero-inner">
-              <div class="view-switch">
-                <span class="view-switch__label" id="view-switch-label">View as</span>
-                <div class="be-tabs" id="home-mode-tabs" role="radiogroup" aria-labelledby="view-switch-label"></div>
+              <div class="editor-home__hero-main">
+                <div class="view-switch">
+                  <span class="view-switch__label" id="view-switch-label">View as</span>
+                  <div class="be-tabs" id="home-mode-tabs" role="radiogroup" aria-labelledby="view-switch-label"></div>
+                </div>
+                <div class="editor-home__hero-copy" id="home-hero-copy"></div>
               </div>
-              <div class="editor-home__hero-copy" id="home-hero-copy"></div>
+              <figure class="hero-field" aria-hidden="true">
+                <canvas id="hero-field"></canvas>
+                <figcaption class="hero-field__caption" id="hero-field-caption"></figcaption>
+              </figure>
             </div>
           </div>
         </section>
@@ -210,6 +216,8 @@
         </section>
       </main>
 
+      <nav class="be-dock" id="dock" aria-label="Section navigation" inert></nav>
+
       <button class="terminal-fab" id="terminal-fab" type="button" aria-label="Open terminal" aria-expanded="false" aria-controls="terminal-widget">
         <span aria-hidden="true">❯_</span> Terminal
       </button>
@@ -223,7 +231,7 @@
       </footer>
     </div>
 
-    <script src="/content.js?v=20261112a" defer></script>
-    <script src="/script.js?v=20261112a" defer></script>
+    <script src="/content.js?v=20261112b" defer></script>
+    <script src="/script.js?v=20261112b" defer></script>
   </body>
 </html>

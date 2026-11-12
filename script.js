@@ -111,15 +111,13 @@ function setTheme(theme, origin) {
 }
 
 function updateThemeToggle(theme) {
-  const toggle = document.querySelector("#theme-toggle");
   const label = document.querySelector("#theme-toggle-label");
-  if (!toggle) {
-    return;
-  }
-
   const isDark = theme === "dark";
-  toggle.setAttribute("aria-pressed", String(isDark));
-  toggle.setAttribute("aria-label", isDark ? "Activate light mode" : "Activate dark mode");
+
+  document.querySelectorAll("#theme-toggle, #dock-theme").forEach((toggle) => {
+    toggle.setAttribute("aria-pressed", String(isDark));
+    toggle.setAttribute("aria-label", isDark ? "Activate light mode" : "Activate dark mode");
+  });
   if (label) {
     label.textContent = isDark ? "Dark" : "Light";
   }
@@ -435,6 +433,455 @@ function observeReveal(nodes) {
       }
     });
   });
+}
+
+// Hero figure: a field of dots that arranges itself into a small chart for the selected view.
+// Dots spring toward their targets, drift slightly at rest, and lean away from the cursor.
+function createDataField(canvas, { caption, host } = {}) {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return { setLayout() {} };
+  }
+
+  const count = window.innerWidth < 640 ? 120 : 240;
+  const STIFFNESS = 120;
+  const DAMPING = 24;
+  const PUSH_RADIUS = 90;
+
+  // Seeded generator so each figure looks the same on every visit.
+  const seeded = (seed) => () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const gaussian = (rand) => {
+    const u = Math.max(rand(), 1e-6);
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rand());
+  };
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  const axes = [
+    { x1: 0, y1: 0, x2: 0, y2: 1, kind: "axis" },
+    { x1: 0, y1: 1, x2: 1, y2: 1, kind: "axis" }
+  ];
+
+  const layouts = {
+    scientist: (n) => {
+      const rand = seeded(11);
+      const fit = (x) => 0.84 - 0.66 * x;
+      const points = [];
+      for (let i = 0; i < n; i += 1) {
+        const x = 0.05 + rand() * 0.9;
+        const noise = gaussian(rand) * 0.085;
+        points.push({ x, y: clamp(fit(x) + noise, 0.03, 0.97), accent: Math.abs(noise) < 0.012 });
+      }
+      return {
+        caption: `Fig. 1  Fitted trend, n = ${n}`,
+        points,
+        lines: [...axes, { x1: 0.03, y1: fit(0.03), x2: 0.97, y2: fit(0.97), kind: "mark" }]
+      };
+    },
+    analyst: (n) => {
+      const heights = [0.34, 0.48, 0.41, 0.58, 0.52, 0.7, 0.63, 0.82, 1];
+      const total = heights.reduce((sum, value) => sum + value, 0);
+      const across = 3;
+      const slot = 0.92 / heights.length;
+      const gap = (slot * 0.44) / (across - 1);
+      const rows = Math.ceil((n * (heights[heights.length - 1] / total)) / across);
+      const rise = 0.9 / rows;
+      const points = [];
+      let used = 0;
+      heights.forEach((height, column) => {
+        const isLast = column === heights.length - 1;
+        const dots = isLast ? n - used : Math.round((n * height) / total);
+        used += dots;
+        const left = 0.05 + column * slot + slot * 0.28;
+        for (let k = 0; k < dots; k += 1) {
+          points.push({
+            x: left + (k % across) * gap,
+            y: 0.96 - Math.floor(k / across) * rise,
+            accent: isLast
+          });
+        }
+      });
+      return { caption: "Fig. 1  Monthly volume, latest period marked", points, lines: axes };
+    },
+    "ai-developer": (n) => {
+      const rand = seeded(29);
+      const layers = [4, 5, 4, 2];
+      const nodes = [];
+      layers.forEach((size, layer) => {
+        for (let i = 0; i < size; i += 1) {
+          nodes.push({
+            layer,
+            x: 0.08 + (layer / (layers.length - 1)) * 0.84,
+            y: 0.5 + (i - (size - 1) / 2) * (0.78 / Math.max(...layers)) * 1.18
+          });
+        }
+      });
+      const edges = [];
+      nodes.forEach((from) => {
+        nodes.forEach((to) => {
+          if (to.layer === from.layer + 1 && rand() > 0.3) {
+            edges.push({ x1: from.x, y1: from.y, x2: to.x, y2: to.y, kind: "edge" });
+          }
+        });
+      });
+      const points = nodes.map((node) => ({ x: node.x, y: node.y, accent: true, hub: true }));
+      for (let i = points.length; i < n; i += 1) {
+        const edge = edges[Math.floor(rand() * edges.length)];
+        const t = 0.08 + rand() * 0.84;
+        points.push({
+          x: edge.x1 + (edge.x2 - edge.x1) * t + gaussian(rand) * 0.004,
+          y: edge.y1 + (edge.y2 - edge.y1) * t + gaussian(rand) * 0.004
+        });
+      }
+      return { caption: `Fig. 1  Agent graph, ${nodes.length} nodes`, points, lines: edges };
+    },
+    "full-spectrum": (n) => {
+      const rand = seeded(47);
+      const clusters = [
+        { x: 0.26, y: 0.3, sx: 0.085, sy: 0.075, share: 0.36, accent: false },
+        { x: 0.7, y: 0.36, sx: 0.07, sy: 0.1, share: 0.3, accent: true },
+        { x: 0.46, y: 0.76, sx: 0.12, sy: 0.06, share: 0.34, accent: false }
+      ];
+      const points = [];
+      const lines = [...axes];
+      clusters.forEach((cluster, index) => {
+        const dots = index === clusters.length - 1 ? n - points.length : Math.round(n * cluster.share);
+        for (let i = 0; i < dots; i += 1) {
+          points.push({
+            x: clamp(cluster.x + gaussian(rand) * cluster.sx, 0.03, 0.97),
+            y: clamp(cluster.y + gaussian(rand) * cluster.sy, 0.03, 0.97),
+            accent: cluster.accent
+          });
+        }
+        const arm = 0.022;
+        lines.push(
+          { x1: cluster.x - arm, y1: cluster.y, x2: cluster.x + arm, y2: cluster.y, kind: "mark" },
+          { x1: cluster.x, y1: cluster.y - arm, x2: cluster.x, y2: cluster.y + arm, kind: "mark" }
+        );
+      });
+      return { caption: "Fig. 1  Three segments, centroids marked", points, lines };
+    }
+  };
+
+  const setupRand = seeded(3);
+  const dots = Array.from({ length: count }, () => ({
+    u: setupRand(),
+    v: setupRand(),
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    r: 1.5 + setupRand() * 1.1,
+    phase: setupRand() * Math.PI * 2,
+    speed: 0.35 + setupRand() * 0.5,
+    delay: 0,
+    accent: false,
+    hub: false,
+    placed: false
+  }));
+
+  let width = 0;
+  let height = 0;
+  let lines = [];
+  let lineStart = 0;
+  let colors = { ink: "#000", accent: "#000", line: "#000" };
+  let pointer = null;
+  let visible = true;
+  let frame = 0;
+  let last = 0;
+  const pad = 14;
+  const toX = (u) => pad + u * (width - pad * 2);
+  const toY = (v) => pad + v * (height - pad * 2);
+
+  const readColors = () => {
+    const probe = document.createElement("span");
+    probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
+    document.body.append(probe);
+    const resolve = (value) => {
+      probe.style.color = value;
+      return getComputedStyle(probe).color;
+    };
+    colors = {
+      ink: resolve("var(--text-soft)"),
+      accent: resolve("var(--accent)"),
+      line: resolve("var(--heading)")
+    };
+    probe.remove();
+  };
+
+  const draw = (now) => {
+    ctx.clearRect(0, 0, width, height);
+    const progress = prefersReducedMotion ? 1 : clamp((now - lineStart) / 650, 0, 1);
+    const eased = 1 - (1 - progress) ** 3;
+
+    if (eased > 0) {
+      lines.forEach((line) => {
+        const x1 = toX(line.x1);
+        const y1 = toY(line.y1);
+        const grow = line.kind === "mark" ? eased : 1;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x1 + (toX(line.x2) - x1) * grow, y1 + (toY(line.y2) - y1) * grow);
+        ctx.lineWidth = line.kind === "mark" ? 1.5 : 1;
+        ctx.strokeStyle = line.kind === "mark" ? colors.accent : colors.line;
+        ctx.globalAlpha = (line.kind === "mark" ? 0.9 : line.kind === "edge" ? 0.1 : 0.22) * eased;
+        ctx.stroke();
+      });
+    }
+
+    dots.forEach((dot) => {
+      ctx.beginPath();
+      ctx.arc(dot.x, dot.y, dot.hub ? 4 : dot.r, 0, Math.PI * 2);
+      ctx.fillStyle = dot.accent ? colors.accent : colors.ink;
+      ctx.globalAlpha = dot.accent ? 0.95 : 0.5;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  };
+
+  const step = (now) => {
+    frame = 0;
+    const dt = Math.min((now - last) / 1000, 0.032);
+    last = now;
+    const time = now / 1000;
+
+    dots.forEach((dot) => {
+      if (dot.delay > 0) {
+        dot.delay -= dt;
+      }
+      const settled = dot.delay <= 0;
+      const tx = toX(dot.u) + Math.sin(time * dot.speed + dot.phase) * 1.6;
+      const ty = toY(dot.v) + Math.cos(time * dot.speed * 0.8 + dot.phase) * 1.6;
+      let ax = settled ? STIFFNESS * (tx - dot.x) : 0;
+      let ay = settled ? STIFFNESS * (ty - dot.y) : 0;
+
+      if (pointer) {
+        const dx = dot.x - pointer.x;
+        const dy = dot.y - pointer.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance < PUSH_RADIUS && distance > 0.01) {
+          const force = (1 - distance / PUSH_RADIUS) ** 2 * 2600;
+          ax += (dx / distance) * force;
+          ay += (dy / distance) * force;
+        }
+      }
+
+      dot.vx += (ax - DAMPING * dot.vx) * dt;
+      dot.vy += (ay - DAMPING * dot.vy) * dt;
+      dot.x += dot.vx * dt;
+      dot.y += dot.vy * dt;
+    });
+
+    draw(now);
+    schedule();
+  };
+
+  const schedule = () => {
+    if (!frame && visible && !document.hidden && !prefersReducedMotion && width > 0) {
+      frame = requestAnimationFrame(step);
+    }
+  };
+
+  const snap = () => {
+    dots.forEach((dot) => {
+      dot.x = toX(dot.u);
+      dot.y = toY(dot.v);
+      dot.vx = 0;
+      dot.vy = 0;
+      dot.delay = 0;
+      dot.placed = true;
+    });
+  };
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) {
+      return;
+    }
+    const first = width === 0;
+    width = rect.width;
+    height = rect.height;
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    if (first && !prefersReducedMotion) {
+      // First paint: start scattered so the figure assembles itself.
+      const rand = seeded(5);
+      dots.forEach((dot) => {
+        dot.x = rand() * width;
+        dot.y = rand() * height;
+        dot.placed = true;
+      });
+    } else {
+      snap();
+    }
+    last = performance.now();
+    draw(last);
+    schedule();
+  };
+
+  const setLayout = (id) => {
+    const layout = (layouts[id] || layouts.scientist)(count);
+    lines = layout.lines;
+    if (caption) {
+      caption.textContent = layout.caption;
+    }
+    layout.points.forEach((point, index) => {
+      const dot = dots[index];
+      dot.u = point.x;
+      dot.v = point.y;
+      dot.accent = Boolean(point.accent);
+      dot.hub = Boolean(point.hub);
+      dot.delay = (index % 24) * 0.012;
+    });
+
+    const now = performance.now();
+    lineStart = now + 420;
+    if (prefersReducedMotion) {
+      snap();
+      draw(now);
+      return;
+    }
+    last = now;
+    schedule();
+  };
+
+  readColors();
+  new MutationObserver(() => {
+    readColors();
+    draw(performance.now());
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(resize).observe(canvas);
+  } else {
+    window.addEventListener("resize", resize);
+  }
+  resize();
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entries) => {
+      visible = entries[0].isIntersecting;
+      last = performance.now();
+      schedule();
+    }).observe(canvas);
+  }
+  document.addEventListener("visibilitychange", () => {
+    last = performance.now();
+    schedule();
+  });
+
+  if (canHover && !prefersReducedMotion) {
+    const target = host || canvas;
+    target.addEventListener("pointermove", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    });
+    target.addEventListener("pointerleave", () => {
+      pointer = null;
+    });
+  }
+
+  return { setLayout };
+}
+
+// Bottom dock: section links with a gliding active marker, then search, theme, terminal, resume.
+function setupDock({ onSearch } = {}) {
+  const dock = document.querySelector("#dock");
+  if (!dock) {
+    return null;
+  }
+
+  const sections = [
+    ["about", "About", "compass"],
+    ["education", "Education", "graduation"],
+    ["experience", "Experience", "briefcase"],
+    ["work", "Selected work", "grid"],
+    ["achievements", "Achievements", "award"],
+    ["contact", "Contact", "mail"]
+  ];
+
+  dock.innerHTML = `
+    ${sections
+      .map(
+        ([id, label, iconName]) => `
+          <a class="be-dock__item" href="#${id}" data-section="${id}" aria-label="${label}" data-tooltip="${label}">
+            ${icon(iconName)}
+          </a>
+        `
+      )
+      .join("")}
+    <span class="be-dock__sep" aria-hidden="true"></span>
+    <button class="be-dock__item be-dock__item--wide" id="dock-search" type="button" aria-haspopup="dialog" aria-label="Open command menu" data-tooltip="Search">
+      ${icon("search")}
+    </button>
+    <button class="be-dock__item" id="dock-theme" type="button" aria-pressed="false" aria-label="Activate dark mode" data-tooltip="Theme">
+      <span class="theme-icon" aria-hidden="true">
+        <span class="theme-icon__moon">${icon("moon")}</span>
+        <span class="theme-icon__sun">${icon("sun")}</span>
+      </span>
+    </button>
+    <button class="be-dock__item" id="dock-terminal" type="button" aria-expanded="false" aria-controls="terminal-widget" aria-label="Open terminal" data-tooltip="Terminal">
+      ${icon("terminal")}
+    </button>
+    <a class="be-dock__item be-dock__item--wide" id="dock-resume" href="#" target="_blank" rel="noreferrer" aria-label="Open resume" data-tooltip="Resume">
+      ${icon("document")}
+    </a>
+  `;
+
+  const items = [...dock.querySelectorAll("[data-section]")];
+  const glide = createGlide(dock, { itemSelector: ".be-dock__item" });
+  const themeButton = dock.querySelector("#dock-theme");
+  const terminalButton = dock.querySelector("#dock-terminal");
+  const resumeLink = dock.querySelector("#dock-resume");
+  const fab = document.querySelector("#terminal-fab");
+
+  dock.querySelector("#dock-search").addEventListener("click", () => onSearch?.());
+
+  themeButton.addEventListener("click", () => {
+    const isDark = document.documentElement.dataset.theme === "dark";
+    const rect = themeButton.getBoundingClientRect();
+    setTheme(isDark ? "light" : "dark", { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+  });
+  updateThemeToggle(document.documentElement.dataset.theme || "light");
+
+  if (fab) {
+    terminalButton.addEventListener("click", () => fab.click());
+    new MutationObserver(() => {
+      const isOpen = fab.getAttribute("aria-expanded") === "true";
+      terminalButton.setAttribute("aria-expanded", String(isOpen));
+      terminalButton.setAttribute("aria-label", isOpen ? "Close terminal" : "Open terminal");
+    }).observe(fab, { attributes: true, attributeFilter: ["aria-expanded"] });
+  } else {
+    terminalButton.hidden = true;
+  }
+
+  return {
+    setVisible(isVisible) {
+      dock.classList.toggle("is-visible", isVisible);
+      dock.inert = !isVisible;
+    },
+    setActive(id) {
+      items.forEach((item) => {
+        const isActive = item.dataset.section === id;
+        item.classList.toggle("is-active", isActive);
+        if (isActive) {
+          item.setAttribute("aria-current", "location");
+        } else {
+          item.removeAttribute("aria-current");
+        }
+      });
+      glide.sync();
+    },
+    setResume(url) {
+      resumeLink.href = url;
+    }
+  };
 }
 
 // Horizontal timeline: cards ride a track centred on a playhead. The focused card is full size,
@@ -1005,11 +1452,12 @@ function setupCommandPalette({ trigger, getCommands }) {
   return { open, close };
 }
 
-function setupTopbar() {
+function setupTopbar(dock) {
   const topbar = document.querySelector("#topbar");
   const nav = document.querySelector("#primary-navigation");
   const menuButton = document.querySelector("#topbar-menu");
   const progressBar = document.querySelector("#scroll-progress-bar");
+  const heroSection = document.querySelector(".editor-home__hero");
   if (!topbar || !nav || !menuButton) {
     return;
   }
@@ -1039,12 +1487,25 @@ function setupTopbar() {
 
   let activeId = null;
   let ticking = false;
+  let isPastHero = false;
 
   const update = () => {
     ticking = false;
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;
     const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
     progressBar?.style.setProperty("--progress", progress.toFixed(4));
+
+    // Past the hero the top bar gives way to the dock.
+    const pastHero = Boolean(dock && heroSection) && heroSection.getBoundingClientRect().bottom < 96;
+    if (pastHero !== isPastHero) {
+      isPastHero = pastHero;
+      topbar.classList.toggle("is-away", pastHero);
+      topbar.inert = pastHero;
+      dock.setVisible(pastHero);
+      if (pastHero) {
+        setMenu(false);
+      }
+    }
 
     const marker = window.innerHeight * 0.4;
     let current = null;
@@ -1073,6 +1534,7 @@ function setupTopbar() {
     if (!nav.matches(":hover")) {
       glide.sync();
     }
+    dock?.setActive(current);
   };
 
   const requestUpdate = () => {
@@ -1279,16 +1741,12 @@ function renderHome() {
 
   /* Mode-dependent sections */
 
-  const setHero = (mode, options = {}) => {
-    const startEmpty = options.animateIntro && !prefersReducedMotion;
+  const setHero = (mode) => {
     hero.innerHTML = `
-      <p class="editor-home__intro" data-animate>
-        <span id="home-intro-text">${startEmpty ? "" : profile.homeIntro}</span>
-      </p>
-      <h1 id="home-title" data-animate style="--delay: 0.04s"><span id="home-name-text">${startEmpty ? "" : profile.name}</span></h1>
-      <h2 class="editor-home__statement" data-animate style="--delay: 0.08s"><span id="home-statement-text">${startEmpty ? "" : mode.statement}</span></h2>
-      <p class="editor-home__summary" data-animate style="--delay: 0.12s">${mode.summary}</p>
-      <div class="editor-home__meta" data-animate style="--delay: 0.16s">
+      <h1 id="home-title" data-animate>${profile.name}</h1>
+      <p class="editor-home__statement" data-animate style="--delay: 0.05s">${mode.statement}</p>
+      <p class="editor-home__summary" data-animate style="--delay: 0.1s">${mode.summary}</p>
+      <div class="editor-home__meta" data-animate style="--delay: 0.15s">
         <span class="be-badge"><span class="be-badge__dot" aria-hidden="true"></span>${profile.availability.replace(/\.$/, "")}</span>
         <span class="editor-home__meta-item">${icon("pin")}${profile.location}</span>
         <span class="editor-home__meta-item">${profile.relocation}</span>
@@ -1452,6 +1910,15 @@ function renderHome() {
 
   /* View switching */
 
+  const fieldCanvas = find("#hero-field");
+  const dataField = fieldCanvas
+    ? createDataField(fieldCanvas, {
+        caption: find("#hero-field-caption"),
+        host: find(".editor-home__hero")
+      })
+    : null;
+  let dock = null;
+
   modeTabs.innerHTML = homeModes
     .map(
       (mode) => `
@@ -1477,7 +1944,9 @@ function renderHome() {
     modeGroup.select(nextMode.id, { instant: options.instant });
     resumeButton.href = nextMode.resumeUrl;
 
-    setHero(nextMode, options);
+    setHero(nextMode);
+    dataField?.setLayout(nextMode.id);
+    dock?.setResume(nextMode.resumeUrl);
     setTools(nextMode);
     setProjects(nextMode);
     setContact(nextMode);
@@ -1515,47 +1984,6 @@ function renderHome() {
       showToast(profile.email, "mail");
     }
   });
-
-  /* Hero typewriter */
-
-  const typeInto = (element, fullText, speed) =>
-    new Promise((resolve) => {
-      element.textContent = "";
-      let charIndex = 0;
-      const typeNextChar = () => {
-        charIndex += 1;
-        element.textContent = fullText.slice(0, charIndex);
-        if (charIndex < fullText.length) {
-          setTimeout(typeNextChar, speed);
-        } else {
-          resolve();
-        }
-      };
-      setTimeout(typeNextChar, speed);
-    });
-
-  const playHeroTypewriter = async (mode) => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    const introText = document.querySelector("#home-intro-text");
-    const nameText = document.querySelector("#home-name-text");
-    const statementText = document.querySelector("#home-statement-text");
-    if (!introText || !nameText || !statementText) {
-      return;
-    }
-
-    const pause = () => new Promise((resolve) => setTimeout(resolve, 150));
-
-    await typeInto(introText, profile.homeIntro, 32);
-    await pause();
-    if (!nameText.isConnected) return;
-    await typeInto(nameText, profile.name, 45);
-    await pause();
-    if (!statementText.isConnected) return;
-    await typeInto(statementText, mode.statement, 22);
-  };
 
   /* Intro + launcher (first visit only) */
 
@@ -1596,9 +2024,8 @@ function renderHome() {
       return;
     }
 
-    applyMode(card.dataset.launchMode, { animateIntro: true, persist: true, instant: true });
+    applyMode(card.dataset.launchMode, { persist: true, instant: true });
     hideLauncher();
-    playHeroTypewriter(activeMode);
   });
 
   /* Command menu */
@@ -1613,7 +2040,7 @@ function renderHome() {
     shortcutLabel.textContent = "Ctrl K";
   }
 
-  setupCommandPalette({
+  const palette = setupCommandPalette({
     trigger: paletteTrigger,
     getCommands: () => {
       const isDark = document.documentElement.dataset.theme === "dark";
@@ -1698,14 +2125,14 @@ function renderHome() {
 
   /* Boot */
 
-  setupTopbar();
+  dock = setupDock({ onSearch: () => palette?.open() });
+  setupTopbar(dock);
   achievementGroup.select(achievementYears[0], { instant: true });
   renderAchievementPanel(achievementYears[0]);
 
   if (isReturningVisitor) {
     brandIntro.classList.add("is-hidden");
-    applyMode(activeMode.id, { animateIntro: true, instant: true });
-    playHeroTypewriter(activeMode);
+    applyMode(activeMode.id, { instant: true });
   } else {
     applyMode(activeMode.id, { instant: true });
     playBrandIntro();
