@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#F4EFC9" />
+    <title>Page not found | Alli Ajagbe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="/alliajagbe%20logo/2.png?v=20260404f" />
+    <script>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem("portfolio-theme");
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.dataset.theme = storedTheme || (prefersDark ? "dark" : "light");
+        } catch (error) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="/styles.css?v=20261117a" />
+  </head>
+  <body data-page="not-found">
+    <main class="not-found">
+      <div class="not-found__inner">
+        <a class="brand-mark not-found__mark" href="/" aria-label="Alli Ajagbe, home">
+          <img class="brand-logo" src="/assets/logo-icon.png?v=20260404e" alt="" />
+        </a>
+        <p class="not-found__code">404</p>
+        <h1>This page isn't here</h1>
+        <p>The link may be old, or the address may have a typo. Everything on the site starts from the home page.</p>
+        <a class="be-btn be-btn--primary" href="/">Go to the home page</a>
+      </div>
+    </main>
+  </body>
+</html>
