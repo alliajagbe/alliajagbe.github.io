@@ -337,6 +337,7 @@ window.portfolioContent = {
       icon: "grid",
       title: "Founder Forward Analytics and Dashboard System",
       shortTitle: "Founder Forward BI System",
+      liveUrl: "https://founder-forward.github.io/ff-dashboard/",
       categories: ["Analytics", "BI"],
       problem:
         "Bring fragmented founder and program data into one reliable system that teams could analyze and act on quickly.",

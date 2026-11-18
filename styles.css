@@ -3505,6 +3505,16 @@ body[data-page="home"] .site-footer--minimal {
   color: var(--accent);
 }
 
+/* Hovering a pin (or the row) lifts the matching school slightly. */
+.edu-stops__item > div {
+  transform-origin: left center;
+  transition: transform 300ms var(--ease-out);
+}
+
+.edu-stops__item.is-active > div {
+  transform: scale(1.04);
+}
+
 .edu-stops__item h3 {
   font-size: var(--fs-lg);
   line-height: 1.2;
@@ -4393,6 +4403,10 @@ body[data-page="home"] .site-footer--minimal {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .edu-stops__item.is-active > div {
+    transform: none;
+  }
+
   body[data-page="home"] [data-animate] {
     opacity: 1;
     transform: none;

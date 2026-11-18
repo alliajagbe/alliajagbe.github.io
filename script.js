@@ -1044,7 +1044,7 @@ function createTimeline(stage, { cards, years, onChange }) {
       }
     });
     if (notify) {
-      onChange(index);
+      onChange?.(index);
     }
   };
 
@@ -1634,7 +1634,6 @@ function renderHome() {
   const aboutTech = find("#home-about-tech");
   const educationList = find("#home-education-list");
   const experienceTimeline = find("#home-experience-timeline");
-  const experiencePanel = find("#home-experience-panel");
   const featuredWork = find("#home-featured-work");
   const moreWork = find("#home-more-work");
   const moreWorkInner = find("#home-more-work-inner");
@@ -1650,7 +1649,7 @@ function renderHome() {
   const modeLaunchGrid = find("#mode-launch-grid");
   const resumeButton = find("#home-resume-button");
   const required = [
-    modeTabs, aboutCopy, aboutAside, aboutTech, educationList, experienceTimeline, experiencePanel,
+    modeTabs, aboutCopy, aboutAside, aboutTech, educationList, experienceTimeline,
     featuredWork, moreWork, moreWorkInner, workToggle, workToggleLabel, achievementTabs, achievementPanel,
     contactCopy, socialRail, emailRail, modeLaunch, brandIntro, modeLaunchGrid, resumeButton
   ];
@@ -1817,22 +1816,6 @@ function renderHome() {
 
   /* Experience timeline (oldest on the left, newest on the right) */
 
-  const renderExperiencePanel = (index) => {
-    const item = experience[index];
-    if (!item) {
-      return;
-    }
-
-    experiencePanel.innerHTML = `
-      <ul class="editor-home__notes be-stagger" aria-label="${item.role} at ${item.company}">
-        ${item.summary
-          .slice(0, 3)
-          .map((note, noteIndex) => `<li style="--i: ${noteIndex}">${note}</li>`)
-          .join("")}
-      </ul>
-    `;
-  };
-
   const startYear = (item) => (item.dates.match(/\d{4}/) || [""])[0];
   const chronological = experience.map((item, index) => ({ item, index })).reverse();
   const timelineYears = [];
@@ -1853,8 +1836,7 @@ function renderHome() {
         <p class="be-timeline__org">${item.company}</p>
         <p class="be-timeline__place">${item.location}</p>
       `
-    })),
-    onChange: (position) => renderExperiencePanel(chronological[position].index)
+    }))
   });
 
   const selectExperience = (index, options) => {
@@ -1862,7 +1844,6 @@ function renderHome() {
       chronological.findIndex((entry) => entry.index === index),
       options
     );
-    renderExperiencePanel(index);
   };
 
   /* Achievements by year */
@@ -1919,13 +1900,12 @@ function renderHome() {
     hero.innerHTML = `
       <h1 id="home-title" data-animate>${profile.name}</h1>
       <p class="editor-home__statement" data-animate style="--delay: 0.05s">${mode.statement}</p>
-      <p class="editor-home__summary" data-animate style="--delay: 0.1s">${mode.summary}</p>
-      <div class="editor-home__meta" data-animate style="--delay: 0.15s">
+      <div class="editor-home__meta" data-animate style="--delay: 0.1s">
         <span class="be-badge"><span class="be-badge__dot" aria-hidden="true"></span>${profile.availability.replace(/\.$/, "")}</span>
         <span class="editor-home__meta-item">${icon("pin")}${profile.location}</span>
         <span class="editor-home__meta-item">${profile.relocation}</span>
       </div>
-      <div class="editor-home__hero-actions" data-animate style="--delay: 0.2s">
+      <div class="editor-home__hero-actions" data-animate style="--delay: 0.15s">
         <a class="be-btn be-btn--primary be-btn--arrow" href="#work">View work ${arrowChip}</a>
         <a class="be-btn" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">${icon("document")}${mode.label} resume</a>
       </div>
@@ -1943,6 +1923,7 @@ function renderHome() {
 
   const renderProjectLinks = (project) => {
     const links = [
+      project.liveUrl ? `<a class="work-link" href="${project.liveUrl}" target="_blank" rel="noreferrer">Live dashboard${icon("external")}</a>` : "",
       project.githubUrl ? `<a class="work-link" href="${project.githubUrl}" target="_blank" rel="noreferrer">GitHub${icon("external")}</a>` : "",
       project.writeupUrl ? `<a class="work-link" href="${project.writeupUrl}" target="_blank" rel="noreferrer">Write-up${icon("external")}</a>` : ""
     ].join("");
