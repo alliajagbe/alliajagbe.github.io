@@ -435,6 +435,45 @@ function observeReveal(nodes) {
   });
 }
 
+// Shared helpers for the dot fields.
+// Seeded generator so each figure looks the same on every visit.
+const seeded = (seed) => () => {
+  seed = (seed + 0x6d2b79f5) | 0;
+  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+const gaussian = (rand) => {
+  const u = Math.max(rand(), 1e-6);
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rand());
+};
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+// Canvas can't read CSS variables, so resolve the current theme + view colours through a probe.
+function readFieldColors() {
+  const probe = document.createElement("span");
+  probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
+  document.body.append(probe);
+  const resolve = (value) => {
+    probe.style.color = value;
+    return getComputedStyle(probe).color;
+  };
+  const colors = {
+    ink: resolve("var(--text-soft)"),
+    accent: resolve("var(--accent)"),
+    line: resolve("var(--heading)")
+  };
+  probe.remove();
+  return colors;
+}
+
+function onLookChange(callback) {
+  new MutationObserver(callback).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme", "data-view"]
+  });
+}
+
 // Hero figure: a field of dots that arranges itself into a small chart for the selected view.
 // Dots spring toward their targets, drift slightly at rest, and lean away from the cursor.
 function createDataField(canvas, { caption, host } = {}) {
@@ -447,19 +486,7 @@ function createDataField(canvas, { caption, host } = {}) {
   const STIFFNESS = 120;
   const DAMPING = 24;
   const PUSH_RADIUS = 90;
-
-  // Seeded generator so each figure looks the same on every visit.
-  const seeded = (seed) => () => {
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-  const gaussian = (rand) => {
-    const u = Math.max(rand(), 1e-6);
-    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rand());
-  };
-  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  let view = "";
   const axes = [
     { x1: 0, y1: 0, x2: 0, y2: 1, kind: "axis" },
     { x1: 0, y1: 1, x2: 1, y2: 1, kind: "axis" }
@@ -597,19 +624,37 @@ function createDataField(canvas, { caption, host } = {}) {
   const toY = (v) => pad + v * (height - pad * 2);
 
   const readColors = () => {
-    const probe = document.createElement("span");
-    probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
-    document.body.append(probe);
-    const resolve = (value) => {
-      probe.style.color = value;
-      return getComputedStyle(probe).color;
-    };
-    colors = {
-      ink: resolve("var(--text-soft)"),
-      accent: resolve("var(--accent)"),
-      line: resolve("var(--heading)")
-    };
-    probe.remove();
+    colors = readFieldColors();
+  };
+
+  // Scientist view: a hairline crosshair with a coordinate readout, like a plotting tool.
+  const drawCrosshair = () => {
+    if (view !== "scientist" || !pointer) {
+      return;
+    }
+    const { x, y } = pointer;
+    if (x < pad || x > width - pad || y < pad || y > height - pad) {
+      return;
+    }
+    ctx.globalAlpha = 0.35;
+    ctx.strokeStyle = colors.accent;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(pad, Math.round(y) + 0.5);
+    ctx.lineTo(width - pad, Math.round(y) + 0.5);
+    ctx.moveTo(Math.round(x) + 0.5, pad);
+    ctx.lineTo(Math.round(x) + 0.5, height - pad);
+    ctx.stroke();
+
+    const u = (x - pad) / (width - pad * 2);
+    const v = 1 - (y - pad) / (height - pad * 2);
+    const label = `x ${u.toFixed(2)}  y ${v.toFixed(2)}`;
+    ctx.font = '11px "IBM Plex Mono", monospace';
+    const textWidth = ctx.measureText(label).width;
+    const flip = x + 10 + textWidth > width - pad;
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = colors.line;
+    ctx.fillText(label, flip ? x - 10 - textWidth : x + 10, y > pad + 24 ? y - 10 : y + 20);
   };
 
   const draw = (now) => {
@@ -639,6 +684,7 @@ function createDataField(canvas, { caption, host } = {}) {
       ctx.globalAlpha = dot.accent ? 0.95 : 0.5;
       ctx.fill();
     });
+    drawCrosshair();
     ctx.globalAlpha = 1;
   };
 
@@ -726,6 +772,7 @@ function createDataField(canvas, { caption, host } = {}) {
   };
 
   const setLayout = (id) => {
+    view = id;
     const layout = (layouts[id] || layouts.scientist)(count);
     lines = layout.lines;
     if (caption) {
@@ -752,10 +799,10 @@ function createDataField(canvas, { caption, host } = {}) {
   };
 
   readColors();
-  new MutationObserver(() => {
+  onLookChange(() => {
     readColors();
     draw(performance.now());
-  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  });
 
   if ("ResizeObserver" in window) {
     new ResizeObserver(resize).observe(canvas);
@@ -788,6 +835,373 @@ function createDataField(canvas, { caption, host } = {}) {
   }
 
   return { setLayout };
+}
+
+// Ambient field: a few dots that live in the page margins once the hero is gone and re-form
+// for each section (scatter, route, timeline, grid, bars, cluster), styled by the active view.
+function createAmbientField(canvas, { container } = {}) {
+  const ctx = canvas?.getContext("2d");
+  if (!ctx) {
+    return null;
+  }
+
+  const COUNT = 70;
+  const STIFFNESS = 48;
+  const DAMPING = 13;
+  const MIN_GUTTER = 120;
+  const rand = seeded(83);
+  const dots = Array.from({ length: COUNT }, (_, index) => ({
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    tx: 0,
+    ty: 0,
+    alpha: 0,
+    targetAlpha: 0,
+    accent: false,
+    delay: 0,
+    jx: gaussian(rand),
+    jy: gaussian(rand),
+    phase: rand() * Math.PI * 2,
+    speed: 0.3 + rand() * 0.4,
+    r: 1.3 + rand() * 0.9,
+    side: index % 2 ? "right" : "left"
+  }));
+
+  let width = 0;
+  let height = 0;
+  let gutters = null;
+  let section = null;
+  let view = "";
+  let shown = false;
+  let colors = readFieldColors();
+  let frame = 0;
+  let last = 0;
+
+  const measure = () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    const rect = container?.getBoundingClientRect();
+    const left = rect ? rect.left : 0;
+    const right = rect ? rect.right : width;
+    gutters = left >= MIN_GUTTER
+      ? { left: { x0: 32, x1: left - 40 }, right: { x0: right + 40, x1: width - 32 } }
+      : null;
+  };
+
+  // Each shape returns a target per dot, in viewport pixels.
+  const shapes = {
+    about: (dot, index) => {
+      const g = gutters[dot.side];
+      const r = seeded(index + 7);
+      return { x: g.x0 + r() * (g.x1 - g.x0), y: height * (0.16 + r() * 0.68) };
+    },
+    education: (dot, index) => {
+      const g = gutters[dot.side];
+      const t = Math.floor(index / 2) / (COUNT / 2 - 1);
+      const bow = Math.sin(Math.PI * t) * (dot.side === "left" ? 1 : -1);
+      return { x: g.x0 + (g.x1 - g.x0) * (0.5 + 0.32 * bow), y: height * (0.14 + 0.72 * t) };
+    },
+    experience: (dot, index) => {
+      const g = gutters.left;
+      const t = index / (COUNT - 1);
+      const tick = index % 10 === 0;
+      return { x: (g.x0 + g.x1) / 2 + (tick ? 8 : 0), y: height * (0.12 + 0.76 * t), accent: tick };
+    },
+    work: (dot, index) => {
+      const g = gutters[dot.side];
+      const slot = Math.floor(index / 2);
+      const col = slot % 3;
+      const row = Math.floor(slot / 3);
+      return { x: g.x0 + (g.x1 - g.x0) * (0.2 + col * 0.3), y: height * (0.14 + row * 0.064) };
+    },
+    achievements: (dot, index) => {
+      const g = gutters.right;
+      const bars = [10, 12, 14, 16, 18];
+      let start = 0;
+      const bar = bars.findIndex((size) => {
+        start += size;
+        return index < start;
+      });
+      const within = index - (start - bars[bar]);
+      const centre = g.x0 + ((g.x1 - g.x0) * (bar + 0.5)) / bars.length;
+      return {
+        x: centre + (within % 2 ? 5 : -5),
+        y: height * 0.84 - Math.floor(within / 2) * 11,
+        accent: bar === bars.length - 1
+      };
+    },
+    contact: (dot) => {
+      const g = gutters.right;
+      return {
+        x: (g.x0 + g.x1) / 2 + dot.jx * 14,
+        y: height * 0.5 + dot.jy * 14,
+        accent: Math.abs(dot.jx) < 0.4 && Math.abs(dot.jy) < 0.4
+      };
+    }
+  };
+
+  const retarget = () => {
+    const shape = gutters && shown && shapes[section];
+    dots.forEach((dot, index) => {
+      if (!shape) {
+        dot.targetAlpha = 0;
+        return;
+      }
+      const target = shape(dot, index);
+      let x = target.x;
+      // The social rails sit in the lower corners, so shapes use the upper part of the margins.
+      let y = height * 0.08 + target.y * 0.6;
+      if (view === "analyst") {
+        x = Math.round(x / 12) * 12;
+        y = Math.round(y / 12) * 12;
+      } else if (view === "scientist") {
+        x += dot.jx * 5;
+        y += dot.jy * 5;
+      }
+      dot.tx = x;
+      dot.ty = y;
+      dot.accent = Boolean(target.accent);
+      dot.targetAlpha = 1;
+      dot.delay = (index % 14) * 0.02;
+      if (dot.alpha === 0) {
+        // Appear in place instead of flying in from the corner.
+        dot.x = x;
+        dot.y = y;
+      }
+    });
+    if (prefersReducedMotion) {
+      dots.forEach((dot) => {
+        dot.x = dot.tx;
+        dot.y = dot.ty;
+        dot.alpha = dot.targetAlpha;
+      });
+      draw(0);
+      return;
+    }
+    schedule();
+  };
+
+  const draw = (time) => {
+    ctx.clearRect(0, 0, width, height);
+    const drift = (dot) => (prefersReducedMotion ? [0, 0] : [Math.sin(time * dot.speed + dot.phase) * 1.4, Math.cos(time * dot.speed * 0.8 + dot.phase) * 1.4]);
+
+    // AI Developer: each dot links to its nearest neighbour, like a sparse graph.
+    if (view === "ai-developer") {
+      ctx.strokeStyle = colors.line;
+      ctx.lineWidth = 1;
+      dots.forEach((dot) => {
+        if (dot.alpha < 0.05) {
+          return;
+        }
+        let nearest = null;
+        let best = 60;
+        dots.forEach((other) => {
+          if (other !== dot && other.alpha > 0.05) {
+            const distance = Math.hypot(other.x - dot.x, other.y - dot.y);
+            if (distance < best) {
+              best = distance;
+              nearest = other;
+            }
+          }
+        });
+        if (nearest) {
+          ctx.globalAlpha = 0.12 * Math.min(dot.alpha, nearest.alpha);
+          ctx.beginPath();
+          ctx.moveTo(dot.x, dot.y);
+          ctx.lineTo(nearest.x, nearest.y);
+          ctx.stroke();
+        }
+      });
+    }
+
+    dots.forEach((dot) => {
+      if (dot.alpha < 0.01) {
+        return;
+      }
+      const [dx, dy] = drift(dot);
+      ctx.beginPath();
+      ctx.arc(dot.x + dx, dot.y + dy, dot.accent ? dot.r + 0.8 : dot.r, 0, Math.PI * 2);
+      ctx.fillStyle = dot.accent ? colors.accent : colors.ink;
+      ctx.globalAlpha = dot.alpha * (dot.accent ? 0.7 : 0.38);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  };
+
+  const step = (now) => {
+    frame = 0;
+    const dt = Math.min((now - last) / 1000, 0.032);
+    last = now;
+    let busy = false;
+    dots.forEach((dot) => {
+      if (dot.delay > 0) {
+        dot.delay -= dt;
+        busy = true;
+        return;
+      }
+      dot.alpha += (dot.targetAlpha - dot.alpha) * Math.min(dt * 5, 1);
+      if (Math.abs(dot.targetAlpha - dot.alpha) < 0.005) {
+        dot.alpha = dot.targetAlpha;
+      } else {
+        busy = true;
+      }
+      dot.vx += (STIFFNESS * (dot.tx - dot.x) - DAMPING * dot.vx) * dt;
+      dot.vy += (STIFFNESS * (dot.ty - dot.y) - DAMPING * dot.vy) * dt;
+      dot.x += dot.vx * dt;
+      dot.y += dot.vy * dt;
+    });
+    draw(now / 1000);
+    // Keep drifting while anything is on screen; stop once everything has faded out.
+    if (busy || dots.some((dot) => dot.alpha > 0)) {
+      schedule();
+    }
+  };
+
+  const schedule = () => {
+    if (!frame && !document.hidden && !prefersReducedMotion) {
+      last = performance.now();
+      frame = requestAnimationFrame(step);
+    }
+  };
+
+  measure();
+  window.addEventListener("resize", () => {
+    measure();
+    retarget();
+  });
+  document.addEventListener("visibilitychange", schedule);
+  onLookChange(() => {
+    colors = readFieldColors();
+    if (prefersReducedMotion) {
+      draw(0);
+    }
+  });
+
+  return {
+    setSection(id) {
+      if (id !== section) {
+        section = id;
+        retarget();
+      }
+    },
+    setView(id) {
+      if (id !== view) {
+        view = id;
+        retarget();
+      }
+    },
+    setVisible(isVisible) {
+      if (isVisible !== shown) {
+        shown = isVisible;
+        retarget();
+      }
+    }
+  };
+}
+
+// Phones: featured projects become a stack of cards, Wallet-style. Each card sticks as it
+// arrives, the next one slides up over it, and the covered card settles back a little.
+function createWorkStack(list) {
+  const mobile = window.matchMedia("(max-width: 640px)");
+  const PEEK = 10;
+  const TOP = 16;
+  const DOCK_SPACE = 88;
+  let cards = [];
+  let ticking = false;
+
+  const update = () => {
+    ticking = false;
+    cards.forEach((card, index) => {
+      const next = cards[index + 1];
+      if (!next) {
+        card.style.setProperty("--cover", "0");
+        return;
+      }
+      const rect = card.getBoundingClientRect();
+      const nextTop = next.getBoundingClientRect().top;
+      const cover = clamp((rect.bottom - nextTop) / rect.height, 0, 1);
+      card.style.setProperty("--cover", cover.toFixed(3));
+    });
+  };
+
+  const requestUpdate = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+
+  // A card taller than the screen sticks by its bottom edge, so all of it is read before it's covered.
+  const layout = () => {
+    cards = [...list.querySelectorAll(".work-feature")];
+    list.classList.toggle("is-stack", mobile.matches);
+    cards.forEach((card, index) => {
+      if (!mobile.matches) {
+        card.style.removeProperty("--stick");
+        card.style.removeProperty("--cover");
+        return;
+      }
+      const preferred = TOP + index * PEEK;
+      const fit = window.innerHeight - DOCK_SPACE - card.offsetHeight;
+      card.style.setProperty("--stick", `${Math.round(Math.min(preferred, fit))}px`);
+    });
+    if (mobile.matches) {
+      update();
+    }
+  };
+
+  window.addEventListener("scroll", () => mobile.matches && requestUpdate(), { passive: true });
+  window.addEventListener("resize", layout);
+  window.addEventListener("load", layout);
+  mobile.addEventListener("change", layout);
+
+  return { refresh: layout };
+}
+
+// Section numbers take a different form in each view.
+function setSectionMotif(viewId) {
+  document.querySelectorAll(".editor-home__heading .editor-home__number, .editor-home__contact-eyebrow .editor-home__number").forEach((node, index) => {
+    const n = index + 1;
+    const padded = String(n).padStart(2, "0");
+    node.textContent =
+      viewId === "analyst" ? padded : viewId === "scientist" ? `§${n}` : viewId === "ai-developer" ? `~/${padded} >` : `${padded}.`;
+  });
+}
+
+// AI Developer view: each section title types itself out the first time it scrolls into view.
+function setupTypedHeadings() {
+  const headings = [...document.querySelectorAll(".editor-home__heading h2")];
+  if (!headings.length || prefersReducedMotion || !("IntersectionObserver" in window)) {
+    return;
+  }
+  headings.forEach((heading) => {
+    const text = heading.textContent.trim();
+    heading.innerHTML = `<span class="type-clip">${text}</span>`;
+    heading.style.setProperty("--chars", String(text.length));
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || document.documentElement.dataset.view !== "ai-developer") {
+          return;
+        }
+        const heading = entry.target;
+        observer.unobserve(heading);
+        heading.classList.add("is-typing");
+        const duration = Number(heading.style.getPropertyValue("--chars")) * 55 + 1600;
+        window.setTimeout(() => heading.classList.remove("is-typing"), duration);
+      });
+    },
+    { threshold: 1, rootMargin: "0px 0px -10% 0px" }
+  );
+  headings.forEach((heading) => observer.observe(heading));
 }
 
 // Bottom dock: section links with a gliding active marker, then search, theme, terminal, resume.
@@ -1521,7 +1935,7 @@ function setupCommandPalette({ trigger, getCommands }) {
   return { open, close };
 }
 
-function setupTopbar(dock) {
+function setupTopbar(dock, { onSection, onPastHero } = {}) {
   const topbar = document.querySelector("#topbar");
   const nav = document.querySelector("#primary-navigation");
   const menuButton = document.querySelector("#topbar-menu");
@@ -1571,6 +1985,7 @@ function setupTopbar(dock) {
       topbar.classList.toggle("is-away", pastHero);
       topbar.inert = pastHero;
       dock.setVisible(pastHero);
+      onPastHero?.(pastHero);
       if (pastHero) {
         setMenu(false);
       }
@@ -1604,6 +2019,7 @@ function setupTopbar(dock) {
       glide.sync();
     }
     dock?.setActive(current);
+    onSection?.(current);
   };
 
   const requestUpdate = () => {
@@ -1635,6 +2051,7 @@ function renderHome() {
   const educationList = find("#home-education-list");
   const experienceTimeline = find("#home-experience-timeline");
   const featuredWork = find("#home-featured-work");
+  const workStack = createWorkStack(featuredWork);
   const moreWork = find("#home-more-work");
   const moreWorkInner = find("#home-more-work-inner");
   const workToggle = find("#home-work-toggle");
@@ -1730,17 +2147,17 @@ function renderHome() {
     const pins = stopPoints
       .map(
         ([x, y], index) => `
-          <g class="edu-map__pin${index === stopPoints.length - 1 ? " is-latest" : ""}" data-stop="${index}" style="--i: ${index}">
-            <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" />
-            <text x="${(x + 14).toFixed(1)}" y="${(y - 12).toFixed(1)}">${index + 1}</text>
+          <g class="edu-map__pin${index === stopPoints.length - 1 ? " is-latest" : ""}" data-stop="${index}" style="--i: ${index}" tabindex="0" role="button" aria-label="${educationStops[index].institution}" aria-controls="edu-panel">
+            <circle class="edu-map__hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="26" />
+            <circle class="edu-map__dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" />
           </g>
         `
       )
       .join("");
 
     return `
-      <svg class="edu-map__svg" viewBox="0 0 ${map.cols * UNIT} ${map.rows * UNIT}" aria-hidden="true">
-        <path class="edu-map__land" d="${land}" />
+      <svg class="edu-map__svg" viewBox="0 0 ${map.cols * UNIT} ${map.rows * UNIT}" role="group" aria-label="Schools on a map">
+        <path class="edu-map__land" d="${land}" aria-hidden="true" />
         ${arcs}
         ${pins}
       </svg>
@@ -1750,36 +2167,58 @@ function renderHome() {
   educationList.innerHTML = `
     <div class="edu-map${canMap ? "" : " edu-map--plain"}">
       ${canMap ? renderEducationMap() : ""}
-      <ol class="edu-stops">
-        ${educationStops
-          .map(
-            (item, index) => `
-              <li class="edu-stops__item" data-stop="${index}" data-animate style="--delay: ${index * 0.08}s">
-                <span class="edu-stops__number" aria-hidden="true">${index + 1}</span>
-                <div>
-                  <h3>${item.credential}</h3>
-                  <p class="edu-stops__school">${item.institution}</p>
-                  <p class="edu-stops__place">${item.location}</p>
-                </div>
-              </li>
-            `
-          )
-          .join("")}
-      </ol>
+      <div class="edu-detail" data-animate>
+        <div class="edu-panel" id="edu-panel" aria-live="polite"></div>
+      </div>
     </div>
   `;
 
+  // One school at a time. Clicking a pin or tab selects it; hovering previews it.
   const educationMap = educationList.querySelector(".edu-map");
-  const setActiveStop = (stop) => {
-    educationMap.querySelectorAll("[data-stop]").forEach((element) => {
-      element.classList.toggle("is-active", stop !== null && element.dataset.stop === stop);
+  const educationPanel = educationList.querySelector("#edu-panel");
+  let selectedStop = educationStops.length - 1;
+  let shownStop = -1;
+
+  const showStop = (index) => {
+    educationMap.querySelectorAll(".edu-map__pin").forEach((pin) => {
+      pin.classList.toggle("is-active", Number(pin.dataset.stop) === index);
     });
+    if (index === shownStop) {
+      return;
+    }
+    shownStop = index;
+    const item = educationStops[index];
+    educationPanel.innerHTML = `
+      <div class="edu-panel__body">
+        <h3>${item.credential}</h3>
+        ${
+          item.url
+            ? `<a class="work-link edu-panel__school" href="${item.url}" target="_blank" rel="noreferrer">${item.institution}${icon("external")}</a>`
+            : `<p class="edu-panel__school">${item.institution}</p>`
+        }
+        <p class="edu-panel__place">${icon("pin")}${item.location}</p>
+      </div>
+    `;
   };
-  educationMap.addEventListener("pointerover", (event) => {
-    const target = event.target.closest("[data-stop]");
-    setActiveStop(target ? target.dataset.stop : null);
+
+  // Hover (or tap / focus) a dot to bring up its school; it stays until another dot is chosen.
+  const selectStop = (index) => {
+    selectedStop = index;
+    showStop(index);
+  };
+  educationMap.querySelectorAll(".edu-map__pin").forEach((pin) => {
+    const index = Number(pin.dataset.stop);
+    pin.addEventListener("pointerenter", () => selectStop(index));
+    pin.addEventListener("click", () => selectStop(index));
+    pin.addEventListener("focus", () => selectStop(index));
+    pin.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectStop(index);
+      }
+    });
   });
-  educationMap.addEventListener("pointerleave", () => setActiveStop(null));
+  showStop(selectedStop);
 
   // Draw the route once, the first time the map is on screen.
   if (prefersReducedMotion || !("IntersectionObserver" in window)) {
@@ -1900,12 +2339,7 @@ function renderHome() {
     hero.innerHTML = `
       <h1 id="home-title" data-animate>${profile.name}</h1>
       <p class="editor-home__statement" data-animate style="--delay: 0.05s">${mode.statement}</p>
-      <div class="editor-home__meta" data-animate style="--delay: 0.1s">
-        <span class="be-badge"><span class="be-badge__dot" aria-hidden="true"></span>${profile.availability.replace(/\.$/, "")}</span>
-        <span class="editor-home__meta-item">${icon("pin")}${profile.location}</span>
-        <span class="editor-home__meta-item">${profile.relocation}</span>
-      </div>
-      <div class="editor-home__hero-actions" data-animate style="--delay: 0.15s">
+      <div class="editor-home__hero-actions" data-animate style="--delay: 0.1s">
         <a class="be-btn be-btn--primary be-btn--arrow" href="#work">View work ${arrowChip}</a>
         <a class="be-btn" href="${mode.resumeUrl}" target="_blank" rel="noreferrer">${icon("document")}${mode.label} resume</a>
       </div>
@@ -1972,10 +2406,7 @@ function renderHome() {
             <div class="work-feature__copy">
               <p class="editor-home__eyebrow">${project.categories.join(" / ")}</p>
               <h3>${project.title}</h3>
-              <dl class="work-feature__detail">
-                <div><dt>Problem</dt><dd>${project.problem}</dd></div>
-                <div><dt>Approach</dt><dd>${project.approach}</dd></div>
-              </dl>
+              <p class="work-feature__summary">${project.blurb || project.approach}</p>
               <div class="be-chips">
                 ${project.tools.map((tool) => `<span class="be-chip">${tool}</span>`).join("")}
               </div>
@@ -1995,7 +2426,7 @@ function renderHome() {
                 <article class="be-card be-card--hover editor-home__mini-project">
                   <p class="editor-home__mini-top">${project.categories.join(" / ")}</p>
                   <h3>${project.shortTitle}</h3>
-                  <p>${project.problem}</p>
+                  <p>${project.blurb || project.problem}</p>
                   <div class="editor-home__mini-metrics">
                     ${project.metrics
                       .slice(0, 2)
@@ -2014,12 +2445,13 @@ function renderHome() {
     setWorkExpanded(false);
     workToggle.hidden = !extraProjects.length;
     setupTilt(featuredWork);
+    workStack.refresh();
     observeReveal([featuredWork]);
   };
 
   const setContact = (mode) => {
     contactCopy.innerHTML = `
-      <p class="editor-home__contact-eyebrow" data-animate>06. What's next?</p>
+      <p class="editor-home__contact-eyebrow" data-animate><span class="editor-home__number">06.</span> What's next?</p>
       <h2 id="contact-title" data-animate>Get In Touch</h2>
       <p class="editor-home__contact-summary" data-animate>${profile.contactBlurb}</p>
       <div class="editor-home__contact-actions" data-animate>
@@ -2073,6 +2505,14 @@ function renderHome() {
       })
     : null;
   let dock = null;
+  const ambientCanvas = find("#ambient-field");
+  const ambient =
+    ambientCanvas && window.matchMedia("(min-width: 1200px)").matches
+      ? createAmbientField(ambientCanvas, { container: find("#about .editor-home__container") })
+      : null;
+  if (ambientCanvas && !ambient) {
+    ambientCanvas.remove();
+  }
 
   modeTabs.innerHTML = homeModes
     .map(
@@ -2086,7 +2526,29 @@ function renderHome() {
 
   const applyMode = (modeId, options = {}) => {
     const nextMode = modeMap.get(modeId) || modeMap.get(profile.defaultModeId) || homeModes[0];
+    const root = document.documentElement;
+    const changed = nextMode.id !== root.dataset.view;
+
+    if (options.instant || !changed || prefersReducedMotion || !document.startViewTransition) {
+      renderMode(nextMode, options);
+      return;
+    }
+
+    // Wipe the new view in sideways from the tab that was picked.
+    const tab = modeTabs.querySelector(`[data-value="${nextMode.id}"]`);
+    const rect = tab?.getBoundingClientRect();
+    const x = rect && rect.bottom > 0 ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    root.style.setProperty("--vt-x", `${x}px`);
+    root.dataset.vt = "view";
+    document.startViewTransition(() => renderMode(nextMode, options)).finished.finally(() => {
+      delete root.dataset.vt;
+    });
+  };
+
+  const renderMode = (nextMode, options = {}) => {
     activeMode = nextMode;
+    document.documentElement.dataset.view = nextMode.id;
+    ambient?.setView(nextMode.id);
 
     if (options.persist) {
       try {
@@ -2105,6 +2567,7 @@ function renderHome() {
     setTools(nextMode);
     setProjects(nextMode);
     setContact(nextMode);
+    setSectionMotif(nextMode.id);
 
     const experienceIndex = Math.max(
       experience.findIndex((item) => item.company === nextMode.experienceCompany),
@@ -2281,7 +2744,11 @@ function renderHome() {
   /* Boot */
 
   dock = setupDock({ onSearch: () => palette?.open() });
-  setupTopbar(dock);
+  setupTopbar(dock, {
+    onSection: (id) => ambient?.setSection(id),
+    onPastHero: (isPast) => ambient?.setVisible(isPast)
+  });
+  setupTypedHeadings();
   achievementGroup.select(achievementYears[0], { instant: true });
   renderAchievementPanel(achievementYears[0]);
 

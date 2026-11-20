@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@1&family=Instrument+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="/alliajagbe%20logo/2.png?v=20260404f" />
@@ -38,15 +38,18 @@
           const storedTheme = localStorage.getItem("portfolio-theme");
           const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
           document.documentElement.dataset.theme = storedTheme || (prefersDark ? "dark" : "light");
+          // Matches profile.defaultModeId in content.js for first visits.
+          document.documentElement.dataset.view = localStorage.getItem("portfolio-mode") || "scientist";
         } catch (error) {
           document.documentElement.dataset.theme = "light";
         }
       })();
     </script>
-    <link rel="stylesheet" href="/styles.css?v=20261118a" />
+    <link rel="stylesheet" href="/styles.css?v=20261120b" />
   </head>
   <body data-page="home">
     <a class="skip-link" href="#top">Skip to content</a>
+    <canvas class="ambient-field" id="ambient-field" aria-hidden="true"></canvas>
     <div class="site-shell">
       <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
       <div class="brand-intro" id="brand-intro" aria-hidden="true">
@@ -231,8 +234,8 @@
       </footer>
     </div>
 
-    <script src="/content.js?v=20261118a" defer></script>
-    <script src="/map-data.js?v=20261118a" defer></script>
-    <script src="/script.js?v=20261118a" defer></script>
+    <script src="/content.js?v=20261120b" defer></script>
+    <script src="/map-data.js?v=20261120b" defer></script>
+    <script src="/script.js?v=20261120b" defer></script>
   </body>
 </html>

@@ -3319,7 +3319,7 @@ body[data-page="home"] .site-footer--minimal {
 }
 
 .editor-home__hero-actions {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .editor-home__section {
@@ -3445,7 +3445,7 @@ body[data-page="home"] .site-footer--minimal {
   transition: opacity 240ms var(--ease-out) calc(150ms + var(--i) * 800ms);
 }
 
-.edu-map__pin circle {
+.edu-map__dot {
   fill: var(--bg);
   stroke: var(--accent);
   stroke-width: 2.6;
@@ -3454,85 +3454,85 @@ body[data-page="home"] .site-footer--minimal {
   transition: transform 220ms var(--ease-out);
 }
 
-.edu-map__pin.is-latest circle,
-.edu-map__pin.is-active circle {
+.edu-map__pin.is-active .edu-map__dot {
   fill: var(--accent);
 }
 
-.edu-map__pin.is-active circle {
+.edu-map__pin.is-active .edu-map__dot {
   transform: scale(1.4);
 }
 
-.edu-map__pin text {
-  fill: var(--heading);
-  font-family: var(--mono);
-  font-size: 21px;
-  font-weight: 500;
-  paint-order: stroke;
-  stroke: var(--bg);
-  stroke-width: 6px;
-  stroke-linejoin: round;
+
+.edu-map__pin {
+  cursor: pointer;
+  outline: none;
 }
 
-.edu-stops {
+.edu-map__hit {
+  fill: transparent;
+  stroke: none;
+}
+
+body[data-page="home"] .edu-map__pin:focus-visible {
+  outline: none;
+}
+
+.edu-map__pin:focus-visible .edu-map__dot {
+  stroke-width: 4;
+}
+
+/* One school at a time, chosen from the map. */
+.edu-detail {
   display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: 1.5rem;
+  align-content: center;
+  min-width: 0;
 }
 
-.edu-stops__item {
+.edu-panel {
+  min-height: 8rem;
+}
+
+.edu-panel__body {
   display: grid;
-  grid-template-columns: 1.6rem minmax(0, 1fr);
-  gap: 0.75rem;
-  padding: 1rem 0;
-  border-top: 1px solid var(--border);
+  justify-items: start;
+  gap: 0.5rem;
+  animation: eduPanelIn 240ms var(--ease-out);
 }
 
-.edu-stops__item:last-child {
-  border-bottom: 1px solid var(--border);
+@keyframes eduPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }
 
-.edu-stops__number {
-  padding-top: 0.25rem;
-  font-family: var(--mono);
-  font-size: var(--fs-sm);
-  color: var(--text-soft);
-  transition: color 200ms var(--ease-out);
-}
-
-.edu-stops__item.is-active .edu-stops__number {
-  color: var(--accent);
-}
-
-/* Hovering a pin (or the row) lifts the matching school slightly. */
-.edu-stops__item > div {
-  transform-origin: left center;
-  transition: transform 300ms var(--ease-out);
-}
-
-.edu-stops__item.is-active > div {
-  transform: scale(1.04);
-}
-
-.edu-stops__item h3 {
-  font-size: var(--fs-lg);
+.edu-panel h3 {
+  font-size: var(--fs-xl);
   line-height: 1.2;
   text-wrap: balance;
 }
 
-.edu-stops__school {
-  margin-top: 0.5rem;
+.edu-panel__school {
+  margin-top: 0.25rem;
   font-family: var(--mono);
   font-size: var(--fs-sm);
   color: var(--accent);
 }
 
-.edu-stops__place {
-  margin-top: 0.125rem;
+.edu-panel__place {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-soft);
   font-family: var(--mono);
   font-size: var(--fs-sm);
-  color: var(--text-soft);
+}
+
+.edu-panel__place svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--accent);
 }
 
 .editor-home__experience-meta {
@@ -3672,6 +3672,12 @@ body[data-page="home"] .site-footer--minimal {
   font-size: clamp(1.5rem, 1.3rem + 0.7vw, 1.95rem);
   line-height: 1.12;
   text-wrap: balance;
+}
+
+.work-feature__summary {
+  max-width: 34rem;
+  color: var(--text-soft);
+  text-wrap: pretty;
 }
 
 .work-feature__detail {
@@ -4225,11 +4231,8 @@ body[data-page="home"] .site-footer--minimal {
     gap: 2rem;
   }
 
-  .edu-map__pin text {
-    font-size: 30px;
-  }
 
-  .edu-map__pin circle {
+  .edu-map__dot {
     r: 9px;
   }
 
@@ -4403,8 +4406,8 @@ body[data-page="home"] .site-footer--minimal {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .edu-stops__item.is-active > div {
-    transform: none;
+  .edu-panel__body {
+    animation: none;
   }
 
   body[data-page="home"] [data-animate] {
@@ -4587,3 +4590,220 @@ body[data-page="home"] .site-footer--minimal {
 }
 
 .terminal__input::placeholder { color: #30363d; }
+
+/* ─── Home: view worlds ──────────────────────────────────────
+   Every view keeps the site palette; each one adds its own texture,
+   a type accent and its own section numbers. Full Profile is the base. */
+[data-view="analyst"] {
+  --view-texture:
+    linear-gradient(90deg, transparent 2.5rem, color-mix(in srgb, var(--accent) 22%, transparent) 2.5rem, color-mix(in srgb, var(--accent) 22%, transparent) calc(2.5rem + 1px), transparent calc(2.5rem + 1px)),
+    repeating-linear-gradient(180deg, transparent 0 calc(2rem - 1px), color-mix(in srgb, var(--accent) 9%, transparent) calc(2rem - 1px) 2rem);
+  --view-texture-size: auto;
+}
+
+[data-view="scientist"] {
+  --h2-font: "Instrument Serif", Georgia, serif;
+  --h2-style: italic;
+  --h2-weight: 400;
+  --h2-tracking: -0.01em;
+  --view-texture:
+    linear-gradient(color-mix(in srgb, var(--accent) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px);
+  --view-texture-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+}
+
+[data-view="ai-developer"] {
+  --h2-font: var(--mono);
+  --h2-weight: 500;
+  --h2-tracking: -0.02em;
+  --view-texture: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent) 1px, transparent 1.2px);
+  --view-texture-size: 22px 22px;
+}
+
+[data-view="analyst"] body[data-page="home"],
+[data-view="scientist"] body[data-page="home"],
+[data-view="ai-developer"] body[data-page="home"] {
+  background-image: var(--view-texture);
+  background-size: var(--view-texture-size);
+}
+
+body[data-page="home"] .editor-home__heading h2 {
+  position: relative;
+  font-family: var(--h2-font, inherit);
+  font-style: var(--h2-style, normal);
+  font-weight: var(--h2-weight, 700);
+  letter-spacing: var(--h2-tracking, -0.035em);
+}
+
+[data-view="scientist"] body[data-page="home"] .editor-home__heading h2 {
+  font-size: clamp(2.1rem, 1.7rem + 1.3vw, 2.75rem);
+  line-height: 1;
+}
+
+[data-view="ai-developer"] body[data-page="home"] .editor-home__heading h2 {
+  font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+}
+
+/* Analyst: report tabs, tabular figures, ledger rows on hover. */
+[data-view="analyst"] .editor-home__number {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 0.25rem;
+  font-size: var(--fs-sm);
+}
+
+[data-view="analyst"] body[data-page="home"] {
+  font-variant-numeric: tabular-nums;
+}
+
+[data-view="analyst"] .editor-home__achievement-list li,
+[data-view="analyst"] .editor-home__mini-project {
+  transition: background-color 200ms var(--ease-out), transform 300ms var(--ease-out);
+}
+
+[data-view="analyst"] .editor-home__achievement-list li:hover,
+[data-view="analyst"] .editor-home__mini-project:hover {
+  background-color: var(--accent-soft);
+}
+
+[data-view="analyst"] .award-bar:hover {
+  background-color: var(--accent-soft);
+}
+
+/* Scientist: the figure caption reads like a journal plate. */
+[data-view="scientist"] .hero-field__caption {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-size: var(--fs-md);
+}
+
+/* AI Developer: section titles type themselves out once. */
+.type-clip {
+  display: inline-block;
+}
+
+.editor-home__heading h2.is-typing .type-clip {
+  clip-path: inset(0 100% 0 0);
+  animation: typeIn calc(var(--chars) * 55ms) steps(var(--chars), end) forwards;
+}
+
+.editor-home__heading h2.is-typing::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0.12em;
+  width: 0.55em;
+  height: 0.1em;
+  background: var(--accent);
+  animation:
+    caretMove calc(var(--chars) * 55ms) steps(var(--chars), end) forwards,
+    caretBlink 500ms step-end calc(var(--chars) * 55ms) 3 forwards;
+}
+
+@keyframes typeIn {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes caretMove {
+  to {
+    left: calc(100% + 0.125rem);
+  }
+}
+
+@keyframes caretBlink {
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Switching view: the new look wipes outward from the tab that was picked. */
+html[data-vt="view"]::view-transition-old(root) {
+  animation: none;
+}
+
+html[data-vt="view"]::view-transition-new(root) {
+  animation: viewWipe 560ms var(--ease-out);
+}
+
+@keyframes viewWipe {
+  from {
+    clip-path: inset(0 calc(100% - var(--vt-x, 50%)) 0 var(--vt-x, 50%));
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Ambient field in the page margins. */
+.ambient-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  /* The ledger margin rule would cut through content on a phone. */
+  [data-view="analyst"] {
+    --view-texture: repeating-linear-gradient(180deg, transparent 0 calc(2rem - 1px), color-mix(in srgb, var(--accent) 9%, transparent) calc(2rem - 1px) 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-home__heading h2.is-typing .type-clip,
+  .editor-home__heading h2.is-typing::after {
+    animation: none;
+    clip-path: none;
+  }
+}
+
+/* Phones: featured work as a Wallet-style stack. Cards stick on arrival; the next one
+   slides over, and the covered card settles back and dims (--cover goes 0 → 1). */
+@media (max-width: 640px) {
+  .editor-home__featured-work.is-stack {
+    gap: 1.5rem;
+  }
+
+  .is-stack .work-feature {
+    position: sticky;
+    top: var(--stick, 1rem);
+    gap: 1rem;
+    padding: 0.5rem 0.5rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    /* Opaque, so the card underneath doesn't show through. */
+    background: linear-gradient(var(--surface-strong), var(--surface-strong)), var(--bg);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.06);
+    scale: calc(1 - var(--cover, 0) * 0.06);
+    transform-origin: 50% 0;
+    isolation: isolate;
+  }
+
+  .is-stack .work-feature::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    background: #000;
+    opacity: calc(var(--cover, 0) * 0.28);
+    pointer-events: none;
+  }
+
+  .is-stack .work-feature__copy {
+    padding: 0 0.5rem;
+  }
+
+  .is-stack .work-panel {
+    min-height: 15rem;
+  }
+}

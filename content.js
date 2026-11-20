@@ -322,6 +322,7 @@ window.portfolioContent = {
       title: "Recommerce Decision Tree Optimization",
       shortTitle: "Recommerce Routing Model",
       categories: ["Optimization", "Analytics"],
+      blurb: "Built a decision model that picks the best vendor for each returned product, replacing manual routing.",
       problem:
         "Replace manual vendor selection for returned-product routing and reduce inconsistent operational decisions.",
       approach:
@@ -339,6 +340,7 @@ window.portfolioContent = {
       shortTitle: "Founder Forward BI System",
       liveUrl: "https://founder-forward.github.io/ff-dashboard/",
       categories: ["Analytics", "BI"],
+      blurb: "Built the data pipeline and four dashboards that turned scattered founder data into one reliable reporting system.",
       problem:
         "Bring fragmented founder and program data into one reliable system that teams could analyze and act on quickly.",
       approach:
@@ -356,6 +358,7 @@ window.portfolioContent = {
       title: "SBSF Agritech Growth Curve Modeling",
       shortTitle: "SBSF Agritech Modeling",
       categories: ["Modeling", "Research"],
+      blurb: "Enriched 22K+ rows of species data and modeled growth curves for 180 tree species across 40 climate zones.",
       problem:
         "Model species suitability and growth behavior across diverse agro-ecological contexts with sparse and uneven biological data.",
       approach:
@@ -373,6 +376,7 @@ window.portfolioContent = {
       title: "Data4Good Factuality Classification Pipeline",
       shortTitle: "Data4Good NLP Pipeline",
       categories: ["AI", "NLP"],
+      blurb: "Built a pipeline that tested 12 NLP and generative AI models to classify whether answers are factual.",
       problem:
         "Classify answer factuality at scale across ambiguous language and complex semantic patterns.",
       approach:
@@ -390,6 +394,7 @@ window.portfolioContent = {
       title: "Fraud Detection Modeling Challenge",
       shortTitle: "Fraud Detection Models",
       categories: ["Analytics", "Modeling"],
+      blurb: "Built and compared 10 fraud-detection models, tuned for fraud caught and money saved rather than accuracy alone.",
       problem:
         "Detect fraud reliably in large-scale transactional data while maximizing meaningful captures and limiting business exposure.",
       approach:
@@ -406,6 +411,7 @@ window.portfolioContent = {
       title: "PovertyPred HGCN Research Project",
       shortTitle: "PovertyPred HGCN",
       categories: ["Research", "ML"],
+      blurb: "Trained a graph neural network on 90K street images to predict household poverty in Kenyan villages.",
       problem:
         "Predict household poverty levels in Kenyan villages using imagery where socioeconomic labels are difficult to collect directly.",
       approach:
@@ -422,6 +428,7 @@ window.portfolioContent = {
       title: "Hotel Revenue Optimization & Dynamic Pricing Strategy",
       shortTitle: "Hotel Dynamic Pricing Model",
       categories: ["Analytics", "Modeling"],
+      blurb: "Grouped 75K+ hotel bookings into five guest segments and measured how price-sensitive each one is to guide nightly rates.",
       problem:
         "Set nightly rates without knowing how price-sensitive different guest segments are, leaving elastic-demand revenue unclaimed and inelastic segments underpriced.",
       approach:
@@ -472,16 +479,22 @@ window.portfolioContent = {
     {
       credential: "MS in Business Analytics, with Distinction",
       institution: "Wake Forest School of Business",
+      short: "Wake Forest",
+      url: "https://business.wfu.edu/",
       location: "North Carolina, USA"
     },
     {
       credential: "BTech in Data Science, Economics & Business",
       institution: "Plaksha University",
+      short: "Plaksha",
+      url: "https://plaksha.edu.in/",
       location: "Punjab, India"
     },
     {
       credential: "High School Diploma",
       institution: "African Leadership Academy",
+      short: "ALA",
+      url: "https://www.africanleadershipacademy.org/",
       location: "Johannesburg, South Africa"
     }
   ],
